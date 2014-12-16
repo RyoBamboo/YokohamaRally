@@ -1,11 +1,270 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/ScrollView"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:background="#fcf9f0"
+        >
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            style="@style/head"
+            android:textSize="@dimen/textL"
+            android:text="YOKOHAMA RALLY"
+            android:gravity="center"
+            android:background="#ddaa23"
+            android:layout_weight="8.14"
+            android:id="@+id/headtext">
+        </TextView>
 
-</RelativeLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="7dp"
+            android:background="#fcf9f0"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/sutanpu"
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+            </ImageView>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="検索してください"
+                android:id="@+id/find">
+            </EditText>
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/rupe"
+                android:layout_width="37dp"
+                android:layout_height="match_parent"
+                android:id="@+id/rupe"
+                android:layout_weight="0.09">
+
+            </ImageView>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"></RelativeLayout>
+
+        <TextView
+            style="@style/head"
+            android:textSize="@dimen/textL"
+            android:text="スタンプラリー一覧"
+            android:gravity="center"
+            android:background="#64ee9703">
+        </TextView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/border"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/page1">
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/minato"
+                android:layout_width="140dp"
+                android:layout_height="101dp"
+                >
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="みなとみらいスタンプラリー"
+                android:id="@+id/list0"
+                android:layout_gravity="center_vertical">
+            </TextView>
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:id="@+id/button1"
+                android:layout_gravity="center_vertical" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/border"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/minato"
+                android:layout_width="140dp"
+                android:layout_height="101dp"
+                >
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="みなとみらいスタンプラリー"
+                android:id="@+id/list0"
+                android:layout_gravity="center_vertical">
+            </TextView>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:id="@+id/button2"
+                android:layout_gravity="center_vertical" />
+
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/border"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/minato"
+                android:layout_width="140dp"
+                android:layout_height="101dp"
+                >
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="みなとみらいスタンプラリー"
+                android:id="@+id/list0"
+                android:layout_gravity="center_vertical">
+            </TextView>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:id="@+id/button3"
+                android:layout_gravity="center_vertical" />
+
+
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/border"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/minato"
+                android:layout_width="140dp"
+                android:layout_height="101dp"
+                >
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="みなとみらいスタンプラリー"
+                android:id="@+id/list0"
+                android:layout_gravity="center_vertical">
+            </TextView>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:id="@+id/button4"
+                android:layout_gravity="center_vertical" />
+
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/border"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/minato"
+                android:layout_width="140dp"
+                android:layout_height="101dp"
+                >
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="みなとみらいスタンプラリー"
+                android:id="@+id/list0"
+                android:layout_gravity="center_vertical">
+            </TextView>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:id="@+id/button5"
+                android:layout_gravity="center_vertical" />
+
+
+
+
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView" />
+
+
+    </LinearLayout>
+</ScrollView>
+
+
