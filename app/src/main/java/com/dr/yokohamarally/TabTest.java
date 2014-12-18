@@ -1,54 +1,67 @@
 package com.dr.yokohamarally;
-
-import android.app.TabActivity;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.widget.TabHost;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
-/**
- * Created by Masashi on 2014/12/16.
- */
-public class TabTest extends TabActivity{
+public class TabTest extends FragmentActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test);
-        initTabs();
+
+        setContentView(R.layout.tab);
+        FragmentTabHost host = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        host.setup(this, getSupportFragmentManager(), R.id.content);
+
+        TabSpec tabSpec1 = host.newTabSpec("tab1");
+        Button button1 = new Button(this);
+        tabSpec1.setIndicator(button1);
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("name", "Tab1");
+        host.addTab(tabSpec1, SampleFragment.class, bundle1);
+
+        TabSpec tabSpec2 = host.newTabSpec("tab2");
+        Button button2 = new Button(this);
+        button2.setBackgroundResource(R.drawable.rupe);
+        tabSpec2.setIndicator(button2);
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("name", "Tab2");
+        host.addTab(tabSpec2, SampleFragment.class, bundle2);
+
+        TabSpec tabSpec3 = host.newTabSpec("tab3");
+        Button button3 = new Button(this);
+        button3.setBackgroundResource(R.drawable.rupe);
+        tabSpec3.setIndicator(button3);
+        Bundle bundle3 = new Bundle();
+        bundle3.putString("name", "Tab3");
+        host.addTab(tabSpec3, SampleFragment.class, bundle3);
     }
 
-    protected void initTabs(){
+    public static class SampleFragment extends Fragment {
 
-        Resources res = getResources();
-        TabHost tabHost = getTabHost();
-        TabHost.TabSpec spec;
-        Intent intent;
-
-        // Tab1
-        intent = new Intent().setClass(this, Tab1Activity.class);
-        spec = tabHost.newTabSpec("Tab1").setIndicator(
-                "Tab1", res.getDrawable(R.drawable.rupe))
-                .setContent(intent);
-        tabHost.addTab(spec);
-
-        // Tab2
-        intent = new Intent().setClass(this, Tab2Activity.class);
-        spec = tabHost.newTabSpec("Tab2").setIndicator(
-                "Tab2" , res.getDrawable(R.drawable.rupe))
-                .setContent(intent);
-        tabHost.addTab(spec);
-
-        // Tab3
-        intent = new Intent().setClass(this, Tab3Activity.class);
-        spec = tabHost.newTabSpec("Tab3").setIndicator(
-                "Tab3", res.getDrawable(R.drawable.rupe))
-                .setContent(intent);
-        tabHost.addTab(spec);
-
-        // Set Default Tab - zero based index
-        tabHost.setCurrentTab(0);
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View v = null;
+            if(getArguments().getString("name").equals("Tab1") ) {
+                v = inflater.inflate(R.layout.activity_main, container, false);
+            }
+            if(getArguments().getString("name").equals("Tab2") ) {
+                v = inflater.inflate(R.layout.fragment_second_tab, container, false);
+            }
+            if(getArguments().getString("name").equals("Tab3" +
+                    "") ) {
+                v = inflater.inflate(R.layout.fragment_third_tab, container, false);
+            }
+            return v;
+        }
 
     }
-
-
 }
