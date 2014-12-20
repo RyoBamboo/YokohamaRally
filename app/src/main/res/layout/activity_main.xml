@@ -13,15 +13,7 @@
         android:background="#fcf9f0"
         >
 
-        <TextView
-            style="@style/head"
-            android:textSize="@dimen/textL"
-            android:text="YOKOHAMA RALLY"
-            android:gravity="center"
-            android:background="#ddaa23"
-            android:layout_weight="8.14"
-            android:id="@+id/headtext">
-        </TextView>
+
 
         <LinearLayout
             android:orientation="horizontal"

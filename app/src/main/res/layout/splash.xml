@@ -10,5 +10,5 @@
         android:scaleType="centerInside"
         android:src="@drawable/splash"
         android:layout_weight="1.88"
-        android:id="@+id/" />
+         />
 </LinearLayout>
