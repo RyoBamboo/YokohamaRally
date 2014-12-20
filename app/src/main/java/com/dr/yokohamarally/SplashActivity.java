@@ -16,12 +16,13 @@ public class SplashActivity extends Activity {
         Handler hdl = new Handler();
         hdl.postDelayed(new splashHandler(), 500);
 
+        
     }
 
     class splashHandler implements Runnable {
         public void run() {
             Intent i = new Intent(getApplication(),
-                    TabTest.class);
+                    MainActivity3.class);
             startActivity(i);
             SplashActivity.this.finish();
         }
