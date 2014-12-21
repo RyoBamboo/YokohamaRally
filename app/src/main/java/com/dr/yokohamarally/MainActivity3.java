@@ -67,6 +67,8 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+
     }
 
 
@@ -74,6 +76,16 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        menu.add("Normal item");
+
+        // メニューの要素を追加して取得
+        MenuItem actionItem = menu.add("Action Button");
+
+        // SHOW_AS_ACTION_IF_ROOM:余裕があれば表示
+        actionItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        // アイコンを設定
+        actionItem.setIcon(android.R.drawable.ic_menu_share);
         return true;
     }
 
