@@ -22,6 +22,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 
 public class MainActivity3 extends ActionBarActivity implements ActionBar.TabListener {
 
@@ -68,7 +77,36 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
                             .setTabListener(this));
         }
 
+        // 画面開いた時にHTTP通信をしてリスト更新
+        String url = "http://yokohamarally.prodrb.com/api/get_all_root.php";
+        // リクエストを送るためのインスタンス作成
+        // パラメータ設定
+        // 通信開始
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+        mQueue.add(new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        for(int i = 0; i < response.length(); i++) {
+                            //成功時の処理
+                            System.out.println(response.toString());
+                        }
 
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        //エラー時の処理
+                        System.out.println(error);
+
+                    }
+
+                }));
     }
 
 
