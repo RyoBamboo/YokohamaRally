@@ -78,7 +78,7 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
         }
 
         // 画面開いた時にHTTP通信をしてリスト更新
-        String url = "http://yokohamarally.prodrb.com/index.php";
+        String url = "http://yokohamarally.prodrb.com/api/get_all_root.php";
         // リクエストを送るためのインスタンス作成
         // パラメータ設定
         // 通信開始
@@ -89,8 +89,11 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
                     @Override
                     public void onResponse(JSONObject response)
                     {
-                        //成功時の処理
-                        System.out.println(response.toString());
+                        for(int i = 0; i < response.length(); i++) {
+                            //成功時の処理
+                            System.out.println(response.toString());
+                        }
+
                     }
                 },
                 new Response.ErrorListener()
@@ -104,8 +107,6 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
                     }
 
                 }));
-
-
     }
 
 
