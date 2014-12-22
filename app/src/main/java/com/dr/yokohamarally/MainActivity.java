@@ -24,11 +24,11 @@ public class MainActivity extends ActionBarActivity {
                     Intent intent = new Intent(MainActivity.this, SubActivity.class);
                     intent.putExtra("id" , "1");
                     startActivity(intent);
-
-
                 }
-
         });
+
+        // 画面開いた時にHTTP通信をしてリスト更新
+
     }
 
 
