@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/ScrollView"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:background="#fcf9f0"
+
+        android:id="@+id/lineup">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="7dp"
+            android:background="#fcf9f0"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            >
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/sutanpu"
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+            </ImageView>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="検索してください"
+                android:id="@+id/find">
+            </EditText>
+            <ImageView
+                style="@style/title_icon"
+                android:src="@drawable/rupe"
+                android:layout_width="37dp"
+                android:layout_height="match_parent"
+                android:id="@+id/rupe"
+                android:layout_weight="0.09">
+
+            </ImageView>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"></RelativeLayout>
+        <TextView
+            style="@style/head"
+            android:textSize="@dimen/textL"
+            android:text="スタンプラリー一覧"
+            android:gravity="center"
+            android:background="#64ee9703">
+        </TextView>
+
+        <!-- inflate用のLinearLayout ここに動的に生成したリストを表示　-->
+        <ListView
+            android:layout_height="800dp"
+            android:id="@+id/root_list"
+            android:layout_width="match_parent"
+            android:layout_weight="1"></ListView>
+        <!-- inflate end -->
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView" />
+    </LinearLayout>
+</ScrollView>
+
+

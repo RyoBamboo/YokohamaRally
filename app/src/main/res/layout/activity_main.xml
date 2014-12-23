@@ -65,6 +65,14 @@
             android:background="#64ee9703">
         </TextView>
 
+        <!-- inflate用のLinearLayout ここに動的に生成したリストを表示　-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/root_list">
+            ></LinearLayout>
+<!--
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -250,6 +258,7 @@
 
 
         </LinearLayout>
+-->
 
         <ScrollView
             android:layout_width="wrap_content"
