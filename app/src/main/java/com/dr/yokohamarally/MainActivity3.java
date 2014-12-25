@@ -1,5 +1,6 @@
 package com.dr.yokohamarally;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -29,10 +31,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
 public class MainActivity3 extends ActionBarActivity implements ActionBar.TabListener {
+
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -89,11 +93,17 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
                     @Override
                     public void onResponse(JSONObject response)
                     {
-                        for(int i = 0; i < response.length(); i++) {
-                            //成功時の処理
-                            System.out.println(response.toString());
-                        }
+                        try {
+                            JSONArray roots = response.getJSONArray("roots");
 
+                            // JSONObjectとして１取り出す
+                            for (int i = 0; i < roots.length(); i++) {
+                                JSONObject root = roots.getJSONObject(i);
+                                System.out.println(root);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
                     }
                 },
                 new Response.ErrorListener()
@@ -235,10 +245,12 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
             Integer oi = new Integer(number);
 
             String str = oi.toString();
-            Log.d("aa",str);
             if((getArguments().getInt(ARG_SECTION_NUMBER) == 1 )){
                 rootView = inflater.inflate(R.layout.activity_main, container, false);
+
             }
+
+
             return rootView;
         }
 
@@ -260,11 +272,11 @@ public class MainActivity3 extends ActionBarActivity implements ActionBar.TabLis
 
 
         }
-             @Override
-                 public void onAttach(Activity activity) {
-                     parent = (MainActivity3) activity;
-                     super.onAttach(activity);
-                 }
+         @Override
+             public void onAttach(Activity activity) {
+                 parent = (MainActivity3) activity;
+                 super.onAttach(activity);
+             }
 
 
 
