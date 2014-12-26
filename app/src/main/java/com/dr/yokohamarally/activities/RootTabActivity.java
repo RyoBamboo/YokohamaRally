@@ -6,35 +6,25 @@
 
 package com.dr.yokohamarally.activities;
 
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TabHost;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.dr.yokohamarally.BlankFragment;
 import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
-import com.dr.yokohamarally.Root;
-import com.dr.yokohamarally.RootAdapter;
-import com.dr.yokohamarally.TabTest;
+import com.dr.yokohamarally.models.Root;
+import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -63,7 +53,7 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
 
         //サイドバー機能実装
         mNav = new SimpleSideDrawer(this);
-        mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
+        //mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
 
 
         /*-------------------------
@@ -91,29 +81,6 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
         //スライド判定リスナー登録
         tabHost.setOnTouchListener(new FlickTouchListener());
 
-
-
-
-
-
-//        /*------------------
-//         リストビュー表示処理
-//        -----------------*/
-//        // queue
-//        myQueue = Volley.newRequestQueue(this);
-//
-//        // arrayList
-//        roots = new ArrayList<Root>();
-//
-//        // adapter
-//        adapter = new RootAdapter(this, 0, roots);
-//
-//        // ListView
-//        rootListView = (ListView)findViewById(R.id.root_list);
-//        rootListView.setAdapter(adapter);
-//
-//        myData = new MyData(this,myQueue,adapter);
-//        myData.getData();
     }
 
     @Override
@@ -178,6 +145,52 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
                     break;
             }
             return true;
+        }
+    }
+
+    public static class BlankFragment extends Fragment {
+
+        private RequestQueue myQueue;
+
+        private ArrayList<Root> roots;
+        private RootAdapter adapter;
+        private ListView rootListView;
+
+        private MyData myData;
+
+        public BlankFragment() {
+            // Required empty public constructor
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View v = inflater.inflate(R.layout.fragment_blank, container, false);
+
+
+
+            /*------------------
+             リストビュー表示処理
+            -----------------*/
+            // queue
+            myQueue = Volley.newRequestQueue(container.getContext());
+
+            // arrayList
+            roots = new ArrayList<Root>();
+
+            // adapter
+            adapter = new RootAdapter(container.getContext(), 0, roots);
+
+            // ListView
+            rootListView = (ListView)v.findViewById(R.id.root_list);
+            rootListView.setAdapter(adapter);
+
+            myData = new MyData(container.getContext(),myQueue,adapter);
+            myData.getData();
+
+            return v;
         }
     }
 }

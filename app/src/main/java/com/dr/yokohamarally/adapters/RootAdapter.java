@@ -1,4 +1,4 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.models.Root;
+
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class RootAdapter extends ArrayAdapter<Root> {
 

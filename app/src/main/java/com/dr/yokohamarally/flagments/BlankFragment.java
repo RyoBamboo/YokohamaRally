@@ -1,6 +1,5 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.flagments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +9,10 @@ import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.dr.yokohamarally.MyData;
+import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.models.Root;
+import com.dr.yokohamarally.adapters.RootAdapter;
 
 import java.util.ArrayList;
 

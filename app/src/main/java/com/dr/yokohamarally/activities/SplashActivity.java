@@ -1,10 +1,12 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
+
+import com.dr.yokohamarally.R;
 
 public class SplashActivity extends Activity {
     @Override
@@ -22,7 +24,7 @@ public class SplashActivity extends Activity {
     class splashHandler implements Runnable {
         public void run() {
             Intent i = new Intent(getApplication(),
-                    MainActivity3.class);
+                    RootTabActivity.class);
             startActivity(i);
             SplashActivity.this.finish();
         }
