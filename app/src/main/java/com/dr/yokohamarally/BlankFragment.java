@@ -35,6 +35,8 @@ public class BlankFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_blank, container, false);
 
+
+
         /*------------------
          リストビュー表示処理
         -----------------*/

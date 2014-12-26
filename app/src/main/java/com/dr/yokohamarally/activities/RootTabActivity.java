@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -29,6 +31,7 @@ import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.Root;
 import com.dr.yokohamarally.RootAdapter;
 import com.dr.yokohamarally.TabTest;
+import com.navdrawer.SimpleSideDrawer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,6 +48,10 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
 
     private MyData myData;
 
+    private SimpleSideDrawer mNav;
+    private float lastTouchX;
+    private float currentX;
+
     private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
 
@@ -52,6 +59,12 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root_tab);
+
+
+        //サイドバー機能実装
+        mNav = new SimpleSideDrawer(this);
+        mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
+
 
         /*-------------------------
          * FragmentTabHostによる実装
@@ -74,6 +87,12 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
 
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
+
+        //スライド判定リスナー登録
+        tabHost.setOnTouchListener(new FlickTouchListener());
+
+
+
 
 
 
@@ -127,4 +146,38 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
         return super.onOptionsItemSelected(item);
     }
     */
+
+
+
+     /*-----------------------
+          スライド判定処理
+     -----------------*/
+
+    private class FlickTouchListener implements View.OnTouchListener {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    lastTouchX = event.getX();
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    currentX = event.getX();
+                    if (lastTouchX - currentX < -80) {
+                        //サイドバー表示
+                        mNav.toggleLeftDrawer();
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    currentX = event.getX();
+                    if (lastTouchX - currentX < -80) {
+                        //サイドバー表示
+                        mNav.toggleLeftDrawer();
+                    }
+                    break;
+            }
+            return true;
+        }
+    }
 }

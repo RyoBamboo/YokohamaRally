@@ -19,6 +19,7 @@ public class tets extends Activity {
         setContentView(R.layout.activity_main);
         mNav = new SimpleSideDrawer(this);
         mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
+
         findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
