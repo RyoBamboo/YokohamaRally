@@ -1,5 +1,6 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.tests;
 
+import com.dr.yokohamarally.R;
 import com.navdrawer.SimpleSideDrawer;
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,7 +19,9 @@ public class tets extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mNav = new SimpleSideDrawer(this);
+        /* fragment_first_tabが見つからないとのエラーでたのでコメントアウト 2014/12/26 by bamboo
         mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
+        */
 
         findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
             @Override

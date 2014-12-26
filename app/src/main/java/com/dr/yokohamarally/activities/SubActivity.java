@@ -1,9 +1,11 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.dr.yokohamarally.R;
 
 /**
  * Created by Masashi on 2014/12/15.

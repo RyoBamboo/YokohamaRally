@@ -1,4 +1,4 @@
-package com.dr.yokohamarally;
+package com.dr.yokohamarally.models;
 
 public class Root {
 
