@@ -19,7 +19,7 @@ import retrofit.RestAdapter;
 
 @Module(
         complete = false,
-        library = false,
+        library = true,
         injects =  {
                 YokohamarallyApplication.class,
                 MainActivity.class
@@ -55,7 +55,7 @@ public class YokohamarallyModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(Context context, RestErrorHandler restErrorHandler) {
+    RestAdapter provideRestProvider(Context context, RestErrorHandler restErrorHandler) {
         return new RestAdapter.Builder()
                 .setEndpoint(context.getString(R.string.constants_api_endpoint))
                 .setLogLevel(RestAdapter.LogLevel.FULL)

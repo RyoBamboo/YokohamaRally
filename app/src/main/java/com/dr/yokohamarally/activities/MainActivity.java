@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.flagments.TopRootFragment;
 import com.dr.yokohamarally.models.Root;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
@@ -73,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         tabSpec2 = tabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("tab2");
         // TabHostに追加
-        tabHost.addTab(tabSpec2, BlankFragment.class, null);
+        tabHost.addTab(tabSpec2, TopRootFragment.class, null);
 
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
