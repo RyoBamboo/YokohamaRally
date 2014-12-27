@@ -169,8 +169,6 @@ public class RootTabActivity extends ActionBarActivity implements FragmentTabHos
 
             View v = inflater.inflate(R.layout.fragment_blank, container, false);
 
-
-
             /*------------------
              リストビュー表示処理
             -----------------*/
