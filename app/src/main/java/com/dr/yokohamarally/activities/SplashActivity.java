@@ -24,7 +24,7 @@ public class SplashActivity extends Activity {
     class splashHandler implements Runnable {
         public void run() {
             Intent i = new Intent(getApplication(),
-                    RootTabActivity.class);
+                    MainActivity.class);
             startActivity(i);
             SplashActivity.this.finish();
         }

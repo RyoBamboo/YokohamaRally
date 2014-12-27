@@ -28,7 +28,7 @@ import com.navdrawer.SimpleSideDrawer;
 
 import java.util.ArrayList;
 
-public class RootTabActivity extends ActionBarActivity implements FragmentTabHost.OnTabChangeListener {
+public class MainActivity extends ActionBarActivity implements FragmentTabHost.OnTabChangeListener {
 
     private RequestQueue myQueue;
 
