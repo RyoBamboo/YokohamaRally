@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(getActivity(), RootSummaryActivity.class)            ;
+            Intent intent = new Intent(getActivity(), RootSummaryActivity.class);
             intent.putExtra("rootId", position + 1);
             startActivity(intent);
         }
