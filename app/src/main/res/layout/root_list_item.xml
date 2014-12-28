@@ -23,6 +23,7 @@
         android:id="@+id/title"
         android:layout_gravity="center_vertical">
     </TextView>
+    <!--
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="40dp"
@@ -30,5 +31,6 @@
         android:text="1"
         android:id="@+id/button1"
         android:layout_gravity="center_vertical" />
+        -->
 
 </LinearLayout>
