@@ -6,8 +6,10 @@
 
 package com.dr.yokohamarally.activities;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
@@ -27,6 +30,8 @@ import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
 
 import java.util.ArrayList;
+
+import butterknife.OnItemClick;
 
 public class MainActivity extends ActionBarActivity implements FragmentTabHost.OnTabChangeListener {
 
@@ -148,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         }
     }
 
-    public static class BlankFragment extends Fragment {
+    public static class BlankFragment extends Fragment implements AdapterView.OnItemClickListener{
 
         private RequestQueue myQueue;
 
@@ -167,7 +172,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View v = inflater.inflate(R.layout.fragment_blank, container, false);
+            View v = inflater.inflate(R.layout.fragment_all_root_list, container, false);
 
             /*------------------
              リストビュー表示処理
@@ -184,11 +189,19 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             // ListView
             rootListView = (ListView)v.findViewById(R.id.root_list);
             rootListView.setAdapter(adapter);
+            rootListView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
 
             myData = new MyData(container.getContext(),myQueue,adapter);
-            myData.getData();
+            myData.getAllRoot();
 
             return v;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getActivity(), RootSummaryActivity.class)            ;
+            intent.putExtra("rootId", position + 1);
+            startActivity(intent);
         }
     }
 }

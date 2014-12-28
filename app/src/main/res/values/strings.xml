@@ -13,5 +13,6 @@
 
     <!-- constants -->
     <string name="constants_api_endpoint">http://rst.prodrb.com/api</string>
+    <string name="title_activity_root_summary_activiey">RootSummaryActiviey</string>
 
 </resources>

@@ -23,12 +23,14 @@ public class tets extends Activity {
         mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
         */
 
+        /*
         findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNav.toggleLeftDrawer();
             }
         });
+        */
 
         View view = findViewById(R.id.lineup);
         view.setOnTouchListener(new FlickTouchListener());
