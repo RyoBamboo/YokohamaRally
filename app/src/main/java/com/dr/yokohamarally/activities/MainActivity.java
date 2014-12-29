@@ -7,13 +7,17 @@
 package com.dr.yokohamarally.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +54,13 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
 
+    /** ドロワーレイアウト */
+    private DrawerLayout mDrawerLayout;
+    /** ドロワー用View */
+    private View mLeftDrawer;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
         //サイドバー機能実装
         mNav = new SimpleSideDrawer(this);
-        //mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
+        mNav.setLeftBehindContentView(R.layout.sidebar_activity);
 
 
         /*-------------------------
@@ -86,6 +97,55 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         //スライド判定リスナー登録
         tabHost.setOnTouchListener(new FlickTouchListener());
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mLeftDrawer = findViewById(R.id.drawer_layout);
+        // ボタンイベント
+        mLeftDrawer.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.closeDrawers(); // ドロワーを閉じる
+            }
+        });
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                supportInvalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        // アプリアイコンのクリック有効化
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // 生成
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // 画面切り替え
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // アプリアイコンタップ
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -124,7 +184,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
      /*-----------------------
           スライド判定処理
      -----------------*/
-
     private class FlickTouchListener implements View.OnTouchListener {
 
         @Override

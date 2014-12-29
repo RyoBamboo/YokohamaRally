@@ -10,6 +10,8 @@
     <string name="title_section3">Section 3</string>
     <string name="title_activity_root_tab">RootTabActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drawer_open">Hello blank fragment</string>
+    <string name="drawer_close">Hello blank fragment</string>
 
     <!-- constants -->
     <string name="constants_api_endpoint">http://rst.prodrb.com/api</string>
