@@ -6,6 +6,6 @@ package com.dr.yokohamarally.core;
 
 public class VolleyApi {
 
-    public static final String GET_ALL_ROOT_URL = "http://rst.prodrb.com/api/get_all_root.php";
+    public static final String GET_ALL_ROOT_URL = "http://yokohamarally.prodrb.com/api/get_all_root.php";
 
 }

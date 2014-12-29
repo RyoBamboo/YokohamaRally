@@ -93,6 +93,8 @@ public class RootSummaryActivity extends ActionBarActivity {
                           ビューの書き換え
                          ----------------*/
                         TextView titleView = (TextView)findViewById(R.id.root_title);
+                        TextView summaryView = (TextView)findViewById(R.id.root_summary);
+                        summaryView.setText(rootSummary);
                         titleView.setText(rootTitle);
 
                         requestImage();
