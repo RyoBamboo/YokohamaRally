@@ -53,13 +53,8 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
     private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
-
-    /** ドロワーレイアウト */
-    private DrawerLayout mDrawerLayout;
-    /** ドロワー用View */
-    private View mLeftDrawer;
-
     private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +62,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         setContentView(R.layout.activity_root_tab);
 
 
-        //サイドバー機能実装
-        mNav = new SimpleSideDrawer(this);
-        mNav.setLeftBehindContentView(R.layout.sidebar_activity);
 
 
         /*-------------------------
@@ -94,59 +86,40 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
 
-        //スライド判定リスナー登録
-        tabHost.setOnTouchListener(new FlickTouchListener());
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mLeftDrawer = findViewById(R.id.drawer_layout);
-        // ボタンイベント
-        mLeftDrawer.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.closeDrawers(); // ドロワーを閉じる
-            }
-        });
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerClosed(View view) {
-                supportInvalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                supportInvalidateOptionsMenu();
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        // アプリアイコンのクリック有効化
+        //サイドバー指定
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //アクションバーカスタム
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //リスナー登録
+        drawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
     }
 
+    //アクションバーメニューセレクト
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+    //アイコンアニメーション
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // 生成
         mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // 画面切り替え
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // アプリアイコンタップ
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     @Override
     public void onTabChanged(String tabId) {
@@ -180,37 +153,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     */
 
 
-
-     /*-----------------------
-          スライド判定処理
-     -----------------*/
-    private class FlickTouchListener implements View.OnTouchListener {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    lastTouchX = event.getX();
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    currentX = event.getX();
-                    if (lastTouchX - currentX < -80) {
-                        //サイドバー表示
-                        mNav.toggleLeftDrawer();
-                    }
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    currentX = event.getX();
-                    if (lastTouchX - currentX < -80) {
-                        //サイドバー表示
-                        mNav.toggleLeftDrawer();
-                    }
-                    break;
-            }
-            return true;
-        }
-    }
 
     public static class BlankFragment extends Fragment implements AdapterView.OnItemClickListener{
 
