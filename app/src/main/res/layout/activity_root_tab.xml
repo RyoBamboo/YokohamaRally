@@ -5,6 +5,11 @@
     android:id="@android:id/tabhost"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -73,6 +78,27 @@
             android:layout_weight="1" />
 
     </LinearLayout>
+    <LinearLayout
+    android:layout_gravity="start"
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+        <ImageView
+            style="@style/title_icon"
+            android:src="@drawable/ookami"
+            android:layout_width="240dp"
+        />
+
+
+
+
+
+    </LinearLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+
 </android.support.v4.app.FragmentTabHost>
 <!--
 <ScrollView

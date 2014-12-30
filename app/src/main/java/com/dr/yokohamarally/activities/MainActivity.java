@@ -7,18 +7,26 @@
 package com.dr.yokohamarally.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TabHost;
 
 import com.android.volley.RequestQueue;
@@ -50,6 +58,8 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
     private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
+    private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +67,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         setContentView(R.layout.activity_root_tab);
 
 
-        //サイドバー機能実装
-        mNav = new SimpleSideDrawer(this);
-        //mNav.setLeftBehindContentView(R.layout.fragment_first_tab);
 
 
         /*-------------------------
@@ -84,14 +91,72 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
 
-        //スライド判定リスナー登録
-        tabHost.setOnTouchListener(new FlickTouchListener());
+
+        //サイドバー指定
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //アクションバーカスタム
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //リスナー登録
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
     }
+
+    //アクションバーメニューセレクト
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                //openSearch();
+                return true;
+            default:
+                return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        }
+
+
+    }
+
+    //アイコンアニメーション
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
 
     @Override
     public void onTabChanged(String tabId) {
         Log.d("onTabChanged", "tabId: " + tabId);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return true;  // アクションビューを折りたたむ為にtrueを返す
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;  // アクションビューを広げる為にtrueを返す
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     /*
@@ -121,38 +186,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     */
 
 
-
-     /*-----------------------
-          スライド判定処理
-     -----------------*/
-
-    private class FlickTouchListener implements View.OnTouchListener {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    lastTouchX = event.getX();
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    currentX = event.getX();
-                    if (lastTouchX - currentX < -80) {
-                        //サイドバー表示
-                        mNav.toggleLeftDrawer();
-                    }
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    currentX = event.getX();
-                    if (lastTouchX - currentX < -80) {
-                        //サイドバー表示
-                        mNav.toggleLeftDrawer();
-                    }
-                    break;
-            }
-            return true;
-        }
-    }
 
     public static class BlankFragment extends Fragment implements AdapterView.OnItemClickListener{
 
