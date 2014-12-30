@@ -11,18 +11,22 @@ import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TabHost;
 
 import com.android.volley.RequestQueue;
@@ -103,7 +107,15 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     //アクションバーメニューセレクト
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                //openSearch();
+                return true;
+            default:
+                return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        }
+
+
     }
 
     //アイコンアニメーション
@@ -124,6 +136,26 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     @Override
     public void onTabChanged(String tabId) {
         Log.d("onTabChanged", "tabId: " + tabId);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return true;  // アクションビューを折りたたむ為にtrueを返す
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;  // アクションビューを広げる為にtrueを返す
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     /*
