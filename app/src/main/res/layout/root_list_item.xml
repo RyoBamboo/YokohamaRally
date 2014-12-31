@@ -11,19 +11,40 @@
     <ImageView
         android:id="@+id/root_image"
         style="@style/title_icon"
-        android:src="@drawable/minato"
-        android:layout_width="140dp"
-        android:layout_height="101dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
         >
 
     </ImageView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#252525"
-        android:id="@+id/title"
-        android:layout_gravity="center_vertical">
-    </TextView>
+    <LinearLayout
+        android:paddingTop="15dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#252525"
+            android:id="@+id/title"
+            android:layout_gravity="center_vertical">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bamboo"
+            android:textColor="#ff4e4e4e"
+            android:textSize="12dp"
+            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical">
+        </TextView>
+        <LinearLayout
+            android:id="@+id/root_rate"
+            android:paddingTop="2dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
     <!--
     <Button
         style="?android:attr/buttonStyleSmall"
