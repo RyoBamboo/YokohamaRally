@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -53,6 +54,22 @@ public class RootAdapter extends ArrayAdapter<Root> {
         // タイトルをセット
         TextView title = (TextView)convertView.findViewById(R.id.title);
         title.setText(root.getTitle());
+
+        // 評価をセット
+        LinearLayout mLinerLayout = (LinearLayout)convertView.findViewById(R.id.root_rate);
+        int rate = root.getRate();
+        for (int i = 1; i <= 5; i++) {
+            ImageView rateImageView = new ImageView(this.getContext());
+            rateImageView.setAdjustViewBounds(true);
+            rateImageView.setMaxWidth(25);
+            if (i <= rate) {
+                rateImageView.setImageResource(R.drawable.star);
+            } else {
+                rateImageView.setImageResource(R.drawable.non_star);
+            }
+            mLinerLayout.addView(rateImageView);
+        }
+
 
         String imageUrl = "http://yokohamarally.prodrb.com/img/" + root.getImageUrl();
 

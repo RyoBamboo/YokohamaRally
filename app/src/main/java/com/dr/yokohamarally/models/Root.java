@@ -5,6 +5,7 @@ public class Root {
     private String title;   // タイトル
     private String summary; // 概要
     private String imageUrl; // 画像URL
+    private int    rate;
 
     public String getTitle() {
         return this.title;
@@ -18,6 +19,10 @@ public class Root {
         return this.imageUrl;
     }
 
+    public int getRate() {
+        return this.rate;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -28,5 +33,9 @@ public class Root {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 }
