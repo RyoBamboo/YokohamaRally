@@ -9,6 +9,7 @@
     android:id="@+id/apage1">
 
     <ImageView
+        android:id="@+id/root_image"
         style="@style/title_icon"
         android:src="@drawable/minato"
         android:layout_width="140dp"
