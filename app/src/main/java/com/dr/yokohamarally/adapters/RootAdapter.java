@@ -1,6 +1,8 @@
 package com.dr.yokohamarally.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,11 @@ public class RootAdapter extends ArrayAdapter<Root> {
 
         // 対応する行のオブジェクトを取得
         Root root = (Root)getItem(position);
+
+        // 背景色設定
+        //convertView.setBackgroundColor(Color.rgb(255, 255, 255));
+
+        convertView.setBackgroundResource(R.drawable.round_corner_list);
 
         // タイトルをセット
         TextView title = (TextView)convertView.findViewById(R.id.title);
