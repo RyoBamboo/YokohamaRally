@@ -9,6 +9,7 @@
     android:id="@+id/apage1">
 
     <ImageView
+        android:id="@+id/root_image"
         style="@style/title_icon"
         android:src="@drawable/minato"
         android:layout_width="140dp"
@@ -19,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="みなとみらいスタンプラリー"
+        android:textColor="#252525"
         android:id="@+id/title"
         android:layout_gravity="center_vertical">
     </TextView>

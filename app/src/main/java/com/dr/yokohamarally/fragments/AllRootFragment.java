@@ -76,8 +76,10 @@ public class AllRootFragment extends Fragment{
                         JSONObject json_root = json_roots.getJSONObject(i);
 
                         String title = json_root.getString("title");
+                        String imageUrl = json_root.getString("image_url");
                         Root root = new Root();
                         root.setTitle(title);
+                        root.setImageUrl(imageUrl);
 
                         _roots.add(root);
                     }
