@@ -33,6 +33,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.fragments.AllRootFragment;
 import com.dr.yokohamarally.models.Root;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
@@ -77,15 +78,20 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
         // TabSpecの設定
         tabSpec1 = tabHost.newTabSpec("tab1");
-        tabSpec1.setIndicator("tab1");
+        tabSpec1.setIndicator("人気順");
         // TabHostに追加
-        tabHost.addTab(tabSpec1, BlankFragment.class, null);
+        tabHost.addTab(tabSpec1, AllRootFragment.class, null);
 
         // TabSpecの設定
         tabSpec2 = tabHost.newTabSpec("tab2");
-        tabSpec2.setIndicator("tab2");
+        tabSpec2.setIndicator("新着順");
         // TabHostに追加
-        tabHost.addTab(tabSpec2, BlankFragment.class, null);
+        tabHost.addTab(tabSpec2, AllRootFragment.class, null);
+
+        tabSpec3 = tabHost.newTabSpec("tab2");
+        tabSpec3.setIndicator("おすすめ");
+        // TabHostに追加
+        tabHost.addTab(tabSpec3, AllRootFragment.class, null);
 
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
