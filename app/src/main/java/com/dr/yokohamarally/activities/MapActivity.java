@@ -8,8 +8,10 @@ import com.dr.yokohamarally.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends Activity {
 
@@ -67,6 +69,25 @@ public class MapActivity extends Activity {
 
         // 地図の中心の変更する
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camerapos));
+
+        makePin(longitude,latitude,"横浜駅","第一スポット");
+
+    }
+
+
+    public void makePin(double x,double y,String title , String snippet){
+
+        // オプション設定
+        MarkerOptions options = new MarkerOptions();
+        // 緯度・経度
+        options.position(new LatLng(x, y));
+        // タイトル・スニペット
+        options.title(title);
+        options.snippet(snippet);
+        // マーカーを貼り付け
+        googleMap.addMarker(options);
+
+
     }
 
 }

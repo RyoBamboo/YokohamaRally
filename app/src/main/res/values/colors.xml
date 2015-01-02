@@ -2,4 +2,7 @@
 <resources>
     <color name="start_color">#e56200</color>
     <color name="end_color">#FFE1CC</color>
+    <color name="main_color">#ff0000</color>
+    <color name="white">#ffffff</color>
+    <color name="light_blue">#ffe1cc</color>
 </resources>
