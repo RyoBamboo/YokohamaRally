@@ -1,5 +1,7 @@
 package com.dr.yokohamarally.activities;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -25,7 +28,7 @@ import org.json.JSONObject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class RootSummaryActivity extends ActionBarActivity {
+public class RootSummaryActivity extends Activity {
 
     private RequestQueue myQueue;
     private int rootId;
@@ -34,6 +37,7 @@ public class RootSummaryActivity extends ActionBarActivity {
      * 概要ページ用変数
      *-----------------------*/
     private String rootTitle;
+    private int    rootRate;
     private String rootSummary;
     private String imageUrl;
 
@@ -41,6 +45,10 @@ public class RootSummaryActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root_summary_activiey);
+
+        ActionBar actionBar = getActionBar();
+        System.out.println(actionBar);
+
 
         Intent intent = getIntent();
         rootId = intent.getIntExtra("rootId", 0);
@@ -75,6 +83,8 @@ public class RootSummaryActivity extends ActionBarActivity {
 
                                 rootTitle = json_root.getString("title");
                                 rootSummary = json_root.getString("summary");
+                                rootRate = json_root.getInt("rate");
+                                System.out.println(rootRate);
                                 imageUrl = "http://yokohamarally.prodrb.com/img/" + json_root.getString("image_url");
                             }
 
@@ -97,6 +107,22 @@ public class RootSummaryActivity extends ActionBarActivity {
                         summaryView.setText(rootSummary);
                         titleView.setText(rootTitle);
 
+                        // TODO: さすがにごり押しすぎ・・・リファクタリング必須
+                        // 評価の表示
+                        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.root_rate);
+                        for (int i = 1; i <= 5; i++) {
+                            ImageView rateImageView = new ImageView(getBaseContext());
+                            rateImageView.setAdjustViewBounds(true);
+                            rateImageView.setMaxWidth(40);
+                            if (i <= rootRate) {
+                                rateImageView.setImageResource(R.drawable.star);
+                            } else {
+                                rateImageView.setImageResource(R.drawable.non_star);
+                            }
+                            linearLayout.addView(rateImageView);
+                        }
+
+
                         requestImage();
                     }
                 },
@@ -111,9 +137,6 @@ public class RootSummaryActivity extends ActionBarActivity {
                     }
 
                 }));
-
-
-
     }
 
 
