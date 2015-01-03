@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- トップ画像 -->
         <ImageView
             android:id="@+id/root_image"
             android:layout_width="match_parent"
@@ -17,10 +18,13 @@
             android:scaleType="fitXY"
             />
 
+        <!-- コンテンツ内容 -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+            <!-- タイトル、投稿者、評価 -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,6 +49,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
+
+            <!-- ボタン -->
             <LinearLayout
                 android:orientation="vertical"
                 android:paddingTop="12dp"
@@ -68,6 +74,15 @@
                     android:layout_height="27dp" />
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- チェックポイント画像 -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/point_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- 概要 -->
             <TextView
                 android:padding="12dp"
                 android:textColor="#222222"

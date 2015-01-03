@@ -89,9 +89,11 @@ public class RootSummaryActivity extends Activity {
                             }
 
                             JSONArray json_points = response.getJSONArray("points");
+                            String[] pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 System.out.println(json_point);
+                                pointImageUrls[i] = json_point.getString("imageUrl");
                             }
 
                             // adapterに反映、追加
@@ -121,6 +123,9 @@ public class RootSummaryActivity extends Activity {
                             }
                             linearLayout.addView(rateImageView);
                         }
+
+                        // TODO:さすがにごり押しすぎ・・・リファクタリング必須
+                        // チェックポイントの表示
 
 
                         requestImage();
