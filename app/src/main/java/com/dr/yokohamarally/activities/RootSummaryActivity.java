@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,6 +26,10 @@ import com.dr.yokohamarally.models.Root;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -40,6 +45,7 @@ public class RootSummaryActivity extends Activity {
     private int    rootRate;
     private String rootSummary;
     private String imageUrl;
+    private String[] pointImageUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +95,11 @@ public class RootSummaryActivity extends Activity {
                             }
 
                             JSONArray json_points = response.getJSONArray("points");
-                            String[] pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
+                            pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 System.out.println(json_point);
-                                pointImageUrls[i] = json_point.getString("imageUrl");
+                                pointImageUrls[i] = json_point.getString("image_url");
                             }
 
                             // adapterに反映、追加
@@ -125,10 +131,13 @@ public class RootSummaryActivity extends Activity {
                         }
 
                         // TODO:さすがにごり押しすぎ・・・リファクタリング必須
-                        // チェックポイントの表示
+                        // チェックポイント画像の表示
+                        for (int i = 0; i < pointImageUrls.length; i++) {
+                            requestPointImage(i);
+                        }
 
-
-                        requestImage();
+                        // ルート画像の取得
+                        requestTopImage();
                     }
                 },
                 new Response.ErrorListener()
@@ -146,7 +155,7 @@ public class RootSummaryActivity extends Activity {
 
 
 
-    private void requestImage() {
+    private void requestTopImage() {
         // ImageViewの取得
         final ImageView imageView = (ImageView)findViewById(R.id.root_image);
 
@@ -173,6 +182,42 @@ public class RootSummaryActivity extends Activity {
         myQueue.add(request);
         myQueue.start();
     }
+
+
+    private void requestPointImage(int i) {
+        String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
+        final ImageView imageView = new ImageView(getBaseContext());
+        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.point_img);
+
+        ImageRequest request = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                public void onResponse(Bitmap response) {
+                        imageView.setImageBitmap(response);
+
+                        imageView.setMaxWidth(170);
+                        imageView.setMinimumHeight(170);
+                        imageView.setAdjustViewBounds(true);
+                        imageView.setPadding(0, 20, 10, 0);
+                        linearLayout.addView(imageView);
+                    }
+                },
+                0,
+                0,
+                Bitmap.Config.ARGB_8888,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        myQueue.add(request);
+        myQueue.start();
+    }
+
 
 
     @Override

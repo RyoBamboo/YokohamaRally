@@ -3,6 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.dr.yokohamarally.activities.RootSummaryActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,6 +35,7 @@
                 android:padding="12dp">
                 <TextView
                     android:id="@+id/root_title"
+                    android:paddingTop="3dp"
                     android:textSize="17dp"
                     android:textColor="#ff101010"
                     android:layout_width="wrap_content"
@@ -76,18 +80,66 @@
             </LinearLayout>
 
             <!-- チェックポイント画像 -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="チェックポイント"
+                android:textSize="16dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="16dp"
+                android:textColor="#222222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="26dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="12dp"
+                android:background="#ff424242"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"/>
+
+            </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:id="@+id/point_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- 概要 -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="コース概要"
+                    android:textSize="16dp"
+                    android:paddingTop="21dp"
+                    android:paddingLeft="12dp"
+                    android:textColor="#222222"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="12dp"
+                    android:background="#ff424242"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"/>
+
+            </LinearLayout>
             <TextView
-                android:padding="12dp"
-                android:textColor="#222222"
+                android:paddingTop="5dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="12dp"
+                android:textColor="#ff292929"
                 android:id="@+id/root_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
     </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
