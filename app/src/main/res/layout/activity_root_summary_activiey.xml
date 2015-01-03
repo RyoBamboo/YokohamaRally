@@ -68,9 +68,11 @@
                     android:layout_height="27dp" />
                 </LinearLayout>
             </LinearLayout>
+            <TextView
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:id="@+id/root_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
     </LinearLayout>
-    <TextView
-        android:id="@+id/root_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </RelativeLayout>
