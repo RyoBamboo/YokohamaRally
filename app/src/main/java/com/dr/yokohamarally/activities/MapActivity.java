@@ -3,6 +3,9 @@ package com.dr.yokohamarally.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dr.yokohamarally.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +14,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends Activity {
@@ -25,28 +29,50 @@ public class MapActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity_main);
 
+        //横浜駅の座標取得
+        longitude = 35.466188;
+        latitude = 139.622715;
+
+
         // MapFragmentオブジェクトを取得
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
+        // GoogleMapオブジェクトの取得
+        googleMap = mapFragment.getMap();
 
-        try {
-            // GoogleMapオブジェクトの取得
-            googleMap = mapFragment.getMap();
+        if (googleMap != null) {
+            // InfoWindowAdapter設定
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoContents(Marker marker) {
+                    View view = getLayoutInflater().inflate(R.layout.info_window, null);
+                    // タイトル設定
+                    TextView title = (TextView)view.findViewById(R.id.info_title);
+                    title.setText(marker.getTitle());
+                    // 画像設定
+                    ImageView img = (ImageView)view.findViewById(R.id.info_image);
+                    img.setImageResource(R.drawable.ookami);
+                    return view;
+                }
 
-            // Activityが初回で生成されたとき
-            if (savedInstanceState == null) {
-
-                // MapFragmentのオブジェクトをセット
-                mapFragment.setRetainInstance(true);
-
-                // 地図の初期設定を行うメソッドの呼び出し
-                mapInit();
-            }
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            });
         }
-        // GoogleMapが使用不可のときのためにtry catchで囲っています。
-        catch (Exception e) {
+        // Activityが初回で生成されたとき
+        if (savedInstanceState == null) {
+
+            // MapFragmentのオブジェクトをセット
+            mapFragment.setRetainInstance(true);
+
+            // 地図の初期設定を行うメソッドの呼び出し
+            mapInit();
         }
     }
+
 
     // 地図の初期設定メソッド
     private void mapInit() {
@@ -58,9 +84,7 @@ public class MapActivity extends Activity {
         googleMap.setMyLocationEnabled(true);
 
 
-        //横浜駅の座標取得
-        longitude = 35.466188;
-        latitude = 139.622715;
+
 
 
         // カメラ位置設定
@@ -71,6 +95,9 @@ public class MapActivity extends Activity {
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camerapos));
 
         makePin(longitude,latitude,"横浜駅","第一スポット");
+        makePin(longitude+1,latitude,"横駅","第一スポット");
+        makePin(longitude+2,latitude,"浜駅","第一スポット");
+        makePin(longitude+3,latitude,"横浜","第一スポット");
 
     }
 
@@ -89,5 +116,7 @@ public class MapActivity extends Activity {
 
 
     }
+
+
 
 }
