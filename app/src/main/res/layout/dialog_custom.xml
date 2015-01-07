@@ -15,7 +15,7 @@
         android:background="@drawable/bg_dialog"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        >
+        android:weightSum="1">
 
         <!-- タイトル -->
         <TextView
@@ -41,7 +41,16 @@
             android:textColor="#333333"
             />
 
+        <ImageView
+            android:id="@+id/detail_img"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:scaleType="fitXY"
+            />
+
+
         <!-- OK ボタン -->
+
         <Button
             android:id="@+id/positive_button"
             android:layout_width="wrap_content"

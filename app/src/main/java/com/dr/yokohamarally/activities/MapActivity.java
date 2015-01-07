@@ -21,7 +21,7 @@ public class MapActivity extends Activity {
 
     // GoogleMapオブジェクトの宣言
     private GoogleMap googleMap;
-    double latitude, longitude;
+    double latitude, longitude,min_x,max_x,min_y,max_y,middle_x,middle_y,sub_x,sub_y;
 
     @SuppressLint("NewApi")
     @Override
@@ -94,10 +94,42 @@ public class MapActivity extends Activity {
         // 地図の中心の変更する
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camerapos));
 
+
+
+/*//////中心とるための準備
+
+//        min_x = 120.0;
+//        max_x = 140.0;
+//        min_y = 10.0;
+//        max_y = 40.0;
+//
+//        for(int i= 0; i < vi.length + 1 ; i++ ){
+//            if(vi[i] > max_x  )max_x = vi[i];
+//            if(vi[i] > min_x  )min_x = vi[i];
+//            if(vi[i] > max_y  )max_y = vi[i];
+//            if(vi[i] > min_y  )min_y = vi[i];
+//        }
+//
+//        middle_x = (max_x + min_x ) / 2;
+//        middle_y = (max_y + min_y ) / 2;
+//        sub_x = max_x - min_x;
+//        sub_y = max_y - min_y;
+//
+//
+//        // カメラ位置設定
+//        CameraPosition camerapos = new CameraPosition.Builder()
+//                .target(new LatLng(middle_x, middle_y)).zoom(13f).build();
+//
+//        // 地図の中心の変更する
+//        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camerapos));
+*/
+
+
         makePin(longitude,latitude,"横浜駅","第一スポット");
         makePin(longitude+1,latitude,"横駅","第一スポット");
         makePin(longitude+2,latitude,"浜駅","第一スポット");
         makePin(longitude+3,latitude,"横浜","第一スポット");
+
 
     }
 
