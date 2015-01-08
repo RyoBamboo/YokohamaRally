@@ -2,6 +2,7 @@ package com.dr.yokohamarally.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,10 +24,12 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.models.Root;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -160,11 +165,12 @@ public class RootSummaryActivity extends Activity {
         final ImageView imageView = (ImageView)findViewById(R.id.root_image);
 
         ImageRequest request = new ImageRequest(
-            imageUrl,
+                imageUrl,
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap response) {
                         imageView.setImageBitmap(response);
+                        System.out.println(imageView.getWidth());
                     }
                 },
                 // 最大の幅、指定無しは0
@@ -185,7 +191,7 @@ public class RootSummaryActivity extends Activity {
 
 
     private void requestPointImage(int i) {
-        String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
+        final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
         final ImageView imageView = new ImageView(getBaseContext());
         final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.point_img);
 
@@ -193,7 +199,7 @@ public class RootSummaryActivity extends Activity {
                 url,
                 new Response.Listener<Bitmap>() {
                     @Override
-                public void onResponse(Bitmap response) {
+                    public void onResponse(Bitmap response) {
                         imageView.setImageBitmap(response);
 
                         imageView.setMaxWidth(170);
@@ -213,6 +219,17 @@ public class RootSummaryActivity extends Activity {
                     }
                 }
         );
+        imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                // ダイアログを表示する
+                DialogFragment newFragment = new ImagePopup(url,rootId);
+                newFragment.show(getFragmentManager(), "test1");
+
+            }
+        });
 
         myQueue.add(request);
         myQueue.start();
