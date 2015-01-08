@@ -68,14 +68,16 @@
                     android:textColor="#ffffff"
                     android:background="#77a175"
                     android:layout_width="100dp"
-                    android:layout_height="27dp" />
+                    android:layout_height="27dp"
+                    android:id="@+id/map_button"/>
                 <Button
                     android:text="コースに挑戦"
                     android:textSize="14dp"
                     android:textColor="#ffffff"
                     android:background="#00a0e9"
                     android:layout_width="100dp"
-                    android:layout_height="27dp" />
+                    android:layout_height="27dp"
+                    android:id="@+id/try_button"/>
                 </LinearLayout>
             </LinearLayout>
 
