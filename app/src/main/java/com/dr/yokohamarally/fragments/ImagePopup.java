@@ -35,8 +35,8 @@ public class ImagePopup extends DialogFragment {
     int mid;
     private RequestQueue myQueue;
 
-    public ImagePopup(String turl, int id){
-        mUrl = turl;
+    public ImagePopup(String url, int id){
+        mUrl = url;
         mid  = id;
     }
 
@@ -86,18 +86,20 @@ public class ImagePopup extends DialogFragment {
                     public void onResponse(JSONObject response)
                     {
                         final ImageView imageView = (ImageView)view.findViewById(R.id.detail_img);
-                        Log.d("check" , mUrl + "this!");
+                        Log.d("check" , mUrl);
                         ImageRequest request = new ImageRequest(
                                 mUrl,
                                 new Response.Listener<Bitmap>() {
                                     @Override
                                     public void onResponse(Bitmap response) {
                                         imageView.setImageBitmap(response);
+                                        System.out.println(imageView.getWidth());
+
                                     }
                                 },
                                 // 最大の幅、指定無しは0
-                                0,
-                                0,
+                                90,
+                                70,
                                 Bitmap.Config.ARGB_8888,
                                 new Response.ErrorListener() {
                                     @Override
@@ -124,6 +126,7 @@ public class ImagePopup extends DialogFragment {
                     }
 
                 }));
+
 
         return dialog;
     }
