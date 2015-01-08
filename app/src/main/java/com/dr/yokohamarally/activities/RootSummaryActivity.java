@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +53,9 @@ public class RootSummaryActivity extends Activity {
     private String imageUrl;
     private String[] pointImageUrls;
 
+
+    private Button mapButton,tryButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +82,25 @@ public class RootSummaryActivity extends Activity {
         buf.append(params);
         String uri = buf.toString();
         System.out.println(uri);
+        mapButton = (Button)findViewById(R.id.map_button);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RootSummaryActivity.this, MapActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        tryButton = (Button)findViewById(R.id.try_button);
+        tryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RootSummaryActivity.this, TryActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
         myQueue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>()
