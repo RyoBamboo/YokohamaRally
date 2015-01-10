@@ -87,6 +87,7 @@ public class RootSummaryActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RootSummaryActivity.this, MapActivity.class);
+                intent.putExtra("rootId", rootId);
                 startActivity(intent);
 
             }
