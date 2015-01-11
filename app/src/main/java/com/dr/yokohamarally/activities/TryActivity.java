@@ -1,11 +1,16 @@
 package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,6 +20,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.fragments.ImagePopup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,12 +79,24 @@ public class TryActivity extends Activity {
                                 imageUrl = "http://yokohamarally.prodrb.com/img/" + json_root.getString("image_url");
                             }
 
+                            JSONArray json_points = response.getJSONArray("points");
+                            pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
+                            for (int i = 0; i < json_points.length(); i++) {
+                                JSONObject json_point = json_points.getJSONObject(i);
+                                pointImageUrls[i] = json_point.getString("image_url");
+                            }
+
                         } catch (Exception e) {
 
                         }
 
                         // トップ画像の取得
                         requestTopImage();
+
+                        // チェックポイントの表示
+                        for (int i = 0; i < pointImageUrls.length; i++) {
+                            requestCheckPoint(i);
+                        }
 
                     }
                 },
@@ -102,10 +120,59 @@ public class TryActivity extends Activity {
                     @Override
                     public void onResponse(Bitmap response) {
                         imageView.setImageBitmap(response);
-                        System.out.println(imageView.getWidth());
                     }
                 },
                 // 最大の幅、指定無しは0
+                0,
+                0,
+                Bitmap.Config.ARGB_8888,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error);
+                    }
+                }
+        );
+
+        mQueue.add(request);
+        mQueue.start();
+    }
+
+
+    // TODO: かなり無理やりリファクタリング必須
+    private void requestCheckPoint(int i) {
+        final LinearLayout parentLinearLayout = (LinearLayout)findViewById(R.id.checkpoints);
+        final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
+        final ImageView mImageView = new ImageView(this);
+
+        ImageRequest request = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        final LinearLayout childLinearLayout = new LinearLayout(getBaseContext());
+                        childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        mImageView.setImageBitmap(response);
+                        mImageView.setPadding(0, 20, 10, 0);
+                        childLinearLayout.addView(mImageView);
+                        Button pictureButton = new Button(getBaseContext());
+                        pictureButton.setText("写真をとる");
+
+                        pictureButton.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(TryActivity.this, CameraActivity.class);
+                                startActivity(intent);
+
+                            }
+                        });
+
+
+                        childLinearLayout.addView(pictureButton);
+                        parentLinearLayout.addView(childLinearLayout);
+                    }
+                },
                 0,
                 0,
                 Bitmap.Config.ARGB_8888,
