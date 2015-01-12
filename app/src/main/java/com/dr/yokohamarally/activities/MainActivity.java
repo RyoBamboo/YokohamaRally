@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.AllRootFragment;
+import com.dr.yokohamarally.fragments.GpsService;
 import com.dr.yokohamarally.models.Root;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
@@ -106,6 +107,10 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         drawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        startService(new Intent(MainActivity.this, GpsService.class));
+
+
 
 
     }
