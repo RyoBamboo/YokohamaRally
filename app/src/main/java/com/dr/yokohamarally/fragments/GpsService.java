@@ -59,7 +59,10 @@ public class GpsService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        sendNotification();
+        String message = ("LocationEx>"+
+                "緯度:"+location.getLatitude()+
+                "経度:"+location.getLongitude());
+        sendNotification(message);
     }
 
     @Override
@@ -75,7 +78,8 @@ public class GpsService extends Service implements LocationListener {
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
-    private void sendNotification() {
+    private void sendNotification(String message) {
+
         if(number!=0)return;
         mManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         Notification n = new Notification();
@@ -86,7 +90,7 @@ public class GpsService extends Service implements LocationListener {
         n.tickerText = "YOKOHAMA スタンプラリー";
         n.number = number;
 
-        n.setLatestEventInfo(getApplicationContext(), "YOKOHAMA スタンプラリー"+ count, "挑戦中のスポットに到着しました", pi);
+        n.setLatestEventInfo(getApplicationContext(), "YOKOHAMA スタンプラリー"+ count, message, pi);
 
         mManager.notify(number, n);
         number++;
