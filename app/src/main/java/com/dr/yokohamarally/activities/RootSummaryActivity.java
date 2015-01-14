@@ -4,8 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -97,9 +99,15 @@ public class RootSummaryActivity extends Activity {
         tryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // ルートidを挑戦中のルートidとして登録
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                sp.edit().putInt("rootId", rootId).commit();
+
+
+                // 画面の遷移
                 Intent intent = new Intent(RootSummaryActivity.this, TryActivity.class);
                 startActivity(intent);
-
             }
         });
 

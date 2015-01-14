@@ -30,6 +30,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.CameraActivity"
+            android:label="Yokohamarally"/>
+        <activity
             android:name=".activities.SubActivity"
             android:label="@string/app_name" />
         <activity
