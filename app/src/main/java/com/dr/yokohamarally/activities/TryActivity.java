@@ -30,10 +30,12 @@ public class TryActivity extends Activity {
     private RequestQueue mQueue;
 
     /*-------------------------
-    * 概要ページ用変数
+    * 変数
     *-----------------------*/
-    private String rootTitle;
+    private int    rootId;
+    private String[]  checkedPointIds;
     private int    rootRate;
+    private String rootTitle;
     private String rootSummary;
     private String imageUrl;
     private String[] pointImageUrls;
@@ -43,11 +45,17 @@ public class TryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
-        /*--------------------------------
-         * サンプルのため、ここでデータを格納
-         *------------------------------*/
+        /*--------------------------------------------------
+         * 挑戦中のルートIDと達成したチェックポイントのIDを取得
+         *------------------------------------------------*/
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        sp.edit().putInt("rootId", 1).commit(); // 挑戦中のルートID
+        rootId = sp.getInt("rootId", 0);
+
+        /*--------------------------------------------------------
+         * TODO: サンプルとしてチェックポイント1, 2をクリア済みに設定
+         *------------------------------------------------------*/
+        checkedPointIds = new String[] {"1", "2"};
+        saveArrayToSharedPreference(checkedPointIds, "checkedPoints");
 
 
         /*--------------------------------
@@ -186,6 +194,40 @@ public class TryActivity extends Activity {
 
         mQueue.add(request);
         mQueue.start();
+    }
+
+
+    /*---------------------------------------------------------
+     * SharedPreferenceに配列の保存と読み込みを可能にする関数。
+     * TODO: できれば他のクラスからも参照できるようにリファクタリングしたい
+     *-------------------------------------------------------*/
+    public void saveArrayToSharedPreference(String[] array, String key) {
+
+        // ','をキーとして連結
+        StringBuffer buffer = new StringBuffer();
+        for (String value : array) {
+            buffer.append(value + ",");
+        }
+
+        String stringItem = null;
+        if (buffer != null) {
+            String buf = buffer.toString();
+            stringItem = buf.substring(0, buf.length() - 1);
+
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            sp.edit().putString(key, stringItem).commit();
+        }
+    }
+
+    public String[] getArrayFromSharedPreference(String key) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String stringItem = sp.getString(key, "");
+        if (stringItem != null && stringItem.length() != 0) {
+            return  stringItem.split(",");
+        }
+
+        return null;
     }
 
 }
