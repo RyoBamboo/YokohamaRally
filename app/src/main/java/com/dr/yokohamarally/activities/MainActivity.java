@@ -111,6 +111,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        //サービス開始
         startService(new Intent(MainActivity.this, GpsService.class));
 
 
