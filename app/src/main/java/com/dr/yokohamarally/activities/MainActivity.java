@@ -70,7 +70,14 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         setContentView(R.layout.activity_root_tab);
 
 
-
+        /*------------------------
+         * ログインしているか確認する
+         * 現在は強制的にLoginActivityへ
+        /*----------------------*/
+        if (LoginActivity.isLogin() == false) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
 
         /*-------------------------
