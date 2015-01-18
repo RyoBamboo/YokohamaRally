@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.dr.yokohamarally.activities.LoginActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 登録/ログインボタン -->
+        <Button
+            android:layout_marginBottom="8dp"
+            android:text="Facebookで登録/ログイン"
+            android:textSize="16dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/round_corner_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/facebook_login_button"/>
+        <Button
+            android:layout_marginBottom="8dp"
+            android:text="Twitterで登録/ログイン"
+            android:textSize="16dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/round_corner_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/twitter_login_button"/>
+        <Button
+            android:layout_marginBottom="8dp"
+            android:text="メールアドレスで登録/ログイン"
+            android:textSize="16dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/round_corner_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/email_login_button"/>
+    </LinearLayout>
+
+</RelativeLayout>
