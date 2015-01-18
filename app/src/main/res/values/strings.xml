@@ -18,5 +18,7 @@
     <string name="constants_api_endpoint">http://rst.prodrb.com/api</string>
     <string name="title_activity_root_summary_activiey">RootSummaryActiviey</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login_by_email">LoginByEmail</string>
+    <string name="title_activity_login_activiry">LoginActiviry</string>
 
 </resources>
