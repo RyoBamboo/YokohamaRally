@@ -118,31 +118,6 @@ public class tets extends Activity
         count++;
 
 
-        /*
-// ロケーションマネージャの取得
-LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-// 最適な位置情報プロバイダの選択
-// Criteriaを変更することで，各種設定変更可能
-String bs = lm.getBestProvider(new Criteria(), true);
 
-Location locate = lm.getLastKnownLocation(bs);
-if(locate == null){
-        // 現在地が取得できなかった場合，GPSで取得してみる
-        locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        if(locate == null){
-        // 現在地が取得できなかった場合，無線測位で取得してみる
-        locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        locate = null;
-        if(locate != null){ // 現在地情報取得成功
-        // 緯度の取得
-        int latitude=(int)(locate.getLatitude()*1e6);
-        // 経度の取得
-        int longitude=(int)(locate.getLongitude()*1e6);
-        Log.d("MYTAG",String.valueOf(latitude));
-        Log.d("MYTAG",String.valueOf(longitude));
-        }
-*/
     }
 }

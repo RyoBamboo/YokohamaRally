@@ -2,15 +2,21 @@ package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,7 +26,9 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.fragments.TryInformation;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +58,7 @@ public class TryActivity extends Activity {
          *------------------------------------------------*/
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         rootId = sp.getInt("rootId", 0);
+        Log.d("MYTAG",rootId + "");
 
         /*--------------------------------------------------------
          * TODO: サンプルとしてチェックポイント1, 2をクリア済みに設定
@@ -68,6 +77,7 @@ public class TryActivity extends Activity {
         buf.append(url);
         buf.append(params);
         String uri = buf.toString();
+
 
         mQueue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>()
@@ -118,6 +128,9 @@ public class TryActivity extends Activity {
 
     }
 
+
+
+
     private void requestTopImage() {
         // ImageViewの取得
         final ImageView imageView = (ImageView)findViewById(R.id.root_image);
@@ -148,10 +161,17 @@ public class TryActivity extends Activity {
 
 
     // TODO: かなり無理やりリファクタリング必須
-    private void requestCheckPoint(int i) {
+    protected void requestCheckPoint(int i) {
         final LinearLayout parentLinearLayout = (LinearLayout)findViewById(R.id.checkpoints);
         final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
         final ImageView mImageView = new ImageView(this);
+        //写真の順番番号
+        final int number = i;
+        SharedPreferences check = PreferenceManager.getDefaultSharedPreferences(this);
+        //写真のID
+        final int pictureId = check.getInt("pictureId", -1);
+
+
 
         ImageRequest request = new ImageRequest(
                 url,
@@ -161,17 +181,56 @@ public class TryActivity extends Activity {
                         final LinearLayout childLinearLayout = new LinearLayout(getBaseContext());
                         childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
                         mImageView.setImageBitmap(response);
+                        if(TryInformation.reaching[number] == 1 )mImageView.setImageBitmap(TryInformation.holdedBitmap[number]);
                         mImageView.setPadding(0, 20, 10, 0);
                         childLinearLayout.addView(mImageView);
+                        mImageView.setId(number);
+
                         Button pictureButton = new Button(getBaseContext());
+                        pictureButton.setId(number);
                         pictureButton.setText("写真をとる");
 
                         pictureButton.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
+
+
+                                // ロケーションマネージャの取得
+                                LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                                // 最適な位置情報プロバイダの選択
+                                // Criteriaを変更することで，各種設定変更可能
+                                String bs = lm.getBestProvider(new Criteria(), true);
+
+                                Location locate = lm.getLastKnownLocation(bs);
+                                if(locate == null){
+                                    // 現在地が取得できなかった場合，GPSで取得してみる
+                                    locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                }
+                                if(locate == null){
+                                    // 現在地が取得できなかった場合，無線測位で取得してみる
+                                    locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                }
+                                if(locate != null){ // 現在地情報取得成功
+                                    // 緯度の取得
+                                    double latitude=(locate.getLatitude());
+                                    // 経度の取得
+                                    double longitude=(locate.getLongitude());
+                                    Log.d("MYTAG", String.valueOf(latitude));
+                                    Log.d("MYTAG",String.valueOf(longitude));
+                                }
+                                if(locate == null){
+                                    Log.d("MYTAG","no!");
+
+                                }
+
+
+                                // 到達をtrueにする
+                                TryInformation.reaching[number] = 1;
                                 Intent intent = new Intent(TryActivity.this, CameraActivity.class);
+                                intent.putExtra("reachingNumber", number);
                                 startActivity(intent);
+
 
                             }
                         });
