@@ -1,6 +1,7 @@
 package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.fragments.TryInformation;
+import android.content.DialogInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +49,9 @@ public class TryActivity extends Activity {
     private String rootTitle;
     private String rootSummary;
     private String imageUrl;
+    private double[] pointLatitude;
+    private String[] pointImageTitle;
+    private double[] pointLongitude;
     private String[] pointImageUrls;
 
     @Override
@@ -102,6 +108,9 @@ public class TryActivity extends Activity {
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 pointImageUrls[i] = json_point.getString("image_url");
+                                pointImageTitle[i] = json_point.getString("name");
+                                pointLatitude[i] = json_point.getDouble("latitude");
+                                pointLongitude[i] = json_point.getDouble("longitude");
                             }
 
                         } catch (Exception e) {
@@ -195,41 +204,70 @@ public class TryActivity extends Activity {
                             @Override
                             public void onClick(View v) {
 
+                                // GPS機能設定の状態を取得
+                                String GpsStatus = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
 
-                                // ロケーションマネージャの取得
-                                LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                                // 最適な位置情報プロバイダの選択
-                                // Criteriaを変更することで，各種設定変更可能
-                                String bs = lm.getBestProvider(new Criteria(), true);
+                                if (GpsStatus.indexOf("gps", 0) < 0) {
 
-                                Location locate = lm.getLastKnownLocation(bs);
-                                if(locate == null){
-                                    // 現在地が取得できなかった場合，GPSで取得してみる
-                                    locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    //GPSが無効だった場合
+                                    AlertDialog.Builder ad = new AlertDialog.Builder(TryActivity.this);
+                                    ad.setMessage("GPS機能がOFFになっています。\n設定画面を開きますか？");
+                                    ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            //設定画面を呼び出す
+                                            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                            startActivity(intent);
+
+                                        }
+                                    });
+                                    ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int whichButton) {
+                                            //何もしない
+                                        }
+                                    });
+                                    ad.create();
+                                    ad.show();
+                                } else {
+                                    //GPSが有効だった場合
+
+                                    // ロケーションマネージャの取得
+                                    LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                                    // 最適な位置情報プロバイダの選択
+                                    // Criteriaを変更することで，各種設定変更可能
+                                    String bs = lm.getBestProvider(new Criteria(), true);
+
+                                    Location locate = lm.getLastKnownLocation(bs);
+                                    if(locate == null){
+                                        // 現在地が取得できなかった場合，GPSで取得してみる
+                                        locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    }
+                                    if(locate == null){
+                                        // 現在地が取得できなかった場合，無線測位で取得してみる
+                                        locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                    }
+                                    if(locate != null){ // 現在地情報取得成功
+                                        // 緯度の取得
+                                        double latitude=(locate.getLatitude());
+                                        // 経度の取得
+                                        double longitude=(locate.getLongitude());
+                                        Log.d("MYTAG", String.valueOf(latitude));
+                                        Log.d("MYTAG",String.valueOf(longitude));
+                                    }
+                                    if(locate == null){
+                                        Log.d("MYTAG","no!");
+
+                                    }
+
+
+                                    // 到達をtrueにする
+                                    TryInformation.reaching[number] = 1;
+                                    Intent intent = new Intent(TryActivity.this, CameraActivity.class);
+                                    intent.putExtra("reachingNumber", number);
+                                    startActivity(intent);
                                 }
-                                if(locate == null){
-                                    // 現在地が取得できなかった場合，無線測位で取得してみる
-                                    locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                }
-                                if(locate != null){ // 現在地情報取得成功
-                                    // 緯度の取得
-                                    double latitude=(locate.getLatitude());
-                                    // 経度の取得
-                                    double longitude=(locate.getLongitude());
-                                    Log.d("MYTAG", String.valueOf(latitude));
-                                    Log.d("MYTAG",String.valueOf(longitude));
-                                }
-                                if(locate == null){
-                                    Log.d("MYTAG","no!");
-
-                                }
 
 
-                                // 到達をtrueにする
-                                TryInformation.reaching[number] = 1;
-                                Intent intent = new Intent(TryActivity.this, CameraActivity.class);
-                                intent.putExtra("reachingNumber", number);
-                                startActivity(intent);
+
 
 
                             }

@@ -34,7 +34,6 @@ public class GpsService extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "バックグラウンドサービスを開始しました。", Toast.LENGTH_SHORT).show();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 

@@ -87,13 +87,9 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-        <ImageView
-            style="@style/title_icon"
-            android:src="@drawable/ookami"
-            android:layout_width="240dp"
-        />
-
-
+        <ListView android:id="@+id/sidebar_listView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
 
 
