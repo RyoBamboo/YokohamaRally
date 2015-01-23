@@ -17,6 +17,7 @@ import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,7 +32,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
-import com.dr.yokohamarally.adapters.RootAdapter;
+import com.dr.yokohamarally.adapters.TryAdapter;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.fragments.TryInformation;
@@ -62,11 +63,11 @@ public class TryActivity extends Activity {
     private String[] pointImageTitle;
     private double[] pointLongitude;
     private String[] pointImageUrls;
-    private double latitude;
-    private  double longitude;
-    private RootAdapter mRootAdapter;
+
+    private TryAdapter mRootAdapter;
     private ArrayList<Root> roots;
     private ListView mAllRootListView;
+    private Bitmap bmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,11 @@ public class TryActivity extends Activity {
         setContentView(R.layout.activity_try);
 
 
-        
+        roots = new ArrayList<Root>();
+        mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
+        mAllRootListView = (ListView)findViewById(R.id.try_list);
+        mAllRootListView.setAdapter(mRootAdapter);
+
 
         /*--------------------------------------------------
          * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得
@@ -193,123 +198,24 @@ public class TryActivity extends Activity {
         final LinearLayout parentLinearLayout = (LinearLayout)findViewById(R.id.checkpoints);
         final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
         final ImageView mImageView = new ImageView(this);
-        //写真の順番番号
         final int number = i;
+        final ArrayList<Root> _roots = new ArrayList<Root>();
+        final Root root = new Root();
+
+        root.setId(i);
+        root.setTitle(number + "");
+        root.setRate(5);
+        root.setImageUrl(url);
+        _roots.add(root);
+        mRootAdapter.addAll(_roots);
 
 
-        ImageRequest request = new ImageRequest(
-                url,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        final LinearLayout childLinearLayout = new LinearLayout(getBaseContext());
-                        childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        mImageView.setImageBitmap(response);
-                        if("true".equals(checkedPoints[number]) ){
-                            byte[] b = Base64.decode(checkedPointImages[number], Base64.DEFAULT);
-                            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
-                            mImageView.setImageBitmap(bmp);
-                        }
-                        mImageView.setPadding(0, 20, 10, 0);
-                        childLinearLayout.addView(mImageView);
-
-                        Button pictureButton = new Button(getBaseContext());
-                        pictureButton.setText("写真をとる");
-
-                        pictureButton.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-
-                                // GPS機能設定の状態を取得
-                                String GpsStatus = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-
-                                if (GpsStatus.indexOf("gps", 0) < 0) {
-
-                                    //GPSが無効だった場合
-                                    AlertDialog.Builder ad = new AlertDialog.Builder(TryActivity.this);
-                                    ad.setMessage("GPS機能がOFFになっています。\n設定画面を開きますか？");
-                                    ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            //設定画面を呼び出す
-                                            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                            startActivity(intent);
-
-                                        }
-                                    });
-                                    ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,int whichButton) {
-                                            //何もしない
-                                        }
-                                    });
-                                    ad.create();
-                                    ad.show();
-                                } else {
-
-                                    //GPSが有効だった場合
-
-                                    // ロケーションマネージャの取得
-                                    LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                                    // 最適な位置情報プロバイダの選択
-                                    // Criteriaを変更することで，各種設定変更可能
-                                    String bs = lm.getBestProvider(new Criteria(), true);
-
-                                    Location locate = lm.getLastKnownLocation(bs);
-                                    if(locate == null){
-                                        // 現在地が取得できなかった場合，GPSで取得してみる
-                                        locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    }
-                                    if(locate == null){
-                                        // 現在地が取得できなかった場合，無線測位で取得してみる
-                                        locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                    }
-                                    if(locate != null){ // 現在地情報取得成功
-                                        // 緯度の取得
-                                        latitude=(locate.getLatitude());
-                                        // 経度の取得
-                                        longitude=(locate.getLongitude());
-                                    }
-                                    if(locate == null){
-                                        Log.d("MYTAG","no!");
-
-                                    }
-
-                                    //到着判定
-                                    //if( (Math.abs(TryInformation.latitude[number] - latitude) < 1.0 ) && (Math.abs(TryInformation.longitude[number] - longitude) < 1.0 )) {
-
-                                        // 到達をtrueにする
-                                        checkedPoints[number] = "true";
-                                        saveArrayToSharedPreference(checkedPoints,"checkedPoints");
-
-                                        Intent intent = new Intent(TryActivity.this, CameraActivity.class);
-                                        intent.putExtra("reachingNumber", number);
-                                        startActivity(intent);
-                                    /*}else{
-                                        Toast.makeText(TryActivity.this, "まだ到着していません", Toast.LENGTH_LONG).show();
-                                    }*/
-                                }
-                            }
-                        });
 
 
-                        childLinearLayout.addView(pictureButton);
-                        parentLinearLayout.addView(childLinearLayout);
-                    }
-                },
-                0,
-                0,
-                Bitmap.Config.ARGB_8888,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+     }
 
-                    }
-                }
-        );
 
-        mQueue.add(request);
-        mQueue.start();
-    }
+
 
 
     /*---------------------------------------------------------
