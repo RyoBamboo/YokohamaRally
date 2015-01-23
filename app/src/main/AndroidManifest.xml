@@ -77,6 +77,10 @@
             android:name=".activities.LoginActiviry"
             android:label="@string/title_activity_login_activiry" >
         </activity>
+        <activity
+            android:name=".activities.RegisterByEmail"
+            android:label="@string/title_activity_register_by_email" >
+        </activity>
     </application>
 
 </manifest>

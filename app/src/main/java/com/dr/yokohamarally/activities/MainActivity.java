@@ -7,9 +7,11 @@
 package com.dr.yokohamarally.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.ListFragment;
@@ -74,7 +76,8 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
          * ログインしているか確認する
          * 現在は強制的にLoginActivityへ
         /*----------------------*/
-        if (LoginActiviry.isLogin() == false) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        if (LoginActiviry.isLogin(sp) == false) {
             Intent intent = new Intent(MainActivity.this, LoginActiviry.class);
             startActivity(intent);
         }
