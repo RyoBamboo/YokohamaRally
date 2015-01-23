@@ -147,7 +147,7 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         }
 
                         //到着判定
-                        //if( (Math.abs(TryInformation.latitude[point +1] - latitude) < 1.0 ) && (Math.abs(TryInformation.longitude[point + 1] - longitude) < 1.0 )) {
+                        //if( (Math.abs(TryInformation.latitude[id] - latitude) < 1.0 ) && (Math.abs(TryInformation.longitude[id] - longitude) < 1.0 )) {
 
                         // 到達をtrueにする
                         checkedPoints[id] = "true";

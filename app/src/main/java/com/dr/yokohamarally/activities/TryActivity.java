@@ -136,6 +136,8 @@ public class TryActivity extends Activity {
                                 Log.d("MYTAG",json_point.getString("image_url") + "");
                                 pointImageUrls[i] = json_point.getString("image_url");
                                 pointImageTitle[i] = json_point.getString("name");
+                                TryInformation.latitude[i] = json_point.getDouble("latitude");
+                                TryInformation.longitude[i] = json_point.getDouble("longitude");
                             }
 
                         } catch (Exception e) {
@@ -203,8 +205,7 @@ public class TryActivity extends Activity {
         final Root root = new Root();
 
         root.setId(i);
-        root.setTitle(number + "");
-        root.setRate(5);
+        root.setTitle(pointImageTitle[i]);
         root.setImageUrl(url);
         _roots.add(root);
         mRootAdapter.addAll(_roots);
