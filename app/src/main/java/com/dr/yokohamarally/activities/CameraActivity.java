@@ -1,6 +1,7 @@
 package com.dr.yokohamarally.activities;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -10,14 +11,18 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,6 +32,7 @@ import android.widget.Toast;
 
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.BitmapHolder;
+import com.dr.yokohamarally.fragments.TryInformation;
 
 public class CameraActivity extends Activity implements OnClickListener {
 
@@ -36,15 +42,30 @@ public class CameraActivity extends Activity implements OnClickListener {
 
     private Uri mImageUri;
     private Bitmap imageBitmap;
+    private int reachingNumber;
+    private String[] checkedPointImages = new String[10];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera_layout);
 
-        // ボタンの設定
-        Button cameraBtn = (Button) findViewById(R.id.camera_button);
-        cameraBtn.setOnClickListener(this);
+        Intent intent = getIntent();
+        reachingNumber = intent.getIntExtra("reachingNumber", 0);
+
+        String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
+
+        //配列拡張のための処理
+        checkedPointImages = new String[10];
+        for( int i=0; i<checkedPointImagesCopy.length; i++)checkedPointImages[i]=checkedPointImagesCopy[i];
+
+
+        mImageUri = getPhotoUri();
+        intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        startActivityForResult(intent, IMAGE_CAPTURE);
+
     }
 
     /**
@@ -52,14 +73,6 @@ public class CameraActivity extends Activity implements OnClickListener {
      */
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.camera_button) {
-            mImageUri = getPhotoUri();
-            Intent intent = new Intent();
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-            startActivityForResult(intent, IMAGE_CAPTURE);
-        }
     }
 
     /**
@@ -114,9 +127,16 @@ public class CameraActivity extends Activity implements OnClickListener {
 
         if(requestCode == GETTRIM){
             if(resultCode == RESULT_OK){
-                Toast.makeText(this, "トリミングに成功しました", Toast.LENGTH_SHORT).show();
-                ImageView imageView = (ImageView)findViewById(R.id.camera_image);
-                imageView.setImageBitmap(BitmapHolder._holdedBitmap);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                BitmapHolder._holdedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                String bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+                checkedPointImages[reachingNumber] = bitmapStr;
+                saveArrayToSharedPreference(checkedPointImages, "checkedPointImages");
+
+                Intent intent = new Intent(CameraActivity.this, TryActivity.class);
+                startActivity(intent);
+
             }else{
                 Toast.makeText(this, "画像の取得に失敗しました。", Toast.LENGTH_SHORT).show();
             }
@@ -142,6 +162,7 @@ public class CameraActivity extends Activity implements OnClickListener {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mImageUri = (Uri) savedInstanceState.get(KEY_IMAGE_URI);
+        Log.d("tagtag","ok!!");
         setImageView();
     }
 
@@ -149,8 +170,6 @@ public class CameraActivity extends Activity implements OnClickListener {
      * ImageViewに画像をセットする
      */
     private void setImageView() {
-        ImageView imageView = (ImageView)findViewById(R.id.camera_image);
-        imageView.setImageURI(mImageUri);
 
     }
 
@@ -203,4 +222,35 @@ public class CameraActivity extends Activity implements OnClickListener {
         Uri uri = getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
         return uri;
     }
+
+    public void saveArrayToSharedPreference(String[] array, String key) {
+
+        // ','をキーとして連結
+        StringBuffer buffer = new StringBuffer();
+        for (String value : array) {
+            buffer.append(value + ",");
+        }
+
+        String stringItem = null;
+        if (buffer != null) {
+            String buf = buffer.toString();
+            stringItem = buf.substring(0, buf.length() - 1);
+
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            sp.edit().putString(key, stringItem).commit();
+        }
+    }
+
+    public String[] getArrayFromSharedPreference(String key) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String stringItem = sp.getString(key, "");
+        if (stringItem != null && stringItem.length() != 0) {
+            return  stringItem.split(",");
+        }
+
+        return null;
+    }
+
+
 }

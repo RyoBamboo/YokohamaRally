@@ -1,16 +1,28 @@
 package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,10 +32,18 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.adapters.TryAdapter;
+import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.fragments.TryInformation;
+import com.dr.yokohamarally.models.Root;
+
+import android.content.DialogInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class TryActivity extends Activity {
 
@@ -33,29 +53,48 @@ public class TryActivity extends Activity {
     * 変数
     *-----------------------*/
     private int    rootId;
-    private String[]  checkedPointIds;
+    private String[]  checkedPoints = new String[10];
+    private String[]  checkedPointImages = new String[10];
     private int    rootRate;
     private String rootTitle;
     private String rootSummary;
     private String imageUrl;
+    private double[] pointLatitude;
+    private String[] pointImageTitle;
+    private double[] pointLongitude;
     private String[] pointImageUrls;
+
+    private TryAdapter mRootAdapter;
+    private ArrayList<Root> roots;
+    private ListView mAllRootListView;
+    private Bitmap bmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
+
+        roots = new ArrayList<Root>();
+        mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
+        mAllRootListView = (ListView)findViewById(R.id.try_list);
+        mAllRootListView.setAdapter(mRootAdapter);
+
+
         /*--------------------------------------------------
-         * 挑戦中のルートIDと達成したチェックポイントのIDを取得
+         * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得
          *------------------------------------------------*/
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         rootId = sp.getInt("rootId", 0);
+        String[] checkedPointsCopy = getArrayFromSharedPreference("checkedPoints");
+        String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
 
-        /*--------------------------------------------------------
-         * TODO: サンプルとしてチェックポイント1, 2をクリア済みに設定
-         *------------------------------------------------------*/
-        checkedPointIds = new String[] {"1", "2"};
-        saveArrayToSharedPreference(checkedPointIds, "checkedPoints");
+        //配列拡張のための処理
+        checkedPointImages = new String[10];
+        checkedPoints = new String[10];
+        for( int i=0; i<checkedPointImagesCopy.length; i++)checkedPointImages[i]=checkedPointImagesCopy[i];
+        for( int i=0; i<checkedPointsCopy.length; i++)checkedPoints[i]=checkedPointsCopy[i];
+
 
 
         /*--------------------------------
@@ -69,6 +108,7 @@ public class TryActivity extends Activity {
         buf.append(params);
         String uri = buf.toString();
 
+
         mQueue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>()
                 {
@@ -79,6 +119,7 @@ public class TryActivity extends Activity {
 
                             for(int i = 0; i < json_roots.length(); i++) {
                                 JSONObject json_root = json_roots.getJSONObject(i);
+                                System.out.println(json_root);
 
                                 rootTitle = json_root.getString("title");
                                 rootSummary = json_root.getString("summary");
@@ -89,9 +130,14 @@ public class TryActivity extends Activity {
 
                             JSONArray json_points = response.getJSONArray("points");
                             pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
+                            pointImageTitle = new String[json_points.length()]; // ポイントの画像タイトルを保存する配列
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
+                                Log.d("MYTAG",json_point.getString("image_url") + "");
                                 pointImageUrls[i] = json_point.getString("image_url");
+                                pointImageTitle[i] = json_point.getString("name");
+                                TryInformation.latitude[i] = json_point.getDouble("latitude");
+                                TryInformation.longitude[i] = json_point.getDouble("longitude");
                             }
 
                         } catch (Exception e) {
@@ -105,6 +151,8 @@ public class TryActivity extends Activity {
                         for (int i = 0; i < pointImageUrls.length; i++) {
                             requestCheckPoint(i);
                         }
+
+
 
                     }
                 },
@@ -148,53 +196,27 @@ public class TryActivity extends Activity {
 
 
     // TODO: かなり無理やりリファクタリング必須
-    private void requestCheckPoint(int i) {
+    protected void requestCheckPoint(int i) {
         final LinearLayout parentLinearLayout = (LinearLayout)findViewById(R.id.checkpoints);
         final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
         final ImageView mImageView = new ImageView(this);
+        final int number = i;
+        final ArrayList<Root> _roots = new ArrayList<Root>();
+        final Root root = new Root();
 
-        ImageRequest request = new ImageRequest(
-                url,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        final LinearLayout childLinearLayout = new LinearLayout(getBaseContext());
-                        childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        mImageView.setImageBitmap(response);
-                        mImageView.setPadding(0, 20, 10, 0);
-                        childLinearLayout.addView(mImageView);
-                        Button pictureButton = new Button(getBaseContext());
-                        pictureButton.setText("写真をとる");
-
-                        pictureButton.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(TryActivity.this, CameraActivity.class);
-                                startActivity(intent);
-
-                            }
-                        });
+        root.setId(i);
+        root.setTitle(pointImageTitle[i]);
+        root.setImageUrl(url);
+        _roots.add(root);
+        mRootAdapter.addAll(_roots);
 
 
-                        childLinearLayout.addView(pictureButton);
-                        parentLinearLayout.addView(childLinearLayout);
-                    }
-                },
-                0,
-                0,
-                Bitmap.Config.ARGB_8888,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
 
-                    }
-                }
-        );
 
-        mQueue.add(request);
-        mQueue.start();
-    }
+     }
+
+
+
 
 
     /*---------------------------------------------------------

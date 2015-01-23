@@ -29,9 +29,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -123,6 +125,32 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
         //サービス開始
         startService(new Intent(MainActivity.this, GpsService.class));
+
+
+
+        String[] members = { "マイぺージ",  "設定", "その他" };
+
+        ListView lv = (ListView) findViewById(R.id.sidebar_listView);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1, members);
+
+        lv.setAdapter(adapter);
+
+        //リスト項目がクリックされた時の処理
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                String item = (String) listView.getItemAtPosition(position);
+                if("マイページ".equals(item)){
+
+                }
+                else if("設定".equals(item)){
+
+                }
+            }
+        });
 
 
 

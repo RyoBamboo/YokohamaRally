@@ -240,7 +240,6 @@ public class MapActivity extends Activity {
         sub_y = max_y - min_y;
 
         if( sub_x  <= sub_y * 2 )sub_max = sub_y * 2;
-        else if( sub_x  > sub_y*2 )sub_max = sub_x;
 
         if(max_y == min_y && max_x == min_x)sub_max = 0.39;
 
