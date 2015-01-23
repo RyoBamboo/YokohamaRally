@@ -14,25 +14,16 @@
         <!-- 登録/ログインボタン -->
         <Button
             android:layout_marginBottom="8dp"
-            android:text="Facebookで登録/ログイン"
+            android:text="登録"
             android:textSize="16dp"
             android:textColor="#ffffff"
             android:background="@drawable/round_corner_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/facebook_login_button"/>
+            android:id="@+id/email_register_button"/>
         <Button
             android:layout_marginBottom="8dp"
-            android:text="Twitterで登録/ログイン"
-            android:textSize="16dp"
-            android:textColor="#ffffff"
-            android:background="@drawable/round_corner_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/twitter_login_button"/>
-        <Button
-            android:layout_marginBottom="8dp"
-            android:text="メールアドレスで登録/ログイン"
+            android:text="ログイン"
             android:textSize="16dp"
             android:textColor="#ffffff"
             android:background="@drawable/round_corner_button"
