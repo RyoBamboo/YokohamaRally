@@ -7,17 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,13 +31,18 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.adapters.RootAdapter;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.fragments.TryInformation;
+import com.dr.yokohamarally.models.Root;
+
 import android.content.DialogInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class TryActivity extends Activity {
 
@@ -44,7 +52,8 @@ public class TryActivity extends Activity {
     * 変数
     *-----------------------*/
     private int    rootId;
-    private String[]  checkedPointIds;
+    private String[]  checkedPoints = new String[10];
+    private String[]  checkedPointImages = new String[10];
     private int    rootRate;
     private String rootTitle;
     private String rootSummary;
@@ -53,24 +62,34 @@ public class TryActivity extends Activity {
     private String[] pointImageTitle;
     private double[] pointLongitude;
     private String[] pointImageUrls;
+    private double latitude;
+    private  double longitude;
+    private RootAdapter mRootAdapter;
+    private ArrayList<Root> roots;
+    private ListView mAllRootListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
+
+        
+
         /*--------------------------------------------------
-         * 挑戦中のルートIDと達成したチェックポイントのIDを取得
+         * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得
          *------------------------------------------------*/
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         rootId = sp.getInt("rootId", 0);
-        Log.d("MYTAG",rootId + "");
+        String[] checkedPointsCopy = getArrayFromSharedPreference("checkedPoints");
+        String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
 
-        /*--------------------------------------------------------
-         * TODO: サンプルとしてチェックポイント1, 2をクリア済みに設定
-         *------------------------------------------------------*/
-        checkedPointIds = new String[] {"1", "2"};
-        saveArrayToSharedPreference(checkedPointIds, "checkedPoints");
+        //配列拡張のための処理
+        checkedPointImages = new String[10];
+        checkedPoints = new String[10];
+        for( int i=0; i<checkedPointImagesCopy.length; i++)checkedPointImages[i]=checkedPointImagesCopy[i];
+        for( int i=0; i<checkedPointsCopy.length; i++)checkedPoints[i]=checkedPointsCopy[i];
+
 
 
         /*--------------------------------
@@ -95,6 +114,7 @@ public class TryActivity extends Activity {
 
                             for(int i = 0; i < json_roots.length(); i++) {
                                 JSONObject json_root = json_roots.getJSONObject(i);
+                                System.out.println(json_root);
 
                                 rootTitle = json_root.getString("title");
                                 rootSummary = json_root.getString("summary");
@@ -105,12 +125,12 @@ public class TryActivity extends Activity {
 
                             JSONArray json_points = response.getJSONArray("points");
                             pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
+                            pointImageTitle = new String[json_points.length()]; // ポイントの画像タイトルを保存する配列
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
+                                Log.d("MYTAG",json_point.getString("image_url") + "");
                                 pointImageUrls[i] = json_point.getString("image_url");
                                 pointImageTitle[i] = json_point.getString("name");
-                                pointLatitude[i] = json_point.getDouble("latitude");
-                                pointLongitude[i] = json_point.getDouble("longitude");
                             }
 
                         } catch (Exception e) {
@@ -125,6 +145,8 @@ public class TryActivity extends Activity {
                             requestCheckPoint(i);
                         }
 
+
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -136,9 +158,6 @@ public class TryActivity extends Activity {
         ));
 
     }
-
-
-
 
     private void requestTopImage() {
         // ImageViewの取得
@@ -176,10 +195,6 @@ public class TryActivity extends Activity {
         final ImageView mImageView = new ImageView(this);
         //写真の順番番号
         final int number = i;
-        SharedPreferences check = PreferenceManager.getDefaultSharedPreferences(this);
-        //写真のID
-        final int pictureId = check.getInt("pictureId", -1);
-
 
 
         ImageRequest request = new ImageRequest(
@@ -190,13 +205,15 @@ public class TryActivity extends Activity {
                         final LinearLayout childLinearLayout = new LinearLayout(getBaseContext());
                         childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
                         mImageView.setImageBitmap(response);
-                        if(TryInformation.reaching[number] == 1 )mImageView.setImageBitmap(TryInformation.holdedBitmap[number]);
+                        if("true".equals(checkedPoints[number]) ){
+                            byte[] b = Base64.decode(checkedPointImages[number], Base64.DEFAULT);
+                            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+                            mImageView.setImageBitmap(bmp);
+                        }
                         mImageView.setPadding(0, 20, 10, 0);
                         childLinearLayout.addView(mImageView);
-                        mImageView.setId(number);
 
                         Button pictureButton = new Button(getBaseContext());
-                        pictureButton.setId(number);
                         pictureButton.setText("写真をとる");
 
                         pictureButton.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +245,7 @@ public class TryActivity extends Activity {
                                     ad.create();
                                     ad.show();
                                 } else {
+
                                     //GPSが有効だった場合
 
                                     // ロケーションマネージャの取得
@@ -247,29 +265,29 @@ public class TryActivity extends Activity {
                                     }
                                     if(locate != null){ // 現在地情報取得成功
                                         // 緯度の取得
-                                        double latitude=(locate.getLatitude());
+                                        latitude=(locate.getLatitude());
                                         // 経度の取得
-                                        double longitude=(locate.getLongitude());
-                                        Log.d("MYTAG", String.valueOf(latitude));
-                                        Log.d("MYTAG",String.valueOf(longitude));
+                                        longitude=(locate.getLongitude());
                                     }
                                     if(locate == null){
                                         Log.d("MYTAG","no!");
 
                                     }
 
+                                    //到着判定
+                                    //if( (Math.abs(TryInformation.latitude[number] - latitude) < 1.0 ) && (Math.abs(TryInformation.longitude[number] - longitude) < 1.0 )) {
 
-                                    // 到達をtrueにする
-                                    TryInformation.reaching[number] = 1;
-                                    Intent intent = new Intent(TryActivity.this, CameraActivity.class);
-                                    intent.putExtra("reachingNumber", number);
-                                    startActivity(intent);
+                                        // 到達をtrueにする
+                                        checkedPoints[number] = "true";
+                                        saveArrayToSharedPreference(checkedPoints,"checkedPoints");
+
+                                        Intent intent = new Intent(TryActivity.this, CameraActivity.class);
+                                        intent.putExtra("reachingNumber", number);
+                                        startActivity(intent);
+                                    /*}else{
+                                        Toast.makeText(TryActivity.this, "まだ到着していません", Toast.LENGTH_LONG).show();
+                                    }*/
                                 }
-
-
-
-
-
                             }
                         });
 

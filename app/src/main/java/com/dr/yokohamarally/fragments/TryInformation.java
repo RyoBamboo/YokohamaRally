@@ -11,4 +11,6 @@ public class TryInformation {
     public static int[] reaching  = new int[10];
     public  static Uri[] imgUri = new Uri[10];
     public static Bitmap[] holdedBitmap = new Bitmap[10];
+    public static double[] latitude = new double[10];
+    public static double[] longitude = new double[10];
 }

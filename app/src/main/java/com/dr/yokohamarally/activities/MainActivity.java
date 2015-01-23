@@ -133,10 +133,10 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listView = (ListView) parent;
                 String item = (String) listView.getItemAtPosition(position);
-                if(item.equals("マイページ")){
+                if("マイページ".equals(item)){
 
                 }
-                else if(item.equals("設定")){
+                else if("設定".equals(item)){
 
                 }
             }
