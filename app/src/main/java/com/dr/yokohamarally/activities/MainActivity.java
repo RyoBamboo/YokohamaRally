@@ -6,6 +6,7 @@
 
 package com.dr.yokohamarally.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -14,6 +15,7 @@ import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.content.DialogInterface;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -127,8 +129,10 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         startService(new Intent(MainActivity.this, GpsService.class));
 
 
-
-        String[] members = { "マイぺージ",  "設定", "その他" };
+        /*-------------------------
+         * サイドバーのリスト作成
+         *-----------------------*/
+        String[] members = { "マイぺージ",  "設定", "その他","ログアウト" };
 
         ListView lv = (ListView) findViewById(R.id.sidebar_listView);
 
@@ -143,11 +147,15 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listView = (ListView) parent;
                 String item = (String) listView.getItemAtPosition(position);
-                if("マイページ".equals(item)){
+                if("マイぺージ".equals(item)){
+                    System.out.println("mymy");
+                    Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
+                    startActivity(intent);
 
-                }
-                else if("設定".equals(item)){
+                }else if("設定".equals(item)){
 
+                }else if("ログアウト".equals(item)){
+                    Logout();
                 }
             }
         });
@@ -289,5 +297,32 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             intent.putExtra("rootId", position + 1);
             startActivity(intent);
         }
+    }
+
+
+    public void Logout() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("ログアウトしますか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // ログアウトしてログインページへ
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                                sp.edit().putBoolean("isLogin", false).commit();
+                                Intent intent = new Intent(MainActivity.this, LoginActiviry.class);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                .show();
     }
 }
