@@ -21,5 +21,6 @@
     <string name="title_activity_login_by_email">LoginByEmail</string>
     <string name="title_activity_login_activiry">LoginActiviry</string>
     <string name="title_activity_register_by_email">RegisterByEmail</string>
+    <string name="title_activity_my_page">マイページ</string>
 
 </resources>

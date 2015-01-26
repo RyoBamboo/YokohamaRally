@@ -65,10 +65,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC7QXrAUqS9JRS2B4Lq8wDhLKsCac1IGos" />
 
-        <activity
-            android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
+
         <activity
             android:name=".activities.LoginByEmail"
             android:label="@string/title_activity_login_by_email" >
@@ -81,6 +78,11 @@
             android:name=".activities.RegisterByEmail"
             android:label="@string/title_activity_register_by_email" >
         </activity>
+        <activity
+            android:name=".activities.MyPageActivity"
+            android:label="@string/title_activity_my_page" >
+        </activity>
+
     </application>
 
 </manifest>

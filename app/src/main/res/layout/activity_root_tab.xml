@@ -80,6 +80,8 @@
             android:layout_weight="1" />
 
     </LinearLayout>
+
+    <!--サイドバーの設定-->
     <LinearLayout
     android:layout_gravity="start"
     android:layout_width="240dp"

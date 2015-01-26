@@ -5,14 +5,24 @@ import android.graphics.Bitmap;
 public class Root {
 
     private String title;   // タイトル
+    private String clearDate;   // 日付
     private String summary; // 概要
     private String imageUrl; // 画像URL
+    private String clearRoot; //クリアしたルート
     private Bitmap imageBitmap; // 画像URL
     private int    rate;
     private int    id;
 
     public String getTitle() {
         return this.title;
+    }
+
+    public String getClearDate() {
+        return this.clearDate;
+    }
+
+    public String getClearRoot() {
+        return this.clearRoot;
     }
 
     public String getSummary() {
@@ -39,12 +49,20 @@ public class Root {
         this.title = title;
     }
 
+    public void setClearRoot(String clearRoot) {
+        this.clearRoot = clearRoot;
+    }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public void setClearDate(String clearDate) {
+        this.clearDate = clearDate;
     }
 
     public void setRate(int rate) {
