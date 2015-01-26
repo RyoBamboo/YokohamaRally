@@ -142,6 +142,38 @@
                 android:id="@+id/root_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="ユーザのコメント"
+                android:textSize="16dp"
+                android:paddingTop="21dp"
+                android:paddingLeft="12dp"
+                android:textColor="#222222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="12dp"
+                android:background="#ff424242"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_height="800dp"
+            android:id="@+id/comments_list"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:divider="@null"
+            android:padding="10dp"
+            android:dividerHeight="10dp"
+            />
     </LinearLayout>
     </ScrollView>
 </RelativeLayout>
