@@ -139,6 +139,13 @@ public class RootSummaryActivity extends Activity {
                                 pointImageUrls[i] = json_point.getString("image_url");
                             }
 
+                            JSONArray json_comments = response.getJSONArray("comments");
+                            for (int i = 0; i < json_comments.length(); i++) {
+                                JSONObject json_comment = json_comments.getJSONObject(i);
+
+                                String comment = json_comment.getString("comment");
+                            }
+
                             // adapterに反映、追加
                         } catch (Exception e) {
                             System.out.println(e);
@@ -149,7 +156,7 @@ public class RootSummaryActivity extends Activity {
                          ----------------*/
                         TextView titleView = (TextView)findViewById(R.id.root_title);
                         TextView summaryView = (TextView)findViewById(R.id.root_summary);
-                        summaryView.setText(rootSummary);
+                        //summaryView.setText(rootSummary);
                         titleView.setText(rootTitle);
 
                         // TODO: さすがにごり押しすぎ・・・リファクタリング必須
