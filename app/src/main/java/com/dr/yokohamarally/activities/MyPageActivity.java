@@ -84,6 +84,8 @@ public class MyPageActivity extends ActionBarActivity  {
     private MyPageAdapter mRootAdapter;
     private ListView mAllRootListView;
     private String mEmail;
+    private String clearRoot;
+    private String clearDate;
 
 
 
@@ -100,6 +102,7 @@ public class MyPageActivity extends ActionBarActivity  {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mEmail = sp.getString("email", "");
+        Log.d("email!", mEmail);
 
 
 
@@ -141,6 +144,18 @@ public class MyPageActivity extends ActionBarActivity  {
                 }
             }
         });
+        String url = "http://yokohamarally.prodrb.com/api/get_clear_info.php?email=";
+        String params = String.valueOf(mEmail);
+        StringBuffer buf = new StringBuffer();
+        buf.append(url);
+        buf.append(params);
+        String uri = buf.toString();
+        Log.d("a",uri);
+
+
+
+        RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
+
 
         // http通信
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
@@ -224,6 +239,28 @@ public class MyPageActivity extends ActionBarActivity  {
                         })
                 .show();
     }
+    private Response.Listener<JSONObject> getEmailResponseListener() {
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                ArrayList<Root> _roots = new ArrayList<Root>();
+                try {
+                    JSONArray json_roots = response.getJSONArray("info");
+
+
+
+                        JSONObject json_user = json_roots.getJSONObject(0);
+                        Log.d("json",""+json_user);
+                        clearRoot = json_user.getString("clear");
+                        clearDate = json_user.getString("clearDate");
+                }catch (Exception e) {
+                    System.out.println(e);
+                }
+
+            }
+        };
+    }
 
 
 
@@ -236,16 +273,11 @@ public class MyPageActivity extends ActionBarActivity  {
 
                 try {
                     JSONArray json_roots = response.getJSONArray("roots");
-                    //JSONArray json_users = response.getJSONArray("users");
                     System.out.println(response);
 
 
-                    String clearRoot = "1,2,4";
-                    String clearDate = "2014/11/03,2014/12/24,2015/01/25";
                     String[] clearRoots = clearRoot.split(",", 0);
                     String[] clearDates = clearDate.split(",", 0);
-
-
 
 
                     // クリアしていたらlistViewに追加
@@ -271,17 +303,7 @@ public class MyPageActivity extends ActionBarActivity  {
 
 
 
-//                    for (int i = 0; i < json_users.length(); i++) {
-//                        JSONObject json_user = json_roots.getJSONObject(i);
-//                        String email = json_user.getString("email");
-//                        if(mEmail.equals(email) ){
-//                            String clearRoot = json_user.getString("clear");
-//                            Root root = new Root();
-//                            root.setClearRoot(clearRoot);
-//                            _roots.add(root);
-//                            break;
-//                        }
-//                    }
+
 
                     // adapterに反映、追加
                     mRootAdapter.addAll(_roots);
