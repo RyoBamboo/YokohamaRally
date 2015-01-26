@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -27,6 +28,9 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.adapters.CommentsList;
+import com.dr.yokohamarally.adapters.RootAdapter;
+import com.dr.yokohamarally.adapters.TryAdapter;
 import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.models.Root;
 
@@ -37,6 +41,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -58,6 +63,12 @@ public class RootSummaryActivity extends Activity {
 
     private Button mapButton,tryButton;
 
+    private ArrayList<Root> roots;
+    private RootAdapter adapter;
+    private ListView rootListView;
+    private CommentsList mRootAdapter;
+    private ListView mAllRootListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +80,12 @@ public class RootSummaryActivity extends Activity {
 
         Intent intent = getIntent();
         rootId = intent.getIntExtra("rootId", 0);
+
+
+        roots = new ArrayList<Root>();
+        mRootAdapter = new CommentsList(RootSummaryActivity.this, 0, roots);
+        mAllRootListView = (ListView)findViewById(R.id.comments_list);
+        mAllRootListView.setAdapter(mRootAdapter);
 
 
 
@@ -142,8 +159,18 @@ public class RootSummaryActivity extends Activity {
                             JSONArray json_comments = response.getJSONArray("comments");
                             for (int i = 0; i < json_comments.length(); i++) {
                                 JSONObject json_comment = json_comments.getJSONObject(i);
-
                                 String comment = json_comment.getString("comment");
+                                String name = json_comment.getString("name");
+                                String date = json_comment.getString("date");
+                                int rate = json_comment.getInt("rate");
+                                final Root root = new Root();
+                                final ArrayList<Root> _roots = new ArrayList<Root>();
+                                root.setName(name);
+                                root.setComments(comment);
+                                root.setRate(rate);
+                                root.setClearDate(date);
+                                _roots.add(root);
+                                mRootAdapter.addAll(_roots);
                             }
 
                             // adapterに反映、追加
@@ -156,7 +183,7 @@ public class RootSummaryActivity extends Activity {
                          ----------------*/
                         TextView titleView = (TextView)findViewById(R.id.root_title);
                         TextView summaryView = (TextView)findViewById(R.id.root_summary);
-                        //summaryView.setText(rootSummary);
+                        summaryView.setText(rootSummary);
                         titleView.setText(rootTitle);
 
                         // TODO: さすがにごり押しすぎ・・・リファクタリング必須
@@ -191,7 +218,6 @@ public class RootSummaryActivity extends Activity {
                     {
                         //エラー時の処理
                         System.out.println(error);
-
                     }
 
                 }));

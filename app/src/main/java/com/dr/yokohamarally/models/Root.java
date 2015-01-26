@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 public class Root {
 
     private String title;   // タイトル
+    private String name;   //名前
+    private String comments;   // コメント
     private String clearDate;   // 日付
     private String summary; // 概要
     private String imageUrl; // 画像URL
@@ -19,6 +21,16 @@ public class Root {
 
     public String getClearDate() {
         return this.clearDate;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+
+
+    public String getComments() {
+        return this.comments;
     }
 
     public String getClearRoot() {
@@ -59,6 +71,14 @@ public class Root {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setClearDate(String clearDate) {
