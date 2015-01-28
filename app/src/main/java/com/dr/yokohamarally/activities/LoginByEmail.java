@@ -15,6 +15,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,14 +49,20 @@ public class LoginByEmail extends ActionBarActivity {
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String s) {
-                        if (s.equals("success")) {
+                    public void onResponse(String response) {
+                        if (!response.equals("false")) {
+
+                            String[] resultArray = response.split(",");
 
                             // ログイン成功したらユーザ情報をsharedPrefereceに保存
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                             sp.edit().putBoolean("isLogin", true).commit();
-                            EditText emailEditText = (EditText)findViewById(R.id.email);
-                            sp.edit().putString("email",emailEditText.getText().toString() ).commit();
+                            sp.edit().putString("profile_image", resultArray[3]).commit();
+                            sp.edit().putString("email",resultArray[2]).commit();
+                            sp.edit().putString("name", resultArray[1]).commit();
+                            sp.edit().putString("id", resultArray[0]).commit();
+
+                            System.out.println(resultArray[3]);
 
                             Intent intent =  new Intent(LoginByEmail.this, MainActivity.class);
                             startActivity(intent);
