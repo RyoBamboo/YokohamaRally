@@ -151,12 +151,12 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
                 ListView listView = (ListView) parent;
                 String item = (String) listView.getItemAtPosition(position);
                 if("マイぺージ".equals(item)){
-                    System.out.println("mymy");
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
                     startActivity(intent);
 
                 }else if("設定".equals(item)){
-
+                    Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(intent);
                 }else if("ログアウト".equals(item)){
                     Logout();
                 }
