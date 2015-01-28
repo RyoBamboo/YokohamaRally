@@ -331,7 +331,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
     //フリック動作によるタブの切替
     protected float lastTouchX;
-    protected float limitx = 100;
+    protected float limitx = 180;
     @Override
     public boolean dispatchTouchEvent( MotionEvent event ){
         switch( event.getAction() ){

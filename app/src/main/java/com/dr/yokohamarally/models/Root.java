@@ -14,6 +14,7 @@ public class Root {
     private Bitmap imageBitmap; // 画像URL
     private int    rate;
     private int    id;
+    private boolean checkedPoint;
 
     public String getTitle() {
         return this.title;
@@ -25,6 +26,10 @@ public class Root {
 
     public String getName() {
         return this.name;
+    }
+
+    public boolean getCheckedPoint() {
+        return this.checkedPoint;
     }
 
 
@@ -91,6 +96,10 @@ public class Root {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setCheckedPoint( boolean checkedPoint) {
+        this.checkedPoint = checkedPoint;
     }
 
     public void setImageBitmap(Bitmap imageBitmap) {

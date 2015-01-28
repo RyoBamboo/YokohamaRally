@@ -14,12 +14,22 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"/>
 
+
+
         <LinearLayout
             android:id="@+id/checkpoints"
             android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/totalChecked" />
 
         <ListView
             android:layout_height="800dp"

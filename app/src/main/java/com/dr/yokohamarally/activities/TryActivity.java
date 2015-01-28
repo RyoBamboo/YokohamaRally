@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -68,6 +69,8 @@ public class TryActivity extends Activity {
     private ArrayList<Root> roots;
     private ListView mAllRootListView;
     private Bitmap bmp;
+    private int totalPoints;
+    private int totalChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,8 @@ public class TryActivity extends Activity {
         String[] checkedPointsCopy = getArrayFromSharedPreference("checkedPoints");
         String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
 
-
+        //クリアした数を格納する変数の初期化
+        totalChecked = 0;
         //配列拡張のための処理
         checkedPointImages = new String[10];
         checkedPoints = new String[10];
@@ -137,6 +141,7 @@ public class TryActivity extends Activity {
                             JSONArray json_points = response.getJSONArray("points");
                             pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
                             pointImageTitle = new String[json_points.length()]; // ポイントの画像タイトルを保存する配列
+                            totalPoints = json_points.length();
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 Log.d("MYTAG",json_point.getString("image_url") + "");
@@ -144,11 +149,14 @@ public class TryActivity extends Activity {
                                 pointImageTitle[i] = json_point.getString("name");
                                 TryInformation.latitude[i] = json_point.getDouble("latitude");
                                 TryInformation.longitude[i] = json_point.getDouble("longitude");
+
                             }
 
                         } catch (Exception e) {
 
                         }
+
+
 
                         // トップ画像の取得
                         requestTopImage();
@@ -157,6 +165,9 @@ public class TryActivity extends Activity {
                         for (int i = 0; i < pointImageUrls.length; i++) {
                             requestCheckPoint(i);
                         }
+
+                        TextView text = (TextView)findViewById(R.id.totalChecked);
+                        text.setText("現在の達成数: " +  totalChecked +"/" + totalPoints );
 
 
 
@@ -210,6 +221,10 @@ public class TryActivity extends Activity {
         final ArrayList<Root> _roots = new ArrayList<Root>();
         final Root root = new Root();
 
+        if("true".equals(checkedPoints[i])){
+            root.setCheckedPoint(true);
+            totalChecked++;
+        }
         root.setId(i);
         root.setTitle(pointImageTitle[i]);
         root.setImageUrl(url);
