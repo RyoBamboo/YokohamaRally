@@ -330,32 +330,32 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     }
 
     //フリック動作によるタブの切替
-    protected float lastTouchX;
-    protected float limitx = 180;
-    @Override
-    public boolean dispatchTouchEvent( MotionEvent event ){
-        switch( event.getAction() ){
-            case MotionEvent.ACTION_DOWN:
-                lastTouchX = event.getX();
-                System.out.println("right");
-                break;
-
-            case MotionEvent.ACTION_UP:
-                float diff = lastTouchX - event.getX();
-                if( diff > limitx ){
-
-                    if(currentTab<2)currentTab++;
-                    tabHost.setCurrentTab(currentTab);
-                    return true;
-                }
-                if( diff < -1 * limitx ){
-                    System.out.println("left");
-                    if(currentTab>0)currentTab--;
-                    tabHost.setCurrentTab(currentTab);
-                    return true;
-                }
-                break;
-        }
-        return super.dispatchTouchEvent(event);
-    }
+//    protected float lastTouchX;
+//    protected float limitx = 180;
+//    @Override
+//    public boolean dispatchTouchEvent( MotionEvent event ){
+//        switch( event.getAction() ){
+//            case MotionEvent.ACTION_DOWN:
+//                lastTouchX = event.getX();
+//                System.out.println("right");
+//                break;
+//
+//            case MotionEvent.ACTION_UP:
+//                float diff = lastTouchX - event.getX();
+//                if( diff > limitx ){
+//
+//                    if(currentTab<2)currentTab++;
+//                    tabHost.setCurrentTab(currentTab);
+//                    return true;
+//                }
+//                if( diff < -1 * limitx ){
+//                    System.out.println("left");
+//                    if(currentTab>0)currentTab--;
+//                    tabHost.setCurrentTab(currentTab);
+//                    return true;
+//                }
+//                break;
+//        }
+//        return super.dispatchTouchEvent(event);
+//    }
 }

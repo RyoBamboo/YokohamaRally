@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -86,6 +87,7 @@ public class MyPageActivity extends ActionBarActivity  {
     private String mEmail;
     private String clearRoot;
     private String clearDate;
+    private int totalClearRoot;
 
 
 
@@ -93,6 +95,8 @@ public class MyPageActivity extends ActionBarActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
+
+        totalClearRoot++;
 
         // リストビューを使用する準備
         roots = new ArrayList<Root>();
@@ -156,7 +160,11 @@ public class MyPageActivity extends ActionBarActivity  {
 
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
 
-
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // http通信
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
 
@@ -246,9 +254,7 @@ public class MyPageActivity extends ActionBarActivity  {
 
                 ArrayList<Root> _roots = new ArrayList<Root>();
                 try {
-                    JSONArray json_roots = response.getJSONArray("info");
-
-
+                        JSONArray json_roots = response.getJSONArray("info");
 
                         JSONObject json_user = json_roots.getJSONObject(0);
                         Log.d("json",""+json_user);
@@ -298,20 +304,22 @@ public class MyPageActivity extends ActionBarActivity  {
                             root.setRate(rate);
 
                             _roots.add(root);
+
                     }
 
-
-
-
-
-
+                    totalClearRoot= clearRoots.length;
                     // adapterに反映、追加
                     mRootAdapter.addAll(_roots);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
+
+                TextView countClear = (TextView)findViewById(R.id.clear_count);
+                countClear.setText(""+totalClearRoot);
             }
         };
+
+
     }
 
     private Response.ErrorListener errorListener() {

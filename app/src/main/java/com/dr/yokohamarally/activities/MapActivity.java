@@ -239,9 +239,14 @@ public class MapActivity extends Activity {
         sub_x = max_x - min_x;
         sub_y = max_y - min_y;
 
-        if( sub_x  <= sub_y * 2 )sub_max = sub_y * 2;
+        if( sub_x * 0.85 <= sub_y  )sub_max = 0.0062 /sub_y;
+        if( sub_x * 0.85 > sub_y  )sub_max =  0.0062 /sub_x;
+
 
         if(max_y == min_y && max_x == min_x)sub_max = 0.39;
+
+        System.out.println("x= " + sub_x);
+        System.out.println("y= " + sub_y);
 
         System.out.println((float)(sub_max*3));
 
