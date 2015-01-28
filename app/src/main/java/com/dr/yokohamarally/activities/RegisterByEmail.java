@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.android.volley.Request;
@@ -55,12 +53,14 @@ public class RegisterByEmail extends ActionBarActivity {
 
                             // ログイン成功したらユーザ情報をsharedPrefereceに保存
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
                             sp.edit().putString("username", name).commit();
                             sp.edit().putBoolean("isLogin", true).commit();
 
-
                             Intent intent = new Intent(RegisterByEmail.this, MainActivity.class);
                             startActivity(intent);
+                        } else if(s.equals("isUser")) {
+                            System.out.println("既にメールアドレスが登録されています");
                         }
                     }
                 },
