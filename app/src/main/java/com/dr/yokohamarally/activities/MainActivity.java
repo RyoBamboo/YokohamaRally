@@ -87,7 +87,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             startActivity(intent);
         }
 
-
         /*-------------------------
          * FragmentTabHostによる実装
          *-----------------------*/
