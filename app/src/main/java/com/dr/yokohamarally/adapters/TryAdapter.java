@@ -93,6 +93,13 @@ public class TryAdapter extends ArrayAdapter<Root> {
         Button pictureButton = (Button)convertView.findViewById(R.id.check_button);
         pictureButton.setText("スポット到着");
 
+        ImageView image = (ImageView)convertView.findViewById(R.id.try_check);
+        if(root.getCheckedPoint()==true){
+            image.setImageResource(R.drawable.checked);
+        }else{
+            image.setImageResource(R.drawable.unchecked);
+        }
+
         if ( pictureButton.getTag() == null ) {
 
             pictureButton.setOnClickListener(new View.OnClickListener() {

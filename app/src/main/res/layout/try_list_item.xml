@@ -17,10 +17,11 @@
         >
 
     </ImageView>
+
     <LinearLayout
         android:paddingTop="15dp"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +35,24 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:id="@+id/check_button"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></LinearLayout>
+
+
+
     </LinearLayout>
+    <ImageView
+        android:id="@+id/try_check"
+        style="@style/title_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        >
+
+    </ImageView>
     <!--
     <Button
         style="?android:attr/buttonStyleSmall"
