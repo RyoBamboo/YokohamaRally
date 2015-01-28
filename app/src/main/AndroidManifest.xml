@@ -16,6 +16,9 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".YokohamarallyApp"
@@ -65,7 +68,6 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC7QXrAUqS9JRS2B4Lq8wDhLKsCac1IGos" />
 
-
         <activity
             android:name=".activities.LoginByEmail"
             android:label="@string/title_activity_login_by_email" >
@@ -82,7 +84,10 @@
             android:name=".activities.MyPageActivity"
             android:label="@string/title_activity_my_page" >
         </activity>
-
+        <activity
+            android:name=".activities.SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
     </application>
 
 </manifest>
