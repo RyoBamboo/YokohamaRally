@@ -62,12 +62,13 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     private MyData myData;
 
     private SimpleSideDrawer mNav;
-    private float lastTouchX;
     private float currentX;
 
     private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
     private ActionBarDrawerToggle mDrawerToggle;
+    private FragmentTabHost tabHost;
+    private int currentTab;
 
 
     @Override
@@ -86,12 +87,11 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             startActivity(intent);
         }
 
-
         /*-------------------------
          * FragmentTabHostによる実装
          *-----------------------*/
         // FragmentTabHostの取得
-        FragmentTabHost tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(), R.id.container);
 
         // TabSpecの設定
@@ -114,6 +114,8 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
 
+        currentTab=0;
+
 
         //サイドバー指定
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -127,6 +129,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
         //サービス開始
         startService(new Intent(MainActivity.this, GpsService.class));
+
 
 
         /*-------------------------
@@ -324,5 +327,35 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
                             }
                         })
                 .show();
+    }
+
+    //フリック動作によるタブの切替
+    protected float lastTouchX;
+    protected float limitx = 100;
+    @Override
+    public boolean dispatchTouchEvent( MotionEvent event ){
+        switch( event.getAction() ){
+            case MotionEvent.ACTION_DOWN:
+                lastTouchX = event.getX();
+                System.out.println("right");
+                break;
+
+            case MotionEvent.ACTION_UP:
+                float diff = lastTouchX - event.getX();
+                if( diff > limitx ){
+
+                    if(currentTab<2)currentTab++;
+                    tabHost.setCurrentTab(currentTab);
+                    return true;
+                }
+                if( diff < -1 * limitx ){
+                    System.out.println("left");
+                    if(currentTab>0)currentTab--;
+                    tabHost.setCurrentTab(currentTab);
+                    return true;
+                }
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 }

@@ -70,8 +70,13 @@ public class TryAdapter extends ArrayAdapter<Root> {
         //配列拡張のための処理
         checkedPointImages = new String[10];
         checkedPoints = new String[10];
-        for( int i=0; i<checkedPointImagesCopy.length; i++)checkedPointImages[i]=checkedPointImagesCopy[i];
-        for( int i=0; i<checkedPointsCopy.length; i++)checkedPoints[i]=checkedPointsCopy[i];
+        if(checkedPointImagesCopy != null) {
+            for (int i = 0; i < checkedPointImagesCopy.length; i++)
+                checkedPointImages[i] = checkedPointImagesCopy[i];
+        }
+        if(checkedPointsCopy != null){
+            for( int i=0; i<checkedPointsCopy.length; i++)checkedPoints[i]=checkedPointsCopy[i];
+        }
 
 
         // 対応する行のオブジェクトを取得

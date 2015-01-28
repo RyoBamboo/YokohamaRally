@@ -56,7 +56,10 @@ public class CameraActivity extends Activity implements OnClickListener {
 
         //配列拡張のための処理
         checkedPointImages = new String[10];
-        for( int i=0; i<checkedPointImagesCopy.length; i++)checkedPointImages[i]=checkedPointImagesCopy[i];
+        if(checkedPointImagesCopy !=null) {
+            for (int i = 0; i < checkedPointImagesCopy.length; i++)
+                checkedPointImages[i] = checkedPointImagesCopy[i];
+        }
 
 
         mImageUri = getPhotoUri();
