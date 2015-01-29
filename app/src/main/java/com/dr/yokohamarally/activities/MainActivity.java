@@ -43,6 +43,8 @@ import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.AllRootFragment;
 import com.dr.yokohamarally.fragments.GpsService;
+import com.dr.yokohamarally.fragments.NewRootFragment;
+import com.dr.yokohamarally.fragments.RecoRootFragment;
 import com.dr.yokohamarally.models.Root;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
@@ -104,17 +106,16 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         tabSpec2 = tabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("新着順");
         // TabHostに追加
-        tabHost.addTab(tabSpec2, AllRootFragment.class, null);
+        tabHost.addTab(tabSpec2, NewRootFragment.class, null);
 
-        tabSpec3 = tabHost.newTabSpec("tab2");
-        tabSpec3.setIndicator("おすすめ");
+        tabSpec3 = tabHost.newTabSpec("tab3");
+        tabSpec3.setIndicator("オススメ");
         // TabHostに追加
-        tabHost.addTab(tabSpec3, AllRootFragment.class, null);
+        tabHost.addTab(tabSpec3, RecoRootFragment.class, null);
+
 
         // リスナーに登録
         tabHost.setOnTabChangedListener(this);
-
-        currentTab=0;
 
 
         //サイドバー指定
@@ -248,59 +249,6 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     }
     */
 
-
-
-    public static class BlankFragment extends Fragment implements AdapterView.OnItemClickListener{
-
-        private RequestQueue myQueue;
-
-        private ArrayList<Root> roots;
-        private RootAdapter adapter;
-        private ListView rootListView;
-
-        private MyData myData;
-
-        public BlankFragment() {
-            // Required empty public constructor
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-            View v = inflater.inflate(R.layout.fragment_all_root_list, container, false);
-
-            /*------------------
-             リストビュー表示処理
-            -----------------*/
-            // queue
-            myQueue = Volley.newRequestQueue(container.getContext());
-
-            // arrayList
-            roots = new ArrayList<Root>();
-
-            // adapter
-            adapter = new RootAdapter(container.getContext(), 0, roots);
-
-            // ListView
-            rootListView = (ListView)v.findViewById(R.id.root_list);
-            rootListView.setAdapter(adapter);
-            rootListView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
-
-            myData = new MyData(container.getContext(),myQueue,adapter);
-            myData.getAllRoot();
-
-            return v;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(getActivity(), RootSummaryActivity.class);
-            intent.putExtra("rootId", position + 1);
-            startActivity(intent);
-        }
-    }
 
 
     public void Logout() {

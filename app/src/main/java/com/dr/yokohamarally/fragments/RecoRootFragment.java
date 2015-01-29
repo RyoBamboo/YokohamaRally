@@ -1,13 +1,12 @@
 package com.dr.yokohamarally.fragments;
+
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AllRootFragment extends Fragment{
+public class RecoRootFragment extends Fragment{
 
     private RootAdapter mRootAdapter;
     private ArrayList<Root> roots;
@@ -57,7 +56,7 @@ public class AllRootFragment extends Fragment{
         });
 
         // http通信
-        RequestManager.addRequest(new JsonObjectRequest(Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
+        RequestManager.addRequest(new JsonObjectRequest(Method.GET, "http://yokohamarally.prodrb.com/api/get_reco_root.php", null, responseListener(), errorListener()), this);
     }
 
     private Response.Listener<JSONObject> responseListener() {
