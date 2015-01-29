@@ -57,11 +57,11 @@ public class LoginByEmail extends ActionBarActivity {
                             // ログイン成功したらユーザ情報をsharedPrefereceに保存
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                             sp.edit().putBoolean("isLogin", true).commit();
+                            sp.edit().putString("notice_flag", resultArray[4]).commit();
                             sp.edit().putString("profile_image", resultArray[3]).commit();
                             sp.edit().putString("email",resultArray[2]).commit();
                             sp.edit().putString("name", resultArray[1]).commit();
                             sp.edit().putString("id", resultArray[0]).commit();
-
                             System.out.println(resultArray[3]);
 
                             Intent intent =  new Intent(LoginByEmail.this, MainActivity.class);

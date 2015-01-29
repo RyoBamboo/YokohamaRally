@@ -28,6 +28,13 @@
             android:text="撮影"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        
+        <CheckBox
+            android:id="@+id/notice_flag"
+            android:text="チェックポイントに到着したら通知する"
+            android:checked="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/name"
