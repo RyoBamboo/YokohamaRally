@@ -44,8 +44,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.TryAdapter;
-import com.dr.yokohamarally.fragments.BitmapHolder;
-import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.core.EFlag;
 import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
 
@@ -84,11 +83,30 @@ public class TryActivity extends Activity {
     private int totalPoints;
     private int totalChecked;
 
+    public static EFlag mFlag;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();;
+        if(mFlag.getFlagState()){
+            finish();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
         System.out.println("Resume!!");
+        /*-------------------------------------
+         * カメラアクティビティを破棄
+         *-----------------------------------*/
+        Intent intent = getIntent();
+        // intentから指定キーの文字列を取得する
+        boolean  isFinish = intent.getBooleanExtra( "destroy", false );
+        if (isFinish) {
+            CameraActivity.mflag.setFlagState(true);
+        }
 
         // ダイアログを表示する
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -105,19 +123,12 @@ public class TryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
-
         roots = new ArrayList<Root>();
         mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
         mAllRootListView = (ListView)findViewById(R.id.try_list);
         mAllRootListView.setAdapter(mRootAdapter);
 
         mQueue = Volley.newRequestQueue(this);
-
-        // ダイアログを表示する
-        /*
-        DialogFragment newFragment = new CommentDialogFragment(mQueue);
-        newFragment.show(getFragmentManager(), "test");
-        */
 
         /*--------------------------------------------------
          * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得
@@ -272,15 +283,7 @@ public class TryActivity extends Activity {
         root.setImageUrl(url);
         _roots.add(root);
         mRootAdapter.addAll(_roots);
-
-
-
-
      }
-
-
-
-
 
     /*---------------------------------------------------------
      * SharedPreferenceに配列の保存と読み込みを可能にする関数。
@@ -316,7 +319,7 @@ public class TryActivity extends Activity {
     }
 
 
-   public static class CommentDialogFragment extends DialogFragment implements TextWatcher{
+   public static class CommentDialogFragment extends DialogFragment {
 
        private String comment;
        private static RequestQueue queue;
@@ -334,14 +337,12 @@ public class TryActivity extends Activity {
             final View content = inflater.inflate(R.layout.comment_dialog, null);
 
             EditText editText = (EditText)content.findViewById(R.id.comment);
-            editText.addTextChangedListener(this);
 
             builder.setView(content);
 
             builder.setMessage("コメントしてね")
                     .setPositiveButton("決定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-
 
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -367,25 +368,6 @@ public class TryActivity extends Activity {
                             buf.append(params);
                             String uri = buf.toString();
                             System.out.println(uri);
-
-                            /*
-                            queue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
-                                    new Response.Listener<JSONObject>()
-                                    {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            System.out.println("res=" + response);
-                                        }
-                                    },
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            System.out.println(error);
-                                        }
-                                    }
-                            ));
-                            */
-
 
                             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                                     new Response.Listener<String>() {
@@ -425,25 +407,6 @@ public class TryActivity extends Activity {
             // Create the AlertDialog object and return it
             return builder.create();
         }
-
-       @Override
-       public void beforeTextChanged(CharSequence s, int start, int count,int after) {
-           //操作前のEtidTextの状態を取得する
-       }
-
-       @Override
-       public void onTextChanged(CharSequence s, int start, int before, int count) {
-           //操作中のEtidTextの状態を取得する
-       }
-
-       @Override
-       public void afterTextChanged(Editable s) {
-           //操作後のEtidTextの状態を取得する
-           System.out.println(s);
-           comment = s.toString();
-           /*---　取得例　---*/
-
-       }
 
    }
 

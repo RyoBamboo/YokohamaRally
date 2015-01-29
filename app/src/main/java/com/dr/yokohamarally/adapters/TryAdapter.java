@@ -182,6 +182,8 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         Intent intent = new Intent(getContext(), CameraActivity.class);
                         intent.putExtra("reachingNumber", id);
                         getContext().startActivity(intent);
+
+
                     /*}else{
                         Toast.makeText(TryActivity.this, "まだ到着していません", Toast.LENGTH_LONG).show();
                     }*/
