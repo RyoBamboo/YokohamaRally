@@ -99,13 +99,13 @@ public class MyPageAdapter extends ArrayAdapter<Root> {
         myQueue.start();
 
 
-        final ScrollView scr =(ScrollView)convertView.findViewById(R.id.scrollView);
-        scr.post(new Runnable() {
-            public void run() {
-                scr.fullScroll(ScrollView.FOCUS_UP);
-            }
-        });
-
+//        final ScrollView scr =(ScrollView)convertView.findViewById(R.id.scrollView);
+//        scr.post(new Runnable() {
+//            public void run() {
+//                scr.fullScroll(ScrollView.FOCUS_UP);
+//            }
+//        });
+//
 
 
         return convertView;

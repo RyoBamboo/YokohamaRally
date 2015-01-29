@@ -10,6 +10,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
@@ -22,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,6 +60,8 @@ import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.navdrawer.SimpleSideDrawer;
+
+import junit.framework.TestCase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -148,6 +153,16 @@ public class MyPageActivity extends ActionBarActivity  {
                 }
             }
         });
+
+
+        String profileImageStr = sp.getString("profile_image", "");
+
+        ImageView profileImageView = (ImageView)findViewById(R.id.myimage);
+        byte[] b = Base64.decode(profileImageStr, Base64.DEFAULT);
+        Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+        profileImageView.setImageBitmap(bmp);
+
+
         String url = "http://yokohamarally.prodrb.com/api/get_clear_info.php?email=";
         String params = String.valueOf(mEmail);
         StringBuffer buf = new StringBuffer();
@@ -161,7 +176,7 @@ public class MyPageActivity extends ActionBarActivity  {
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(360);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -260,6 +275,9 @@ public class MyPageActivity extends ActionBarActivity  {
                         Log.d("json",""+json_user);
                         clearRoot = json_user.getString("clear");
                         clearDate = json_user.getString("clearDate");
+                        String name = json_user.getString("name");
+                        TextView myName = (TextView)findViewById(R.id.my_name);
+                        myName.setText(name);
                 }catch (Exception e) {
                     System.out.println(e);
                 }
