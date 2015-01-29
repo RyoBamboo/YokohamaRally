@@ -50,8 +50,10 @@ public class AllRootFragment extends Fragment{
         mAllRootListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int _id = (int)view.getTag(R.string.listItemTag);
+                System.out.println("id=" + _id);
                 Intent intent = new Intent(getActivity(), RootSummaryActivity.class);
-                intent.putExtra("rootId", position + 1);
+                intent.putExtra("rootId", _id);
                 startActivity(intent);
             }
         });
@@ -75,11 +77,13 @@ public class AllRootFragment extends Fragment{
                         JSONObject json_root = json_roots.getJSONObject(i);
 
                         String title = json_root.getString("title");
+                        int id = Integer.parseInt(json_root.getString("id"));
                         int rate = json_root.getInt("rate");
                         int number = i;
                         String number_title = String.valueOf(number + 1) + ". " + title;
                         String imageUrl = json_root.getString("image_url");
                         Root root = new Root();
+                        root.setId(id);
                         root.setTitle(number_title);
                         root.setImageUrl(imageUrl);
                         root.setRate(rate);
