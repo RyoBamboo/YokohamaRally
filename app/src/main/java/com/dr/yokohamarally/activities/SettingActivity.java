@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -47,6 +48,9 @@ public class SettingActivity extends ActionBarActivity {
     @InjectView(R.id.profile)
     ImageView profileImageView;
 
+    @InjectView(R.id.notice_flag)
+    CheckBox checkBox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +64,16 @@ public class SettingActivity extends ActionBarActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String name  = sp.getString("name", "");
         String email = sp.getString("email", "");
-        String profileImageStr = sp.getString("profile_image", "");
+        bmpString = sp.getString("profile_image", "");
+        String noticeFlag = sp.getString("notice_flag", "");
 
-        byte[] b = Base64.decode(profileImageStr, Base64.DEFAULT);
+
+        byte[] b = Base64.decode(bmpString, Base64.DEFAULT);
         Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+
+        if (noticeFlag.equals("1")) {
+            checkBox.setChecked(true);
+        }
 
         profileImageView.setImageBitmap(bmp);
         nameEditText.setText(name);
@@ -90,6 +100,14 @@ public class SettingActivity extends ActionBarActivity {
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                             EditText emailEditText = (EditText) findViewById(R.id.email);
                             EditText nameEditText = (EditText) findViewById(R.id.name);
+                            CheckBox checkBox = (CheckBox) findViewById(R.id.notice_flag);
+                            if (checkBox.isChecked()) {
+                                sp.edit().putString("notice_flag", "1").commit();
+                            } else {
+                                sp.edit().putString("notice_flag", "0").commit();
+                            }
+
+                            sp.edit().putString("profile_image", bmpString).commit();
                             sp.edit().putString("email", emailEditText.getText().toString()).commit();
                             sp.edit().putString("name", nameEditText.getText().toString()).commit();
 
@@ -110,7 +128,17 @@ public class SettingActivity extends ActionBarActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 EditText emailEditText = (EditText) findViewById(R.id.email);
                 EditText nameEditText = (EditText) findViewById(R.id.name);
+                CheckBox checkBox = (CheckBox) findViewById(R.id.notice_flag);
+                String notice_flag = "1";
+                if (checkBox.isChecked()) {
+                    notice_flag = "1";
+                } else {
+                    notice_flag = "0";
+                }
+
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+                params.put("notice_flag", notice_flag);
                 params.put("profile_image", bmpString);
                 params.put("id", sp.getString("id", ""));
                 params.put("email", emailEditText.getText().toString());
