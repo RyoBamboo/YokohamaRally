@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -62,6 +63,8 @@ public class MyPageAdapter extends ArrayAdapter<Root> {
 
 
 
+
+
         String imageUrl = "http://yokohamarally.prodrb.com/img/" + root.getImageUrl();
 
         /*------------
@@ -94,6 +97,15 @@ public class MyPageAdapter extends ArrayAdapter<Root> {
 
         myQueue.add(request);
         myQueue.start();
+
+
+//        final ScrollView scr =(ScrollView)convertView.findViewById(R.id.scrollView);
+//        scr.post(new Runnable() {
+//            public void run() {
+//                scr.fullScroll(ScrollView.FOCUS_UP);
+//            }
+//        });
+//
 
 
         return convertView;

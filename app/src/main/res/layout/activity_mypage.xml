@@ -5,17 +5,140 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
+
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+       <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/myimage"
+        android:padding="10dp"/>
+
         <LinearLayout
-            android:id="@+id/checkpoints"
-            android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ユーザ名"
+            android:gravity="center"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/my_name"
+            android:gravity="center"
+            android:textSize="40sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="過去の成績"
+                android:textSize="16dp"
+                android:paddingTop="21dp"
+                android:paddingLeft="12dp"
+                android:textColor="#222222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="12dp"
+                android:background="#ff424242"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"/>
+
+        </LinearLayout>
+
+           <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               android:padding="10dp">
+                <TextView
+                    android:text="クリアしたルート"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    />
+                <TextView
+                    android:gravity="center"
+                    android:text="投稿したルート"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+                 <TextView
+                     android:id="@+id/clear_count"
+                     android:textSize="40sp"
+                     android:gravity="center"
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     />
+                 <TextView
+                     android:gravity="center"
+                     android:text="0"
+                     android:textSize="40sp"
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     />
+             </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="クリアしたルート"
+                android:textSize="16dp"
+                android:paddingTop="21dp"
+                android:paddingLeft="12dp"
+                android:paddingBottom="5dp"
+                android:textColor="#222222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="12dp"
+                android:background="#ff424242"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"/>
+
+        </LinearLayout>
 
         <ListView
             android:layout_height="800dp"
@@ -23,11 +146,13 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:divider="@null"
-            android:padding="10dp"
+            android:padding="5dp"
             android:dividerHeight="10dp"/>
 
-    </LinearLayout>
 
+
+    </LinearLayout>
+    </ScrollView>
 
     <!--サイドバーの設定-->
     <LinearLayout
@@ -42,7 +167,5 @@
             android:layout_height="wrap_content" />
 
 
-
     </LinearLayout>
-
 </android.support.v4.widget.DrawerLayout>
