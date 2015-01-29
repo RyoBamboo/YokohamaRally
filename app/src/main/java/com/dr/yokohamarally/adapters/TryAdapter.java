@@ -1,6 +1,9 @@
 package com.dr.yokohamarally.adapters;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +15,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Base64;
@@ -66,6 +70,11 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
         String[] checkedPointsCopy = getArrayFromSharedPreference("checkedPoints");
         String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
+
+        // でバッグ
+        System.out.println(isAllCompleted());
+
+
 
         //配列拡張のための処理
         checkedPointImages = new String[10];
@@ -165,6 +174,12 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         checkedPoints[id] = "true";
                         saveArrayToSharedPreference(checkedPoints, "checkedPoints");
 
+                        // 全てのルートをクリアしたかチェック
+                        if (isAllCompleted() == true) {
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                            sp.edit().putBoolean("isCompleted", true).commit();
+                        }
+
                         Intent intent = new Intent(getContext(), CameraActivity.class);
                         intent.putExtra("reachingNumber", id);
                         getContext().startActivity(intent);
@@ -252,4 +267,28 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
         return null;
     }
+
+
+    // TODO: デバッグの為、強制的にtrueを返す
+    // 全てのルートをクリアしたか判定する関数
+    protected boolean isAllCompleted() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String[] completedPoint = getArrayFromSharedPreference("checkedPoints");
+        int checkpointNum = sp.getInt("checkpointNum", 0); // 全チェックポイント数
+        int compeletedCount = 0; // クリアしたチェックポイント数
+
+        for (String value : completedPoint) {
+            if (value.equals(true)) {
+                compeletedCount ++;
+            }
+        }
+
+        if (checkpointNum == compeletedCount) {
+            return true;
+        }
+
+        //return false;
+        return true;
+    }
+
 }
