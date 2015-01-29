@@ -85,6 +85,22 @@ public class TryActivity extends Activity {
     private int totalChecked;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("Resume!!");
+
+        // ダイアログを表示する
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isCompleted = sp.getBoolean("isCompleted", false);
+        if (isCompleted == true) {
+            DialogFragment newFragment = new CommentDialogFragment(mQueue);
+            newFragment.show(getFragmentManager(), "test");
+        }
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
@@ -98,8 +114,10 @@ public class TryActivity extends Activity {
         mQueue = Volley.newRequestQueue(this);
 
         // ダイアログを表示する
+        /*
         DialogFragment newFragment = new CommentDialogFragment(mQueue);
         newFragment.show(getFragmentManager(), "test");
+        */
 
         /*--------------------------------------------------
          * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得

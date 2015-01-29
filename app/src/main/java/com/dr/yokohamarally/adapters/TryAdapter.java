@@ -71,11 +71,6 @@ public class TryAdapter extends ArrayAdapter<Root> {
         String[] checkedPointsCopy = getArrayFromSharedPreference("checkedPoints");
         String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
 
-        // でバッグ
-        System.out.println(isAllCompleted());
-
-
-
         //配列拡張のための処理
         checkedPointImages = new String[10];
         checkedPoints = new String[10];
@@ -175,9 +170,13 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         saveArrayToSharedPreference(checkedPoints, "checkedPoints");
 
                         // 全てのルートをクリアしたかチェック
+                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                         if (isAllCompleted() == true) {
-                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                            System.out.println("completed");
                             sp.edit().putBoolean("isCompleted", true).commit();
+                        } else {
+                            sp.edit().putBoolean("isCompleted", false).commit();
+                            System.out.println("No completed");
                         }
 
                         Intent intent = new Intent(getContext(), CameraActivity.class);
@@ -277,18 +276,21 @@ public class TryAdapter extends ArrayAdapter<Root> {
         int checkpointNum = sp.getInt("checkpointNum", 0); // 全チェックポイント数
         int compeletedCount = 0; // クリアしたチェックポイント数
 
+
         for (String value : completedPoint) {
-            if (value.equals(true)) {
+            if (value.equals("true")) {
                 compeletedCount ++;
             }
         }
+
+        System.out.println("check=" + checkpointNum);
+        System.out.println("comp=" + compeletedCount);
 
         if (checkpointNum == compeletedCount) {
             return true;
         }
 
-        //return false;
-        return true;
+        return false;
     }
 
 }
