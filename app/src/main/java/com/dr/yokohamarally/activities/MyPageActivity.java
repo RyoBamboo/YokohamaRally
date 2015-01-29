@@ -143,8 +143,8 @@ public class MyPageActivity extends ActionBarActivity  {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listView = (ListView) parent;
                 String item = (String) listView.getItemAtPosition(position);
-                if("マイページ".equals(item)){
-                    Intent intent = new Intent(MyPageActivity.this, MyPageActivity.class);
+                if("トップページ".equals(item)){
+                    Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
                 }else if("設定".equals(item)){
 

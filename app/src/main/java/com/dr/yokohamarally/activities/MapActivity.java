@@ -243,6 +243,9 @@ public class MapActivity extends Activity {
         if( sub_x * 0.85 > sub_y  )sub_max =  0.0062 /sub_x;
 
 
+
+
+        sub_max = 0.355;
         if(max_y == min_y && max_x == min_x)sub_max = 0.39;
 
         System.out.println("x= " + sub_x);
