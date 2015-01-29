@@ -24,4 +24,8 @@
     <string name="title_activity_my_page">マイページ</string>
     <string name="title_activity_setting">SettingActivity</string>
 
+    <!-- tag -->
+    <string name="listItemTag">1</string>
+
+
 </resources>
