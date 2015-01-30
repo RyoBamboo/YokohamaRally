@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -49,6 +50,12 @@ public class TryAdapter extends ArrayAdapter<Root> {
     private String[]  checkedPoints = new String[10];
     private String[]  checkedPointImages = new String[10];
 
+    private String[] tryLatitude;
+    private String[] tryLongitude;
+    private double[] dLongitude;
+    private double[] dLatitude;
+    private int pointNum;
+
     public TryAdapter(Context context, int resource, ArrayList<Root> roots)  {
 
         // ArrayAdapterのコンストラクタ
@@ -61,6 +68,29 @@ public class TryAdapter extends ArrayAdapter<Root> {
     @Override
     // 各行に表示するViewを返すメソッド
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        tryLatitude = getArrayFromSharedPreference("tryLatitude");
+        tryLongitude = getArrayFromSharedPreference("tryLongitude");
+
+
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        pointNum = sp.getInt("checkpointNum", 0);
+
+
+
+        dLatitude = new double[pointNum+1];
+        dLongitude = new double[pointNum+1];
+
+
+
+
+        for(int i = 0 ; i < pointNum; i++){
+            Log.d("aa" , dLatitude.length +"");
+
+            dLatitude[i] = Double.parseDouble(tryLatitude[i]);
+            dLongitude[i] = Double.parseDouble(tryLongitude[i]);
+        }
 
         // MEMO by take: リストのリロード機能実装しないので必要ない可能性あり
         if (convertView == null) {
@@ -161,32 +191,39 @@ public class TryAdapter extends ArrayAdapter<Root> {
                             Log.d("MYTAG", "no!");
 
                         }
+                            //到着判定
+                            if (Math.abs(latitude - dLatitude[id]) < 0.006 && Math.abs(longitude - dLongitude[id]) < 0.006) {
 
-                        //到着判定
-                        //if( (Math.abs(TryInformation.latitude[id] - latitude) < 1.0 ) && (Math.abs(TryInformation.longitude[id] - longitude) < 1.0 )) {
+                                Log.d("1",""+( dLatitude[id]));
+                                Log.d("2",""+( latitude));
+                                // 到達をtrueにする
+                                checkedPoints[id] = "true";
+                                saveArrayToSharedPreference(checkedPoints, "checkedPoints");
 
-                        // 到達をtrueにする
-                        checkedPoints[id] = "true";
-                        saveArrayToSharedPreference(checkedPoints, "checkedPoints");
+                                // 全てのルートをクリアしたかチェック
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                if (isAllCompleted() == true) {
+                                    System.out.println("completed");
+                                    sp.edit().putBoolean("isCompleted", true).commit();
+                                } else {
+                                    sp.edit().putBoolean("isCompleted", false).commit();
+                                    System.out.println("No completed");
+                                }
 
-                        // 全てのルートをクリアしたかチェック
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-                        if (isAllCompleted() == true) {
-                            System.out.println("completed");
-                            sp.edit().putBoolean("isCompleted", true).commit();
-                        } else {
-                            sp.edit().putBoolean("isCompleted", false).commit();
-                            System.out.println("No completed");
-                        }
-
-                        Intent intent = new Intent(getContext(), CameraActivity.class);
-                        intent.putExtra("reachingNumber", id);
-                        getContext().startActivity(intent);
+                                Intent intent = new Intent(getContext(), CameraActivity.class);
+                                intent.putExtra("reachingNumber", id);
+                                getContext().startActivity(intent);
 
 
-                    /*}else{
-                        Toast.makeText(TryActivity.this, "まだ到着していません", Toast.LENGTH_LONG).show();
-                    }*/
+                            } else {
+                                Log.d("1",""+( dLatitude[id]));
+                                Log.d("2",""+( latitude));
+
+                                Toast.makeText(getContext(), "まだ到着していません", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
                     }
                 }
             });

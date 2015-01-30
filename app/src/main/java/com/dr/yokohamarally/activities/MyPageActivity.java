@@ -147,7 +147,11 @@ public class MyPageActivity extends ActionBarActivity  {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
                 }else if("設定".equals(item)){
-
+                    Intent intent = new Intent(MyPageActivity.this, SettingActivity.class);
+                    startActivity(intent);
+                }else if("マイラリー投稿".equals(item)){
+                    Intent intent = new Intent(MyPageActivity.this, FormActivity.class);
+                    startActivity(intent);
                 }else if("ログアウト".equals(item)){
                     Logout();
                 }

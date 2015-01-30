@@ -45,6 +45,7 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.TryAdapter;
 import com.dr.yokohamarally.core.EFlag;
+import com.dr.yokohamarally.fragments.GpsService;
 import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
 
@@ -67,6 +68,8 @@ public class TryActivity extends Activity {
     private int    rootId;
     private String[]  checkedPoints = new String[10];
     private String[]  checkedPointImages = new String[10];
+    private String[]  latitude = new String[10];
+    private String[]  longitude = new String[10];
     private int    rootRate;
     private String rootTitle;
     private String rootSummary;
@@ -191,14 +194,29 @@ public class TryActivity extends Activity {
                                 Log.d("MYTAG",json_point.getString("image_url") + "");
                                 pointImageUrls[i] = json_point.getString("image_url");
                                 pointImageTitle[i] = json_point.getString("name");
-                                TryInformation.latitude[i] = json_point.getDouble("latitude");
-                                TryInformation.longitude[i] = json_point.getDouble("longitude");
+                                double pointLatitude = json_point.getDouble("latitude");
+                                double pointLongitude = json_point.getDouble("longitude");
+                                latitude[i] = ""+pointLatitude;
+                                longitude[i] = ""+pointLongitude;
 
                             }
+
+
+
+
 
                         } catch (Exception e) {
 
                         }
+
+                        saveArrayToSharedPreference(latitude,"tryLongitude");
+                        saveArrayToSharedPreference(longitude,"tryLatitude");
+                        saveArrayToSharedPreference(pointImageTitle,"tryTitle");
+
+                        //サービス開
+                        SharedPreferences ssp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        String noticeFlag = ssp.getString("notice_flag", "");
+                        if("1".equals(noticeFlag))startService(new Intent(TryActivity.this, GpsService.class));
 
 
 
@@ -424,5 +442,7 @@ public class TryActivity extends Activity {
         }
 
    }
+
+
 
 }
