@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -42,6 +43,7 @@ public class NewRootFragment extends Fragment{
         mAllRootListView = (ListView)view.findViewById(R.id.root_list);
         mAllRootListView.setAdapter(mRootAdapter);
         setupAllRootListView();
+
         return view;
     }
 
@@ -94,6 +96,7 @@ public class NewRootFragment extends Fragment{
 
                     // adapterに反映、追加
                     mRootAdapter.addAll(_roots);
+                    setListViewHeightBasedOnChildren(mAllRootListView);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -108,5 +111,27 @@ public class NewRootFragment extends Fragment{
                 System.out.println(error);
             }
         };
+    }
+
+    // リストビューの高さが一行になってしまうバグ修正の為のコード
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            if (listItem instanceof ViewGroup) {
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }
