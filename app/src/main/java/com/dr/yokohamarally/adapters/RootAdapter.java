@@ -48,11 +48,7 @@ public class RootAdapter extends ArrayAdapter<Root> {
 
         // 対応する行のオブジェクトを取得
         Root root = (Root)getItem(position);
-
-        System.out.println(root.getId());
-
         convertView.setTag(R.string.listItemTag, root.getId());
-
         convertView.setBackgroundResource(R.drawable.round_corner_list);
 
         // タイトルをセット
@@ -76,6 +72,10 @@ public class RootAdapter extends ArrayAdapter<Root> {
             mLinerLayout.addView(rateImageView);
         }
 
+        // クリア人数をセット
+        TextView completedCountView = (TextView)convertView.findViewById(R.id.completedCount);
+        int completedCount = root.getCompletedCount();
+        completedCountView.setText("クリア人数:" + String.valueOf(completedCount));
 
         String imageUrl = "http://yokohamarally.prodrb.com/img/" + root.getImageUrl();
 
