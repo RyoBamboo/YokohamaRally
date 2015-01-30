@@ -126,34 +126,6 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
             }
         });
 
-        /*
-        tryButton = (Button)findViewById(R.id.try_button);
-        tryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                int beforeRootId = sp.getInt("rootId", 0);
-                if (beforeRootId != 0 && beforeRootId != rootId) {
-                    // 挑戦するルートを変更するときはダイアログを出す
-                    CommonDialogFragment alertDialogFragment = CommonDialogFragment
-                            .newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますがOK????");
-                    alertDialogFragment.setDialogListener(this);
-
-
-                }
-
-                // ルートidを挑戦中のルートidとして登録
-                sp.edit().putInt("rootId", rootId).commit();
-
-
-                // 画面の遷移
-                Intent intent = new Intent(RootSummaryActivity.this, TryActivity.class);
-                startActivity(intent);
-            }
-        });
-        */
-
         myQueue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>()
                 {
@@ -180,7 +152,6 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
                             pointSummaries = new String[json_points.length()];
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
-                                System.out.println(json_point);
                                 pointImageUrls[i] = json_point.getString("image_url");
                                 pointTitles[i] = json_point.getString("name");
                                 pointSummaries[i] = json_point.getString("summary");
@@ -191,11 +162,14 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
                                 JSONObject json_comment = json_comments.getJSONObject(i);
                                 String comment = json_comment.getString("comment");
                                 String name = json_comment.getString("name");
+                                String userImage = json_comment.getString("userImage");
+                                System.out.println(userImage);
                                 String date = json_comment.getString("date");
                                 int rate = json_comment.getInt("rate");
                                 final Root root = new Root();
                                 final ArrayList<Root> _roots = new ArrayList<Root>();
                                 root.setName(name);
+                                root.setUseImage(userImage);
                                 root.setComments(comment);
                                 root.setRate(rate);
                                 root.setClearDate(date);
