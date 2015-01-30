@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -119,6 +120,8 @@ public class TryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
+
+
         roots = new ArrayList<Root>();
         mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
         mAllRootListView = (ListView)findViewById(R.id.try_list);
@@ -220,7 +223,10 @@ public class TryActivity extends Activity {
                         //サービス開始
                         SharedPreferences ssp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                         String noticeFlag = ssp.getString("notice_flag", "");
-                        if("1".equals(noticeFlag))startService(new Intent(TryActivity.this, GpsService.class));
+                        if("1".equals(noticeFlag)){
+                            stopService(new Intent(getBaseContext(), GpsService.class));
+                            startService(new Intent(getBaseContext(), GpsService.class));
+                        }
 
 
 

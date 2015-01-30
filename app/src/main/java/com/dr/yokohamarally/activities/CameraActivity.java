@@ -129,10 +129,11 @@ public class CameraActivity extends Activity implements OnClickListener {
                     inputStream.close();
                 } catch (Exception e) {}
 
-
+                Log.d("yokoda",imageBitmap.getWidth()+"");
+                Log.d("tateda",imageBitmap.getHeight()+"");
                 // 回転マトリックス作成（90度回転）
                 Matrix mat = new Matrix();
-                mat.postRotate(90);
+                if(imageBitmap.getWidth() > imageBitmap.getHeight()) mat.postRotate(90);
 
                 // 回転したビットマップを作成
                 Bitmap bmp = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), mat, true);

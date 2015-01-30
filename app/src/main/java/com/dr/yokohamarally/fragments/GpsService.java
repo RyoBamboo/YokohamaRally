@@ -88,7 +88,8 @@ public class GpsService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
 
         for(int i=0 ; i < pointNum ; i++) {
-            if (Math.abs(location.getLatitude() - dLatitude[i]) < 0.0045 && Math.abs(location.getLongitude() - dLonguitude[i]) < 0.0045){
+            System.out.println(i  +" " +( location.getLatitude() - dLatitude[i]));
+            if (Math.abs(location.getLatitude() - dLatitude[i]) < 0.003 && Math.abs(location.getLongitude() - dLonguitude[i]) < 0.003){
                 count[i]++;
                 if(count[i] == 1) {
                     String message = title[i] + "付近に到着しました";

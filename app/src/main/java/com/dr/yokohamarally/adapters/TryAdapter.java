@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 public class TryAdapter extends ArrayAdapter<Root> {
 
     // ビューを動的に書き換えるインフレイター
+    private ProgressDialog progressDialog;
     private LayoutInflater layoutInflater;
     private double latitude;
     private  double longitude;
@@ -55,6 +57,8 @@ public class TryAdapter extends ArrayAdapter<Root> {
     private double[] dLongitude;
     private double[] dLatitude;
     private int pointNum;
+    private Thread thread;
+
 
     public TryAdapter(Context context, int resource, ArrayList<Root> roots)  {
 
@@ -164,6 +168,9 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         ad.show();
                     } else {
 
+
+
+
                         //GPSが有効だった場合
 
                         // ロケーションマネージャの取得
@@ -173,26 +180,35 @@ public class TryAdapter extends ArrayAdapter<Root> {
                         String bs = lm.getBestProvider(new Criteria(), true);
 
                         Location locate = lm.getLastKnownLocation(bs);
-                        if (locate == null) {
-                            // 現在地が取得できなかった場合，GPSで取得してみる
-                            locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        }
-                        if (locate == null) {
-                            // 現在地が取得できなかった場合，無線測位で取得してみる
-                            locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        }
-                        if (locate != null) { // 現在地情報取得成功
-                            // 緯度の取得
-                            latitude = (locate.getLatitude());
-                            // 経度の取得
-                            longitude = (locate.getLongitude());
-                        }
-                        if (locate == null) {
-                            Log.d("MYTAG", "no!");
 
+                        locate = null;
+
+
+                        while(locate == null) {
+
+                            if (locate == null) {
+                                // 現在地が取得できなかった場合，GPSで取得してみる
+                                locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            }
+                            if (locate == null) {
+                                // 現在地が取得できなかった場合，無線測位で取得してみる
+                                locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            }
+                            if (locate != null) { // 現在地情報取得成功
+                                // 緯度の取得
+                                latitude = (locate.getLatitude());
+                                // 経度の取得
+                                longitude = (locate.getLongitude());
+                            }
+                            if (locate == null) {
+                                Log.d("MYTAG", "no!");
+
+                            }
                         }
+
+                        System.out.println(locate);
                             //到着判定
-                            if (Math.abs(latitude - dLatitude[id]) < 0.006 && Math.abs(longitude - dLongitude[id]) < 0.006) {
+                            if (Math.abs(latitude - dLatitude[id]) < 0.0058 && Math.abs(longitude - dLongitude[id]) < 0.0058) {
 
                                 Log.d("1",""+( dLatitude[id]));
                                 Log.d("2",""+( latitude));
@@ -331,5 +347,8 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
         return false;
     }
+
+
+
 
 }
