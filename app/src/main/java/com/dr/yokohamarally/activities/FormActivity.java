@@ -74,7 +74,7 @@ public class FormActivity extends Activity{
             img.setImageBitmap(bmp);
         }else{
             ImageView img = (ImageView)findViewById(R.id.image_sammary);
-            img.setImageResource(R.drawable.ookami);
+            img.setImageResource(R.drawable.noimage);
         }
 
 
@@ -139,12 +139,15 @@ public class FormActivity extends Activity{
                     count++;
                     purasuForm();
                 }else{
-                    Toast.makeText(getApplicationContext(), "ポイントの最大数は５です", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "ポイントの最大数は５です", Toast.LENGTH_SHORT).show();
 
                 }
 
             }
         });
+
+
+
 
         final Button passive_button = (Button)findViewById(R.id.submit);
         passive_button.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +172,7 @@ public class FormActivity extends Activity{
                     SpannableStringBuilder sb3 = (SpannableStringBuilder)pointTitle[i].getText();
                     pointString[i] = sb3.toString();
                     System.out.println(i+1 + " "+pointString[i] );
-                    if("未登録".equals(pointAdress[i]) ||"".equals(pointAdress[i])){
+                    if("未登録".equals(pointAdress[i]) ||"".equals(pointAdress[i]) || pointAdress[i]==null){
                         oneDo("の場所をしてしてください",i+1);
                         return;
                     }
@@ -189,24 +192,36 @@ public class FormActivity extends Activity{
 
         });
 
+        final Button mainasu_button = (Button)findViewById(R.id.mainasu_button);
+        mainasu_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (count > 0){
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+                    layout.removeViewAt(count);
+                    count--;
+                }else{
+                    Toast.makeText(getApplicationContext(), "１つはポイントを入力してください", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
     }
 
     public void purasuForm(int i){
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
-        View view = getLayoutInflater().inflate(R.layout.form_line, null);
+        View view = getLayoutInflater().inflate(R.layout.activity_form, null);
         TextView line =(TextView)view.findViewById(R.id.point_line);
         line.setText("ポイント"+(i+1));
-        layout.addView(view);
-        view = getLayoutInflater().inflate(R.layout.activity_form, null);
+
         pointTitle[i] = (EditText)view.findViewById(R.id.name);
-        if(pointString[i] != null){
-            pointTitle[i].setText(pointString[i]);
-        }else{
-            pointTitle[i].setText("未登録");
-        }
+        pointTitle[i].setText(pointString[i]);
         TextView adress = (TextView)view.findViewById(R.id.form_point_text);
-        adress.setText(pointAdress[i]);
+        if(pointAdress !=null)adress.setText(pointAdress[i]);
         Button point_button = (Button)view.findViewById(R.id.form_point);
         point_button.setId(i);
         point_button.setOnClickListener(new View.OnClickListener() {
@@ -239,11 +254,10 @@ public class FormActivity extends Activity{
     public void purasuForm(){
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
-        View view = getLayoutInflater().inflate(R.layout.form_line, null);
+        View view = getLayoutInflater().inflate(R.layout.activity_form, null);
+
         TextView line =(TextView)view.findViewById(R.id.point_line);
         line.setText("ポイント"+(count+1));
-        layout.addView(view);
-        view = getLayoutInflater().inflate(R.layout.activity_form, null);
         pointTitle[count] = (EditText)view.findViewById(R.id.name);
         Button point_button = (Button)view.findViewById(R.id.form_point);
         point_button.setId(count);
