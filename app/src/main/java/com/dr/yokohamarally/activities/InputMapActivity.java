@@ -107,14 +107,16 @@ public class InputMapActivity extends Activity {
                                 }
                             }
 
-                        if ("横浜市".indexOf(adress) != -1) {
+                        if (adress.indexOf("横浜市") != -1) {
+                            String[] adr = adress.split(" ", 0);
+                            if(adr.length >=2)adress = adr[1];
                             check();
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "横浜市を選択してください", Toast.LENGTH_LONG).show();
                         }
 
-                    } catch (IOException e) {
+                    }catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                         }

@@ -1,6 +1,8 @@
 package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -66,8 +68,8 @@ public class FormActivity extends Activity{
         }
 
 
-        String[] pointStringCopy = getArrayFromSharedPreference("formPoint");
-        String[] pointAdressCopy = getArrayFromSharedPreference("pointAdress");
+        final String[] pointStringCopy = getArrayFromSharedPreference("formPoint");
+        final String[] pointAdressCopy = getArrayFromSharedPreference("pointAdress");
 
         Intent intent = getIntent();
         int number = intent.getIntExtra("pointId" ,0);
@@ -87,20 +89,6 @@ public class FormActivity extends Activity{
             purasuForm(i);
 
         }
-
-
-
-//        //ライン作成
-//        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
-//        View view = getLayoutInflater().inflate(R.layout.form_line, null);
-//        TextView line =(TextView)view.findViewById(R.id.point_line);
-//        line.setText("ポイント"+(1));
-//        layout.addView(view);
-//
-//        //ポイントフォーム作成
-//        view = getLayoutInflater().inflate(R.layout.activity_form, null);
-//        pointTitle[0] = (EditText)view.findViewById(R.id.name);
-//        layout.addView(view);
 
 
         final Button img_button = (Button)findViewById(R.id.select);
@@ -137,32 +125,59 @@ public class FormActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                count++;
-                purasuForm();
+                if (count < 4){
+                    count++;
+                    purasuForm();
+                }else{
+                    Toast.makeText(getApplicationContext(), "ポイントの最大数は５です", Toast.LENGTH_LONG).show();
+
+                }
 
             }
         });
 
-//        Button form_button = (Button)view.findViewById(R.id.form_point);
-//        form_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                for(int i = 0; i < count ; i++){
-//                    SpannableStringBuilder sb = (SpannableStringBuilder)pointTitle[i].getText();
-//                    pointString[i] = sb.toString();
-//                }
-//                saveArrayToSharedPreference(pointString ,"formPoint");
-//
-//
-//                Intent intent = new Intent(FormActivity.this, InputMapActivity.class);
-//                intent.putExtra("rootId", count);
-//                startActivity(intent);
-//            }
-//        });
+        final Button passive_button = (Button)findViewById(R.id.submit);
+        passive_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText rarryName = (EditText)findViewById(R.id.rarry_name);
+                SpannableStringBuilder sb = (SpannableStringBuilder) rarryName.getText();
+
+                EditText rarrySammary = (EditText)findViewById(R.id.rarry_sammary);
+                SpannableStringBuilder sb2 = (SpannableStringBuilder) rarrySammary.getText();
+                if("".equals(sb.toString())){
+                    oneDo("ラリー名を記入してください",-1);
+                    return;
+                }
+                if("".equals(sb2.toString())){
+                    oneDo("ラリー概要を記入してください",-1);
+                    return;
+                }
+
+                for(int i = 0; i <= count ; i++){
+
+                    SpannableStringBuilder sb3 = (SpannableStringBuilder)pointTitle[i].getText();
+                    pointString[i] = sb3.toString();
+                    System.out.println(i+1 + " "+pointString[i] );
+                    if("未登録".equals(pointAdress[i]) ||"".equals(pointAdress[i])){
+                        oneDo("の場所をしてしてください",i+1);
+                        return;
+                    }
+                    if("".equals(pointString[i]) || pointString[i] == null){
+                        oneDo("のポイント名を記入してください",i+1);
+                        return;
+                    }
+                }
+
+
+                checkDialog();
+
+
+            }
 
 
 
+        });
 
     }
 
@@ -312,6 +327,56 @@ public class FormActivity extends Activity{
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
             sp.edit().putString("samarry_image", bmpString).commit();
         }
+    }
+
+    public void oneDo(String message , int i){
+
+        if(i == -1 )Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        if(i > -1)Toast.makeText(getApplicationContext(), "ポイント"+i+message, Toast.LENGTH_LONG).show();
+
+
+    }
+
+    public void checkDialog(){
+
+        new AlertDialog.Builder(FormActivity.this)
+                .setTitle("投稿してよろしいですか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO ここに書いてほしい
+                                EditText rarryName = (EditText)findViewById(R.id.rarry_name);
+                                SpannableStringBuilder sb = (SpannableStringBuilder) rarryName.getText();
+                                String rootName = sb.toString(); //TODO  ルート名
+
+                                EditText rarrySammary = (EditText)findViewById(R.id.rarry_sammary);
+                                SpannableStringBuilder sb2 = (SpannableStringBuilder) rarrySammary.getText();
+                                String rootSummary = sb2.toString(); //TODO ルート概要
+
+                                String[] pointLatitude = getArrayFromSharedPreference("pointLatitude"); //TODO Latitude
+                                String[] pointLongitude =getArrayFromSharedPreference("pointLongitude");//TODO Longitude
+
+                                String  image = sp.getString("samarry_image", ""); //TODO image
+
+                                for(int i = 0; i <= count ; i++){
+                                    SpannableStringBuilder sb3 = (SpannableStringBuilder)pointTitle[i].getText();
+                                    pointString[i] = sb3.toString(); //TODO ポイント名
+                                }
+
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                .show();
+
     }
 
 }
