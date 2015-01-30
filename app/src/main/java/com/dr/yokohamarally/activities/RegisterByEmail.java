@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -14,11 +16,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.filters.EmailFilter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class RegisterByEmail extends ActionBarActivity {
@@ -26,17 +30,43 @@ public class RegisterByEmail extends ActionBarActivity {
     private RequestQueue myQueue;
     private String name;
 
+    private InputFilter[] emailFilter = { new EmailFilter() };
+
+    @InjectView(R.id.name)
+    EditText nameEditText;
+
+    @InjectView(R.id.email)
+    EditText emailEditText;
+
+    @InjectView(R.id.password)
+    EditText passEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_by_email);
         ButterKnife.inject(this);
+
+        // フィルターのセット
+        emailEditText.setFilters(emailFilter);
+        passEditText.setFilters(emailFilter);
+
     }
 
 
     @OnClick(R.id.submit)
     void submitRegister() {
-        System.out.println("onClick");
+
+        /*------------------------------
+        * バリデーション
+        *-----------------------------*/
+        String _email = emailEditText.getText().toString();
+        String _pass = passEditText.getText().toString();
+        String _name = nameEditText.getText().toString();
+
+        if (_name.length()==0) {Toast.makeText(this, "名前を入力してください", Toast.LENGTH_LONG).show(); return;}
+        if (_email.length() == 0) {Toast.makeText(this, "メールアドレスを入力してください", Toast.LENGTH_LONG).show();return;}
+        if (_pass.length()==0) {Toast.makeText(this, "パスワードを入力してください", Toast.LENGTH_LONG).show(); return;}
 
         // queue
         myQueue = Volley.newRequestQueue(this);
@@ -60,7 +90,7 @@ public class RegisterByEmail extends ActionBarActivity {
                             Intent intent = new Intent(RegisterByEmail.this, MainActivity.class);
                             startActivity(intent);
                         } else if(s.equals("isUser")) {
-                            System.out.println("既にメールアドレスが登録されています");
+                            Toast.makeText(getBaseContext(), "既に登録されているメールアドレスです", Toast.LENGTH_LONG).show();
                         }
                     }
                 },

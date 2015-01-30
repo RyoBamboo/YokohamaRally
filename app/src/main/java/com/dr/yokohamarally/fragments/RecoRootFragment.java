@@ -1,13 +1,12 @@
 package com.dr.yokohamarally.fragments;
+
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AllRootFragment extends Fragment{
+public class RecoRootFragment extends Fragment{
 
     private RootAdapter mRootAdapter;
     private ArrayList<Root> roots;
@@ -48,6 +47,7 @@ public class AllRootFragment extends Fragment{
     private void setupAllRootListView() {
         // ここでタップされた時のリスナー登録
         mAllRootListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int _id = (int)view.getTag(R.string.listItemTag);
@@ -59,7 +59,7 @@ public class AllRootFragment extends Fragment{
         });
 
         // http通信
-        RequestManager.addRequest(new JsonObjectRequest(Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
+        RequestManager.addRequest(new JsonObjectRequest(Method.GET, "http://yokohamarally.prodrb.com/api/get_reco_root.php", null, responseListener(), errorListener()), this);
     }
 
     private Response.Listener<JSONObject> responseListener() {
@@ -76,8 +76,8 @@ public class AllRootFragment extends Fragment{
                     for (int i = 0; i < json_roots.length(); i++) {
                         JSONObject json_root = json_roots.getJSONObject(i);
 
-                        String title = json_root.getString("title");
                         int id = Integer.parseInt(json_root.getString("id"));
+                        String title = json_root.getString("title");
                         int rate = json_root.getInt("rate");
                         int number = i;
                         String number_title = String.valueOf(number + 1) + ". " + title;

@@ -2,6 +2,8 @@ package com.dr.yokohamarally.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -11,17 +13,24 @@ import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +40,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.TryAdapter;
-import com.dr.yokohamarally.fragments.BitmapHolder;
-import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.core.EFlag;
 import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
 
@@ -45,6 +54,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TryActivity extends Activity {
 
@@ -72,17 +83,52 @@ public class TryActivity extends Activity {
     private int totalPoints;
     private int totalChecked;
 
+    public static EFlag mFlag;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();;
+        if(mFlag.getFlagState()){
+            finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("Resume!!");
+        /*-------------------------------------
+         * カメラアクティビティを破棄
+         *-----------------------------------*/
+        Intent intent = getIntent();
+        // intentから指定キーの文字列を取得する
+        boolean  isFinish = intent.getBooleanExtra( "destroy", false );
+        if (isFinish) {
+            CameraActivity.mflag.setFlagState(true);
+        }
+
+        // ダイアログを表示する
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isCompleted = sp.getBoolean("isCompleted", false);
+        if (isCompleted == true) {
+            DialogFragment newFragment = new CommentDialogFragment(mQueue);
+            newFragment.show(getFragmentManager(), "test");
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
-
 
         roots = new ArrayList<Root>();
         mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
         mAllRootListView = (ListView)findViewById(R.id.try_list);
         mAllRootListView.setAdapter(mRootAdapter);
 
+        mQueue = Volley.newRequestQueue(this);
 
         /*--------------------------------------------------
          * 挑戦中のルートIDと達成したチェックポイントのIDと画像を取得
@@ -110,7 +156,6 @@ public class TryActivity extends Activity {
         /*--------------------------------
          * 挑戦中のルート情報をIDから取得
          *------------------------------*/
-        mQueue = Volley.newRequestQueue(this);
         String url = "http://yokohamarally.prodrb.com/api/get_root_by_id.php?id=";
         String params = String.valueOf(sp.getInt("rootId", 0));
         StringBuffer buf = new StringBuffer();
@@ -142,6 +187,14 @@ public class TryActivity extends Activity {
                             pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
                             pointImageTitle = new String[json_points.length()]; // ポイントの画像タイトルを保存する配列
                             totalPoints = json_points.length();
+
+                            /*--------------------------------------------
+                             * チェックポイントの数を保存
+                             *------------------------------------------*/
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                            sp.edit().putInt("checkpointNum", json_points.length()).commit();
+
+
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 Log.d("MYTAG",json_point.getString("image_url") + "");
@@ -230,15 +283,7 @@ public class TryActivity extends Activity {
         root.setImageUrl(url);
         _roots.add(root);
         mRootAdapter.addAll(_roots);
-
-
-
-
      }
-
-
-
-
 
     /*---------------------------------------------------------
      * SharedPreferenceに配列の保存と読み込みを可能にする関数。
@@ -272,5 +317,97 @@ public class TryActivity extends Activity {
 
         return null;
     }
+
+
+   public static class CommentDialogFragment extends DialogFragment {
+
+       private String comment;
+       private static RequestQueue queue;
+
+       public CommentDialogFragment(RequestQueue queue) {
+           this.queue = queue;
+       }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View content = inflater.inflate(R.layout.comment_dialog, null);
+
+            EditText editText = (EditText)content.findViewById(R.id.comment);
+
+            builder.setView(content);
+
+            builder.setMessage("コメントしてね")
+                    .setPositiveButton("決定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+                            int root_id = sp.getInt("rootId", 0);
+
+                            RatingBar ratingBar = (RatingBar) content.findViewById(R.id.rate);
+                            float rate = ratingBar.getRating();
+
+                            //EditText editText = (EditText)content.findViewById(R.id.comment);
+
+                            final String rootStr = String.valueOf(root_id);
+                            final String rateStr = String.valueOf(rate);
+                            final String userStr = sp.getString("id", "");
+                            //String comment = editText.getText().toString();
+                            System.out.println("comment=" + comment);
+
+                            // コメント投稿処理
+                            String url = "http://yokohamarally.prodrb.com/api/create_comment.php?";
+
+                            String params = "user_id=" + userStr + "&root_id=" + rootStr + "&rate=" + rateStr + "&comment=" + comment;
+                            StringBuffer buf = new StringBuffer();
+                            buf.append(url);
+                            buf.append(params);
+                            String uri = buf.toString();
+                            System.out.println(uri);
+
+                            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String s) {
+                                            System.out.println(s);
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            System.out.println(error);
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> params = new HashMap<String, String>();
+
+                                    params.put("user_id", userStr);
+                                    params.put("root_id", rootStr);
+                                    params.put("rate", rateStr);
+                                    params.put("comment", comment);
+
+                                    return params;
+                                }
+                            };
+
+                            queue.add(postRequest);
+                            queue.start();
+                        }
+                    })
+                    .setNegativeButton("閉じる", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+
+   }
 
 }
