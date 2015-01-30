@@ -55,6 +55,9 @@ import butterknife.OnClick;
 
 public class RootSummaryActivity extends FragmentActivity implements DialogListener {
 
+    @InjectView(R.id.try_button)
+    Button _tryButton;
+
     private RequestQueue myQueue;
     private int rootId;
 
@@ -68,6 +71,7 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
     private String[] pointImageUrls;
     private String[] pointTitles;
     private String[] pointSummaries;
+
 
 
     private Button mapButton,tryButton;
@@ -95,6 +99,19 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         Intent intent = getIntent();
         rootId = intent.getIntExtra("rootId", 0);
 
+        /*---------------------------
+         もしクリアているルートであればボタン無効
+         ---------------------------*/
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String[] completedroot = sp.getString("_completedRoots", "").split("-");
+        for (String root : completedroot) {
+            if (String.valueOf(rootId).equals(root)) {
+                _tryButton.setClickable(false);
+                _tryButton.setText("クリア済み");
+            }
+        }
+
+
 
         roots = new ArrayList<Root>();
         mRootAdapter = new CommentsList(RootSummaryActivity.this, 0, roots);
@@ -114,7 +131,6 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         buf.append(url);
         buf.append(params);
         String uri = buf.toString();
-        System.out.println(uri);
         mapButton = (Button)findViewById(R.id.map_button);
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +158,6 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
                                 rootTitle = json_root.getString("title");
                                 rootSummary = json_root.getString("summary");
                                 rootRate = json_root.getInt("rate");
-                                System.out.println(rootRate);
                                 imageUrl = "http://yokohamarally.prodrb.com/img/" + json_root.getString("image_url");
                             }
 
@@ -163,7 +178,6 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
                                 String comment = json_comment.getString("comment");
                                 String name = json_comment.getString("name");
                                 String userImage = json_comment.getString("userImage");
-                                System.out.println(userImage);
                                 String date = json_comment.getString("date");
                                 int rate = json_comment.getInt("rate");
                                 final Root root = new Root();
