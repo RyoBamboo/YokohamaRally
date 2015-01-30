@@ -9,7 +9,7 @@
     >
     <TextView
         android:id="@+id/info_title"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/textL"
@@ -17,5 +17,5 @@
     <ImageView
         android:id="@+id/info_image"
         android:layout_width="80dp"
-        android:layout_height="89dp" />
+        android:layout_height="80dp" />
 </LinearLayout>

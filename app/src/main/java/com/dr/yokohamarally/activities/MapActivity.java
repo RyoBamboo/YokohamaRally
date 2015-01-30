@@ -113,16 +113,20 @@ public class MapActivity extends Activity {
 
                         }
 
-                        for (int i = 0; i < pointImageTitle.length; i++) {
-                            makePin(pointLongitude[i], pointLatitude[i], pointImageTitle[i], i);
-                            Log.d("map", pointLongitude[i] + "this");
-                        }
-
                         // MapFragmentオブジェクトを取得
                         MapFragment mapFragment = (MapFragment) getFragmentManager()
                                 .findFragmentById(R.id.map);
                         // GoogleMapオブジェクトの取得
                         googleMap = mapFragment.getMap();
+
+
+
+                        for (int i = 0; i < pointImageTitle.length; i++) {
+                            makePin(pointLongitude[i], pointLatitude[i], pointImageTitle[i], i);
+                            Log.d("map", pointLongitude[i] + "this");
+                        }
+
+
 
                         for(int i= 0; i < pointImageUrls.length ; i++ ){
                             if(pointLatitude[i] > max_x  )max_x = pointLatitude[i];
@@ -132,58 +136,9 @@ public class MapActivity extends Activity {
                         }
 
                         mapInit();
+                        //googleMap.setInfoWindowAdapter(new CustomInfoAdapter());
 
 
-
-                        if (googleMap != null) {
-                            // InfoWindowAdapter設定
-                            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                                @Override
-                                public View getInfoContents(Marker marker) {
-                                    View view = getLayoutInflater().inflate(R.layout.info_window, null);
-                                    // タイトル設定
-                                    TextView title = (TextView)view.findViewById(R.id.info_title);
-                                    title.setText(marker.getTitle());
-                                    // 画像設定
-
-                                    final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[0];
-                                    final ImageView imageView = (ImageView)view.findViewById(R.id.info_image);
-
-                                    ImageRequest request = new ImageRequest(
-                                            url,
-                                            new Response.Listener<Bitmap>() {
-                                                @Override
-                                                public void onResponse(Bitmap response) {
-                                                    imageView.setImageBitmap(response);
-                                                    System.out.println(response);
-                                                }
-                                            },
-                                            // 最大の幅、指定無しは0
-                                            0,
-                                            0,
-                                            Bitmap.Config.ARGB_8888,
-                                            new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-
-                                                }
-                                            }
-                                    );
-
-                                    myQueue.add(request);
-                                    myQueue.start();
-
-
-                                    return view;
-                                }
-
-                                @Override
-                                public View getInfoWindow(Marker marker) {
-                                    // TODO Auto-generated method stub
-                                    return null;
-                                }
-                            });
-                        }
 
                     }
                 },
@@ -243,6 +198,9 @@ public class MapActivity extends Activity {
         if( sub_x * 0.85 > sub_y  )sub_max =  0.0062 /sub_x;
 
 
+
+
+        sub_max = 0.355;
         if(max_y == min_y && max_x == min_x)sub_max = 0.39;
 
         System.out.println("x= " + sub_x);
@@ -274,19 +232,82 @@ public class MapActivity extends Activity {
         options.position(new LatLng(x, y));
         // タイトル・スニペット
         options.title(title);
+
+        options.snippet(Integer.toString(i));
         // マーカーを貼り付け
         googleMap.addMarker(options);
 
 
 
-    }
 
-
-
-    private void requestPointImage(int i, View view) {
 
     }
 
+    private class CustomInfoAdapter implements GoogleMap.InfoWindowAdapter {
 
+        /** Window の View. */
+        private final View mWindow;
+
+        /**
+         * コンストラクタ.
+         */
+        public CustomInfoAdapter() {
+            mWindow = getLayoutInflater().inflate(R.layout.info_window, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
+
+        /**
+         * InfoWindow を表示する.
+         * @param marker {@link Marker}
+         * @param view {@link View}
+         */
+        private void render(Marker marker, View view) {
+
+            int i = Integer.parseInt(marker.getSnippet());
+
+            final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
+            System.out.println("i=="+i + "    " + url);
+            TextView title = (TextView) view.findViewById(R.id.info_title);
+            title.setText(marker.getTitle());
+            final ImageView badge = (ImageView)view.findViewById(R.id.info_image);
+
+                ImageRequest request = new ImageRequest(
+                        url,
+                        new Response.Listener<Bitmap>() {
+                            @Override
+                            public void onResponse(Bitmap response) {
+                                badge.setImageBitmap(response);
+
+                            }
+                        },
+                        // 最大の幅、指定無しは0
+                        0,
+                        0,
+                        Bitmap.Config.ARGB_8888,
+                        new Response.ErrorListener() {
+                            @Override
+
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        }
+                );
+
+                myQueue.add(request);
+                myQueue.start();
+
+        }
+    }
 
 }

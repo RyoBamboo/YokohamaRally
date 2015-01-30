@@ -34,18 +34,20 @@ public class ImagePopup extends DialogFragment {
     String mUrl;
     int mid;
     private RequestQueue myQueue;
+    private String mTitle;
+    private String mSummary;
 
-    public ImagePopup(String url, int id){
+    public ImagePopup(String url, int id ,String title,String summary){
         mUrl = url;
         mid  = id;
+        mTitle = title;
+        mSummary = summary;
     }
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = new Dialog(getActivity());
-        LayoutInflater factory = getActivity().getLayoutInflater();
-        final View view = factory.inflate(R.layout.dialog_custom, null, false);
+        final Dialog dialog = new Dialog(getActivity());
 
         String url = "http://yokohamarally.prodrb.com/api/get_root_by_id.php?id=";
         String params = String.valueOf(mid);
@@ -57,11 +59,22 @@ public class ImagePopup extends DialogFragment {
         myQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
 
+
+
+
+
         // タイトル非表示
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         // フルスクリーン
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.dialog_custom);
+
+        //タイトルと概要入力
+        TextView title =(TextView)dialog.findViewById(R.id.dialog_title);
+        title.setText(mTitle);
+
+        TextView summary =(TextView)dialog.findViewById(R.id.summary);
+        summary.setText(mSummary);
         // 背景を透明にする
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -85,7 +98,7 @@ public class ImagePopup extends DialogFragment {
                     @Override
                     public void onResponse(JSONObject response)
                     {
-                        final ImageView imageView = (ImageView)view.findViewById(R.id.detail_img);
+                        final ImageView imageView = (ImageView)dialog.findViewById(R.id.detail_img);
                         Log.d("check" , mUrl);
                         ImageRequest request = new ImageRequest(
                                 mUrl,
@@ -93,13 +106,12 @@ public class ImagePopup extends DialogFragment {
                                     @Override
                                     public void onResponse(Bitmap response) {
                                         imageView.setImageBitmap(response);
-                                        System.out.println(imageView.getWidth());
 
                                     }
                                 },
                                 // 最大の幅、指定無しは0
-                                90,
-                                70,
+                                0,
+                                0,
                                 Bitmap.Config.ARGB_8888,
                                 new Response.ErrorListener() {
                                     @Override

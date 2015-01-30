@@ -3,6 +3,7 @@ package com.dr.yokohamarally.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,6 +66,8 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
     private String rootSummary;
     private String imageUrl;
     private String[] pointImageUrls;
+    private String[] pointTitles;
+    private String[] pointSummaries;
 
 
     private Button mapButton,tryButton;
@@ -74,11 +77,14 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
     private ListView rootListView;
     private CommentsList mRootAdapter;
     private ListView mAllRootListView;
+    private static ProgressDialog waitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root_summary_activiey);
+
+        showWaiDialog();
 
         ButterKnife.inject(this);
 
@@ -170,10 +176,14 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
 
                             JSONArray json_points = response.getJSONArray("points");
                             pointImageUrls = new String[json_points.length()]; // ポイントの画像URLを保存する配列
+                            pointTitles = new String[json_points.length()];
+                            pointSummaries = new String[json_points.length()];
                             for (int i = 0; i < json_points.length(); i++) {
                                 JSONObject json_point = json_points.getJSONObject(i);
                                 System.out.println(json_point);
                                 pointImageUrls[i] = json_point.getString("image_url");
+                                pointTitles[i] = json_point.getString("name");
+                                pointSummaries[i] = json_point.getString("summary");
                             }
 
                             JSONArray json_comments = response.getJSONArray("comments");
@@ -279,6 +289,8 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
         final ImageView imageView = new ImageView(getBaseContext());
         final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.point_img);
+        final String title = pointTitles[i];
+        final String summary = pointSummaries[i];
 
         ImageRequest request = new ImageRequest(
                 url,
@@ -310,7 +322,7 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
             public void onClick(View v) {
 
                 // ダイアログを表示する
-                DialogFragment newFragment = new ImagePopup(url,rootId);
+                DialogFragment newFragment = new ImagePopup(url,rootId,title,summary);
                 newFragment.show(getFragmentManager(), "test1");
 
             }
@@ -344,6 +356,41 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         return super.onOptionsItemSelected(item);
     }
 
+    public void showWaiDialog(){
+
+        // インスタンス作成
+        waitDialog = new ProgressDialog(this);
+        // タイトル設定
+        waitDialog.setTitle("タイトル表示部分");
+        // メッセージ設定
+        waitDialog.setMessage("now loading...");
+        // スタイル設定 スピナー
+        waitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // キャンセル可能か(バックキーでキャンセル）
+        waitDialog.setCancelable(true);
+        // ダイアログ表示
+        waitDialog.show();
+
+        // 別スレッドで時間のかかる処理を実行
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int cnt = 0;
+                // 時間のかかる処理(疑似)
+                while (cnt < 2) {
+                    cnt++;
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+
+                    }
+                }
+                // 終わったらダイアログ消去
+                waitDialog.dismiss();
+            }
+        }).start();
+
+    }
     /*--------------------------
      * DialogListener
      *------------------------*/
