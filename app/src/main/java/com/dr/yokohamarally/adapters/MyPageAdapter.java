@@ -61,6 +61,12 @@ public class MyPageAdapter extends ArrayAdapter<Root> {
         date.setText("達成日  " + root.getClearDate());
 
 
+        // 申請中のラベルセット
+        if (root.getAcceptFrag() == 0) {
+            TextView accept = (TextView)convertView.findViewById(R.id.accept);
+            accept.setText("申請中");
+        }
+
 
 
 

@@ -38,6 +38,15 @@
             android:layout_gravity="center_vertical">
             android:layout_gravity="center_vertical">
         </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#93691608"
+            android:id="@+id/accept"
+            android:textSize="12dp"
+            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical">
+        </TextView>
 
     </LinearLayout>
     <!--

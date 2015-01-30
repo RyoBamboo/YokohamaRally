@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
@@ -75,6 +76,7 @@ public class MyPageActivity extends ActionBarActivity  {
     private RequestQueue myQueue;
 
     private ArrayList<Root> roots;
+    private ArrayList<Root> registRoots;
     private RootAdapter adapter;
     private ListView rootListView;
 
@@ -88,12 +90,15 @@ public class MyPageActivity extends ActionBarActivity  {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private MyPageAdapter mRootAdapter;
+    private MyPageAdapter registRootAdapter;
+
     private ListView mAllRootListView;
     private String mEmail;
     private String clearRoot;
     private String clearDate;
     private int totalClearRoot;
 
+    private ListView registAllRootListView;
 
 
     @Override
@@ -108,6 +113,12 @@ public class MyPageActivity extends ActionBarActivity  {
         mRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, roots);
         mAllRootListView = (ListView)findViewById(R.id.my_list);
         mAllRootListView.setAdapter(mRootAdapter);
+
+        // 投稿したルートビュー
+        registRoots = new ArrayList<Root>();
+        registRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, registRoots);
+        registAllRootListView = (ListView)findViewById(R.id.myregist_list);
+        registAllRootListView.setAdapter(registRootAdapter);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mEmail = sp.getString("email", "");
@@ -279,7 +290,10 @@ public class MyPageActivity extends ActionBarActivity  {
                         Log.d("json",""+json_user);
                         clearRoot = json_user.getString("clear");
                         clearDate = json_user.getString("clearDate");
+                        String myRootCount = json_user.getString("myRootCount");
                         String name = json_user.getString("name");
+                        TextView myRoot = (TextView)findViewById(R.id.myroot);
+                        myRoot.setText(myRootCount);
                         TextView myName = (TextView)findViewById(R.id.my_name);
                         myName.setText(name);
                 }catch (Exception e) {
@@ -298,6 +312,7 @@ public class MyPageActivity extends ActionBarActivity  {
             public void onResponse(JSONObject response) {
 
                 ArrayList<Root> _roots = new ArrayList<Root>();
+                ArrayList<Root> __roots = new ArrayList<Root>();
 
                 try {
                     JSONArray json_roots = response.getJSONArray("roots");
@@ -306,6 +321,34 @@ public class MyPageActivity extends ActionBarActivity  {
 
                     String[] clearRoots = clearRoot.split(",", 0);
                     String[] clearDates = clearDate.split(",", 0);
+
+                    // 投稿したリストビューの表示
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    for (int i = 0; i < json_roots.length(); i++) {
+                        JSONObject json_root = json_roots.getJSONObject(i);
+
+                        if (json_root.getString("user_id").equals(sp.getString("id", ""))) {
+
+                            String title = json_root.getString("title");
+                            int id = Integer.parseInt(json_root.getString("id"));
+                            int rate = json_root.getInt("rate");
+                            int number = i;
+                            int completedCount = json_root.getInt("completed_count");
+                            String number_title = String.valueOf(number + 1) + ". " + title;
+                            String imageUrl = json_root.getString("image_url");
+                            Root root2 = new Root();
+                            root2.setCompletedCount(completedCount);
+                            root2.setId(id);
+                            root2.setTitle(number_title);
+                            root2.setImageUrl(imageUrl);
+                            root2.setRate(rate);
+
+                            __roots.add(root2);
+                        }
+                    }
+                    registRootAdapter.addAll(__roots);
+                    setListViewHeightBasedOnChildren(registAllRootListView);
+
 
 
                     // クリアしていたらlistViewに追加
@@ -317,6 +360,7 @@ public class MyPageActivity extends ActionBarActivity  {
                             String title = json_root.getString("title");
                             int rate = json_root.getInt("rate");
                             int number = Integer.parseInt(clearRoots[j])-1;
+                            int acceptFrag = json_root.getInt("accept_flag");
                             String number_title = String.valueOf(number + 1) + ". " + title;
                             String imageUrl = json_root.getString("image_url");
                             Root root = new Root();
@@ -324,6 +368,7 @@ public class MyPageActivity extends ActionBarActivity  {
                             root.setTitle(number_title);
                             root.setImageUrl(imageUrl);
                             root.setRate(rate);
+                            root.setAcceptFrag(acceptFrag);
 
                             _roots.add(root);
 
@@ -332,6 +377,7 @@ public class MyPageActivity extends ActionBarActivity  {
                     totalClearRoot= clearRoots.length;
                     // adapterに反映、追加
                     mRootAdapter.addAll(_roots);
+                    setListViewHeightBasedOnChildren(mAllRootListView);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -351,5 +397,27 @@ public class MyPageActivity extends ActionBarActivity  {
                 System.out.println(error);
             }
         };
+    }
+
+    // リストビューの高さが一行になってしまうバグ修正の為のコード
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            if (listItem instanceof ViewGroup) {
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }
