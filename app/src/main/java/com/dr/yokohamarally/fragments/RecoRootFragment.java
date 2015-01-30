@@ -81,9 +81,11 @@ public class RecoRootFragment extends Fragment{
                         String title = json_root.getString("title");
                         int rate = json_root.getInt("rate");
                         int number = i;
+                        int completedCount = json_root.getInt("completed_count");
                         String number_title = String.valueOf(number + 1) + ". " + title;
                         String imageUrl = json_root.getString("image_url");
                         Root root = new Root();
+                        root.setCompletedCount(completedCount);
                         root.setId(id);
                         root.setTitle(number_title);
                         root.setImageUrl(imageUrl);

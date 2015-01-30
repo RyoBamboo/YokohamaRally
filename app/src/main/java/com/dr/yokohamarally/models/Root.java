@@ -13,6 +13,7 @@ public class Root {
     private String imageUrl; // 画像URL
     private String clearRoot; //クリアしたルート
     private Bitmap imageBitmap; // 画像URL
+    private int completedCount; // クリア人数
     private int    rate;
     private int    id;
     private boolean checkedPoint;
@@ -37,6 +38,9 @@ public class Root {
         return this.userImage;
     }
 
+    public int getCompletedCount() {
+        return this.completedCount;
+    }
 
     public String getComments() {
         return this.comments;
@@ -72,6 +76,10 @@ public class Root {
 
     public void setClearRoot(String clearRoot) {
         this.clearRoot = clearRoot;
+    }
+
+    public void setCompletedCount(int completedCount) {
+        this.completedCount = completedCount;
     }
 
     public void setUseImage(String userImage) {

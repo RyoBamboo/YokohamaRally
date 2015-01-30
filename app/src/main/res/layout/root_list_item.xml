@@ -43,7 +43,15 @@
             android:paddingTop="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
+        <!-- クリア人数 -->
+        <TextView
+            android:id="@+id/completedCount"
+            android:textColor="#252525"
+            android:text="21"
+            android:textSize="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <!--
     <Button
