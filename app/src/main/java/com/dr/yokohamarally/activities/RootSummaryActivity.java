@@ -3,11 +3,13 @@ package com.dr.yokohamarally.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,7 +34,9 @@ import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.CommentsList;
 import com.dr.yokohamarally.adapters.RootAdapter;
 import com.dr.yokohamarally.adapters.TryAdapter;
+import com.dr.yokohamarally.fragments.CommonDialogFragment;
 import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.listener.DialogListener;
 import com.dr.yokohamarally.models.Root;
 
 import org.json.JSONArray;
@@ -45,8 +50,9 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
-public class RootSummaryActivity extends Activity {
+public class RootSummaryActivity extends FragmentActivity implements DialogListener {
 
     private RequestQueue myQueue;
     private int rootId;
@@ -73,6 +79,8 @@ public class RootSummaryActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root_summary_activiey);
+
+        ButterKnife.inject(this);
 
         ActionBar actionBar = getActionBar();
         System.out.println(actionBar);
@@ -112,13 +120,24 @@ public class RootSummaryActivity extends Activity {
             }
         });
 
+        /*
         tryButton = (Button)findViewById(R.id.try_button);
         tryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // ルートidを挑戦中のルートidとして登録
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                int beforeRootId = sp.getInt("rootId", 0);
+                if (beforeRootId != 0 && beforeRootId != rootId) {
+                    // 挑戦するルートを変更するときはダイアログを出す
+                    CommonDialogFragment alertDialogFragment = CommonDialogFragment
+                            .newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますがOK????");
+                    alertDialogFragment.setDialogListener(this);
+
+
+                }
+
+                // ルートidを挑戦中のルートidとして登録
                 sp.edit().putInt("rootId", rootId).commit();
 
 
@@ -127,6 +146,7 @@ public class RootSummaryActivity extends Activity {
                 startActivity(intent);
             }
         });
+        */
 
         myQueue.add(new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>()
@@ -323,4 +343,51 @@ public class RootSummaryActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /*--------------------------
+     * DialogListener
+     *------------------------*/
+    @Override
+    public void onPositiveClick(String tag) {
+        // ルートidを挑戦中のルートidとして登録
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sp.edit().putInt("rootId", rootId).commit();
+
+        // 前回のルートのクリア情報を初期化
+        sp.edit().remove("checkedPoints").commit();
+        sp.edit().remove("isCompleted").commit();
+
+
+        // 画面の遷移
+        Intent intent = new Intent(RootSummaryActivity.this, TryActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onNegativeClick(String tag) {
+
+    }
+
+    /*--------------------------
+     * onClick
+     *------------------------*/
+    @OnClick(R.id.try_button)
+    void submitTry() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int beforeRootId = sp.getInt("rootId", 0);
+        if (beforeRootId != 0 && beforeRootId != rootId) {
+            // 挑戦するルートを変更するときはダイアログを出す
+            CommonDialogFragment alertDialogFragment = CommonDialogFragment.newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますがOK????");
+            alertDialogFragment.setDialogListener(this);
+            alertDialogFragment.show(getFragmentManager(), "tes");
+
+        } else {
+            // そうでなければTryアクティビティへ
+            sp.edit().putInt("rootId", rootId).commit();
+            Intent intent = new Intent(RootSummaryActivity.this, TryActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
 }
