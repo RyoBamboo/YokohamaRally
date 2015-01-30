@@ -86,14 +86,6 @@ public class TryActivity extends Activity {
     public static EFlag mFlag;
 
     @Override
-    protected void onRestart() {
-        super.onRestart();;
-        if(mFlag.getFlagState()){
-            finish();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
@@ -350,24 +342,16 @@ public class TryActivity extends Activity {
                             RatingBar ratingBar = (RatingBar) content.findViewById(R.id.rate);
                             float rate = ratingBar.getRating();
 
-                            //EditText editText = (EditText)content.findViewById(R.id.comment);
+                            EditText editText = (EditText)content.findViewById(R.id.comment);
 
                             final String rootStr = String.valueOf(root_id);
                             final String rateStr = String.valueOf(rate);
                             final String userStr = sp.getString("id", "");
-                            //String comment = editText.getText().toString();
-                            System.out.println("comment=" + comment);
+                            final String comment = editText.getText().toString();
+                            System.out.println(comment);
 
                             // コメント投稿処理 同時にuserテーブルも更新
                             String url = "http://yokohamarally.prodrb.com/api/create_comment.php?";
-
-                            String params = "user_id=" + userStr + "&root_id=" + rootStr + "&rate=" + rateStr + "&comment=" + comment;
-                            StringBuffer buf = new StringBuffer();
-                            buf.append(url);
-                            buf.append(params);
-                            String uri = buf.toString();
-                            System.out.println(uri);
-
                             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                                     new Response.Listener<String>() {
                                         @Override
