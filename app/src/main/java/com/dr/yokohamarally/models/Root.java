@@ -16,6 +16,7 @@ public class Root {
     private int completedCount; // クリア人数
     private int    rate;
     private int    id;
+    private int acceptFrag;
     private boolean checkedPoint;
 
     public String getTitle() {
@@ -28,6 +29,10 @@ public class Root {
 
     public String getName() {
         return this.name;
+    }
+
+    public int getAcceptFrag (){
+        return this.acceptFrag;
     }
 
     public boolean getCheckedPoint() {
@@ -63,6 +68,7 @@ public class Root {
     }
 
     public int getId() {
+
         return this.id;
     }
 
@@ -88,6 +94,10 @@ public class Root {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setAcceptFrag(int acceptFrag) {
+        this.acceptFrag = acceptFrag;
     }
 
     public void setSummary(String summary) {
