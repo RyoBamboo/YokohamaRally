@@ -78,6 +78,7 @@ public class LoginByEmail extends ActionBarActivity {
                             // ログイン成功したらユーザ情報をsharedPrefereceに保存
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                             sp.edit().putBoolean("isLogin", true).commit();
+                            sp.edit().putString("_completedRoots", resultArray[5]).commit();
                             sp.edit().putString("notice_flag", resultArray[4]).commit();
                             sp.edit().putString("profile_image", resultArray[3]).commit();
                             sp.edit().putString("email",resultArray[2]).commit();

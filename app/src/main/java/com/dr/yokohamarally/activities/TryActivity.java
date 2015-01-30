@@ -111,6 +111,28 @@ public class TryActivity extends Activity {
         if (isCompleted == true) {
             DialogFragment newFragment = new CommentDialogFragment(mQueue);
             newFragment.show(getFragmentManager(), "test");
+
+            String compIds = sp.getString("_completedRoots", "");
+            if (compIds.equals("")) {
+                compIds =  String.valueOf(sp.getInt("rootId", 0));
+            } else {
+                compIds =  compIds + "-" + String.valueOf(sp.getInt("rootId", 0));
+            }
+            
+            sp.edit().putString("_completedRoots", compIds).commit();
+
+            sp.edit().remove("isCompleted").commit();
+            sp.edit().remove("rootId").commit();
+
+            /*
+
+
+            sp.edit().putString("_completedRoots", compIds).commit();
+
+            sp.edit().remove("rootId").commit();
+            Intent intents = new Intent(TryActivity.this, MainActivity.class);
+            startActivity(intents);
+            */
         }
     }
 
@@ -407,7 +429,7 @@ public class TryActivity extends Activity {
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String s) {
-                                            System.out.println(s);
+                                            // 挑戦中のroot_idを０にしてtopへ
                                         }
                                     },
                                     new Response.ErrorListener() {
