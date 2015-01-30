@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -399,7 +400,6 @@ public class FormActivity extends Activity{
                                     }
                                 }
 
-                                System.out.println("pointStr = " + pointStr);
 
                                 RequestQueue myQueue = Volley.newRequestQueue(getBaseContext());
                                 String url = "http://yokohamarally.prodrb.com/api/create_root.php";
@@ -430,9 +430,16 @@ public class FormActivity extends Activity{
                                         params.put("image_url", image);
                                         params.put("points", pointStr);
 
+
                                         return params;
                                     }
                                 };
+
+                                int custom_timeout_ms = 10000;
+                                DefaultRetryPolicy policy = new DefaultRetryPolicy(custom_timeout_ms,
+                                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                                postRequest.setRetryPolicy(policy);
 
                                 myQueue.add(postRequest);
                                 myQueue.start();
