@@ -46,6 +46,8 @@ import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.TryAdapter;
 import com.dr.yokohamarally.core.EFlag;
 import com.dr.yokohamarally.fragments.GpsService;
+import com.dr.yokohamarally.fragments.ImagePopup;
+import com.dr.yokohamarally.fragments.MapPopup;
 import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
 
@@ -121,6 +123,8 @@ public class TryActivity extends Activity {
         mRootAdapter = new TryAdapter(TryActivity.this, 0, roots);
         mAllRootListView = (ListView)findViewById(R.id.try_list);
         mAllRootListView.setAdapter(mRootAdapter);
+
+
 
         mQueue = Volley.newRequestQueue(this);
 
@@ -231,6 +235,27 @@ public class TryActivity extends Activity {
                         TextView text = (TextView)findViewById(R.id.totalChecked);
                         text.setText("現在の達成数: " +  totalChecked +"/" + totalPoints );
 
+                        mAllRootListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                Log.d("okokok",""+position);
+                                Log.d("okokok",""+pointImageTitle[position]);
+
+                                String[] pointtitle = getArrayFromSharedPreference("tryTitle");
+                                String[] pointlatitude = getArrayFromSharedPreference("tryLatitude");
+                                String[] pointlongitude = getArrayFromSharedPreference("tryLongitude");
+
+
+                                // ダイアログを表示する
+                                DialogFragment newFragment = new MapPopup(pointtitle[position],Double.parseDouble(pointlatitude[position]),Double.parseDouble(pointlongitude[position]));
+                                newFragment.show(getFragmentManager(), "test1");
+
+
+
+                            }
+                        });
+
 
 
                     }
@@ -242,6 +267,8 @@ public class TryActivity extends Activity {
                     }
                 }
         ));
+
+
 
     }
 
