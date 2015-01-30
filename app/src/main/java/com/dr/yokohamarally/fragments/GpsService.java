@@ -40,6 +40,8 @@ public class GpsService extends Service implements LocationListener {
     private double[] dLatitude;
     private int pointNum;
     private int[] count;
+    private String[] check;
+    private int[] mCheck;
 
     @Override
     public void onCreate() {
@@ -48,6 +50,7 @@ public class GpsService extends Service implements LocationListener {
         latitude = getArrayFromSharedPreference("tryLatitude");
         longitude = getArrayFromSharedPreference("tryLongitude");
         title = getArrayFromSharedPreference("tryTitle");
+        check = getArrayFromSharedPreference("checkedPoints");
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         pointNum = sp.getInt("checkpointNum", 0);
@@ -59,6 +62,7 @@ public class GpsService extends Service implements LocationListener {
             dLatitude[i] = Double.parseDouble(latitude[i]);
             dLonguitude[i] = Double.parseDouble(longitude[i]);
             count[i] = 0;
+
 
         }
 
@@ -89,9 +93,10 @@ public class GpsService extends Service implements LocationListener {
 
         for(int i=0 ; i < pointNum ; i++) {
             System.out.println(i  +" " +( location.getLatitude() - dLatitude[i]));
-            if (Math.abs(location.getLatitude() - dLatitude[i]) < 0.003 && Math.abs(location.getLongitude() - dLonguitude[i]) < 0.003){
+            if (Math.abs(location.getLatitude() - dLatitude[i]) < 0.004 && Math.abs(location.getLongitude() - dLonguitude[i]) < 0.004){
                 count[i]++;
-                if(count[i] == 1) {
+                if(count[i] == 1 && !("true".equals(check[i])) ) {
+
                     String message = title[i] + "付近に到着しました";
                     sendNotification(message);
                 }
@@ -130,6 +135,7 @@ public class GpsService extends Service implements LocationListener {
         n.setLatestEventInfo(getApplicationContext(), "YOKOHAMA スタンプラリー", message, pi);
 
         mManager.notify(number, n);
+        number++;
     }
 
     public void saveArrayToSharedPreference(String[] array, String key) {
