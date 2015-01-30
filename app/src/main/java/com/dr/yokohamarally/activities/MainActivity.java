@@ -1,8 +1,4 @@
-/**
- * RootTabActivity.java
- *
- * ルートのリスト一覧を表示するアクティビティ
- */
+
 
 package com.dr.yokohamarally.activities;
 
@@ -128,15 +124,14 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        //サービス開始
-        startService(new Intent(MainActivity.this, GpsService.class));
+
 
 
 
         /*-------------------------
          * サイドバーのリスト作成
          *-----------------------*/
-        String[] members = { "マイぺージ",  "設定", "その他","ログアウト" };
+        String[] members = { "マイぺージ",  "設定", "マイラリー投稿","ログアウト" };
 
         ListView lv = (ListView) findViewById(R.id.sidebar_listView);
 
@@ -158,7 +153,10 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
                 }else if("設定".equals(item)){
                     Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                     startActivity(intent);
-                }else if("ログアウト".equals(item)){
+                }else if("マイラリー投稿".equals(item)){
+                Intent intent = new Intent(MainActivity.this, FormActivity.class);
+                startActivity(intent);
+                 }else if("ログアウト".equals(item)){
                     Logout();
                 }
             }
