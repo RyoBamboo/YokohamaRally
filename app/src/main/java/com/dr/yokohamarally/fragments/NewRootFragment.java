@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AllRootFragment extends Fragment{
+public class NewRootFragment extends Fragment{
 
     private RootAdapter mRootAdapter;
     private ArrayList<Root> roots;
@@ -48,6 +48,7 @@ public class AllRootFragment extends Fragment{
     private void setupAllRootListView() {
         // ここでタップされた時のリスナー登録
         mAllRootListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int _id = (int)view.getTag(R.string.listItemTag);
@@ -59,7 +60,7 @@ public class AllRootFragment extends Fragment{
         });
 
         // http通信
-        RequestManager.addRequest(new JsonObjectRequest(Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
+        RequestManager.addRequest(new JsonObjectRequest(Method.GET, "http://yokohamarally.prodrb.com/api/get_new_root.php", null, responseListener(), errorListener()), this);
     }
 
     private Response.Listener<JSONObject> responseListener() {

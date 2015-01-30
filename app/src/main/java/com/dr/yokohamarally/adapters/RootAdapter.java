@@ -49,11 +49,17 @@ public class RootAdapter extends ArrayAdapter<Root> {
         // 対応する行のオブジェクトを取得
         Root root = (Root)getItem(position);
 
+        System.out.println(root.getId());
+
+        convertView.setTag(R.string.listItemTag, root.getId());
+
         convertView.setBackgroundResource(R.drawable.round_corner_list);
 
         // タイトルをセット
         TextView title = (TextView)convertView.findViewById(R.id.title);
         title.setText(root.getTitle());
+
+
 
         // 評価をセット
         LinearLayout mLinerLayout = (LinearLayout)convertView.findViewById(R.id.root_rate);

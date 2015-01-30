@@ -31,10 +31,14 @@ import android.widget.Toast;
 
 
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.core.EFlag;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.TryInformation;
 
 public class CameraActivity extends Activity implements OnClickListener {
+
+    public static EFlag mflag;
+
 
     private static final int IMAGE_CAPTURE = 101;
     private static int GETTRIM = 10;
@@ -46,11 +50,24 @@ public class CameraActivity extends Activity implements OnClickListener {
     private String[] checkedPointImages = new String[10];
 
     @Override
+    public void onRestart(){
+        super.onRestart();
+        if(mflag.getFlagState()){
+            finish();
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
         reachingNumber = intent.getIntExtra("reachingNumber", 0);
+
+        // アクティビティ削除フラグ
+        mflag = new EFlag();
+        mflag.setFlagState(false);
+
 
         String[] checkedPointImagesCopy = getArrayFromSharedPreference("checkedPointImages");
 
