@@ -97,7 +97,6 @@ public class TryActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        System.out.println("Resume!!");
         /*-------------------------------------
          * カメラアクティビティを破棄
          *-----------------------------------*/
@@ -359,7 +358,7 @@ public class TryActivity extends Activity {
                             //String comment = editText.getText().toString();
                             System.out.println("comment=" + comment);
 
-                            // コメント投稿処理
+                            // コメント投稿処理 同時にuserテーブルも更新
                             String url = "http://yokohamarally.prodrb.com/api/create_comment.php?";
 
                             String params = "user_id=" + userStr + "&root_id=" + rootStr + "&rate=" + rateStr + "&comment=" + comment;
@@ -401,7 +400,39 @@ public class TryActivity extends Activity {
                     })
                     .setNegativeButton("閉じる", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
+                            //userテーブル更新
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            int root_id = sp.getInt("rootId", 0);
+                            final String rootStr = String.valueOf(root_id);
+                            final String userStr = sp.getString("id", "");
+
+                            String url = "http://yokohamarally.prodrb.com/api/update_complete_info.php?";
+                            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String s) {
+                                            System.out.println(s);
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            System.out.println(error);
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> params = new HashMap<String, String>();
+
+                                    params.put("user_id", userStr);
+                                    params.put("root_id", rootStr);
+
+                                    return params;
+                                }
+                            };
+
+                            queue.add(postRequest);
+                            queue.start();
                         }
                     });
             // Create the AlertDialog object and return it
