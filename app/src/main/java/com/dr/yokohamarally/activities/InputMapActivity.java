@@ -104,10 +104,17 @@ public class InputMapActivity extends Activity {
                             for (int i = 1; i <= idx; i++) {
                                 strAddr.append(addr.getAddressLine(i));
                                 adress =addr.getAddressLine(i);
-                                check();
                                 }
                             }
-                        } catch (IOException e) {
+
+                        if ("横浜市".indexOf(adress) != -1) {
+                            check();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "横浜市を選択してください", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                         }
@@ -119,7 +126,6 @@ public class InputMapActivity extends Activity {
                 @Override
                 public void onMapLongClick(LatLng point) {
                     // TODO Auto-generated method stub
-                    Toast.makeText(getApplicationContext(), "長押し位置\n緯度：" + point.latitude + "\n経度:" + point.longitude, Toast.LENGTH_LONG).show();
                     }
                 });
             }
