@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -14,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.filters.EmailFilter;
 
 import org.json.JSONArray;
 
@@ -21,23 +24,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class LoginByEmail extends ActionBarActivity {
 
     private RequestQueue myQueue;
+    private InputFilter[] filter = {new EmailFilter()};
+
+    @InjectView(R.id.email)
+    EditText emailEditText;
+
+    @InjectView(R.id.password)
+    EditText passEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_by_email);
         ButterKnife.inject(this);
+
+        emailEditText.setFilters(filter);
+        passEditText.setFilters(filter);
     }
 
     // ログイン処理
     @OnClick(R.id.submit)
     void submitLogin() {
-        System.out.println("onClick");
+        /*----------------------------------
+         * バリデーション
+         *--------------------------------*/
+        String email = emailEditText.getText().toString();
+        String pass = emailEditText.getText().toString();
+
+        if (email.length() == 0){Toast.makeText(this, "メールアドレスを入力してください", Toast.LENGTH_LONG).show();return;}
+        if (pass.length() == 0){Toast.makeText(this, "パスワードを入力ください", Toast.LENGTH_LONG).show();return;}
 
         // queue
         myQueue = Volley.newRequestQueue(this);

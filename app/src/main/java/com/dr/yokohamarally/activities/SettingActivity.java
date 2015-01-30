@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Base64;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
+import com.dr.yokohamarally.filters.EmailFilter;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +40,7 @@ public class SettingActivity extends ActionBarActivity {
     private static int GETTRIM = 10;
     private Bitmap bmp;
     private String bmpString;
+    private InputFilter[] filter = {new EmailFilter()};
 
     @InjectView(R.id.name)
     EditText nameEditText;
@@ -57,6 +60,8 @@ public class SettingActivity extends ActionBarActivity {
         setContentView(R.layout.activity_setting);
 
         ButterKnife.inject(this);
+        emailEditText.setFilters(filter);
+
         setup();
     }
 
@@ -82,6 +87,16 @@ public class SettingActivity extends ActionBarActivity {
 
     @OnClick(R.id.submit)
     protected void submit() {
+
+        /*-------------------------------
+         * バリデーション
+         *-----------------------------*/
+        String _name = nameEditText.getText().toString();
+        String _email = emailEditText.getText().toString();
+
+        if (_name.length() == 0) {Toast.makeText(this, "名前を入力してください", Toast.LENGTH_LONG).show(); return;}
+        if (_email.length() == 0) {Toast.makeText(this, "メールアドレスを入力してください", Toast.LENGTH_LONG).show(); return;}
+
         // queue
         RequestQueue myQueue = Volley.newRequestQueue(this);
 
