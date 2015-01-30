@@ -213,7 +213,7 @@ public class TryActivity extends Activity {
                         saveArrayToSharedPreference(longitude,"tryLatitude");
                         saveArrayToSharedPreference(pointImageTitle,"tryTitle");
 
-                        //サービス開
+                        //サービス開始
                         SharedPreferences ssp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                         String noticeFlag = ssp.getString("notice_flag", "");
                         if("1".equals(noticeFlag))startService(new Intent(TryActivity.this, GpsService.class));

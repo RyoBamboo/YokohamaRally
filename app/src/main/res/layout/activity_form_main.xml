@@ -83,12 +83,25 @@
 
         </LinearLayout>
 
+       <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp">
+
      <Button
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:id="@+id/purasu_button"
          android:text="+ポイントを追加"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainasu_button"
+            android:text="ポイントを減らす"/>
+
+           </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/layout"

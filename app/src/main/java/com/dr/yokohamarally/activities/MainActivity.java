@@ -151,9 +151,19 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
                     startActivity(intent);
 
                 }else if("設定".equals(item)){
+
                     Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                     startActivity(intent);
                 }else if("マイラリー投稿".equals(item)){
+
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    sp.edit().remove("pointLatitude").commit();
+                    sp.edit().remove("pointLongitude").commit();
+                    sp.edit().remove("samarry_image").commit();
+                    sp.edit().remove("rarry_name").commit();
+                    sp.edit().remove("pointAdress").commit();
+                    sp.edit().remove("rarry_sammary").commit();
+                    sp.edit().remove("formPoint").commit();
                 Intent intent = new Intent(MainActivity.this, FormActivity.class);
                 startActivity(intent);
                  }else if("ログアウト".equals(item)){
