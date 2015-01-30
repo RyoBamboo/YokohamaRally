@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,11 +22,19 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Masashi on 2015/01/30.
@@ -39,6 +48,7 @@ public class FormActivity extends Activity{
     private static int GETTRIM = 10;
     private String bmpString;
     private SharedPreferences sp;
+    private String pointStr;
 
     private int count;
     @Override
@@ -349,21 +359,70 @@ public class FormActivity extends Activity{
                                 //TODO ここに書いてほしい
                                 EditText rarryName = (EditText)findViewById(R.id.rarry_name);
                                 SpannableStringBuilder sb = (SpannableStringBuilder) rarryName.getText();
-                                String rootName = sb.toString(); //TODO  ルート名
+                                final String rootName = sb.toString(); //TODO  ルート名
 
                                 EditText rarrySammary = (EditText)findViewById(R.id.rarry_sammary);
                                 SpannableStringBuilder sb2 = (SpannableStringBuilder) rarrySammary.getText();
-                                String rootSummary = sb2.toString(); //TODO ルート概要
+                                final String rootSummary = sb2.toString(); //TODO ルート概要
 
-                                String[] pointLatitude = getArrayFromSharedPreference("pointLatitude"); //TODO Latitude
-                                String[] pointLongitude =getArrayFromSharedPreference("pointLongitude");//TODO Longitude
+                                final String[] pointLatitude = getArrayFromSharedPreference("pointLatitude"); //TODO Latitude
+                                final String[] pointLongitude =getArrayFromSharedPreference("pointLongitude");//TODO Longitude
 
-                                String  image = sp.getString("samarry_image", ""); //TODO image
+                                final String  image = sp.getString("samarry_image", ""); //TODO image
 
+                                /*
                                 for(int i = 0; i <= count ; i++){
                                     SpannableStringBuilder sb3 = (SpannableStringBuilder)pointTitle[i].getText();
                                     pointString[i] = sb3.toString(); //TODO ポイント名
                                 }
+                                */
+                                pointStr = "";
+                                for (int i = 0; i <= count; i++) {
+                                    if (i == 0) {
+                                        pointStr = pointStr + pointTitle[i].getText().toString();
+                                    } else {
+                                        pointStr = pointStr + "," + pointTitle[i].getText().toString();
+                                    }
+                                }
+
+                                System.out.println("pointStr = " + pointStr);
+
+                                RequestQueue myQueue = Volley.newRequestQueue(getBaseContext());
+                                String url = "http://yokohamarally.prodrb.com/api/create_root.php";
+
+                                StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String s) {
+                                                System.out.println(s);
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                System.out.println(error);
+                                            }
+                                        }){
+                                    @Override
+                                    protected Map<String,String> getParams() {
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+                                        params.put("title", rootName); // ルートタイトル
+                                        params.put("userId", sp.getString("id", "")); // ユーザID
+                                        params.put("summary", rootSummary); // ルート概要
+                                        params.put("latitude",sp.getString("pointLatitude", "")); // ルート概要
+                                        params.put("longitude", sp.getString("pointLongitude", "")); // ルート概要
+                                        params.put("image_url", image);
+                                        params.put("points", pointStr);
+
+                                        return params;
+                                    }
+                                };
+
+                                myQueue.add(postRequest);
+                                myQueue.start();
+
 
                             }
                         })
