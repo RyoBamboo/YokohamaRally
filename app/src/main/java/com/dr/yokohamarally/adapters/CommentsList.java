@@ -3,7 +3,9 @@ package com.dr.yokohamarally.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,14 @@ public class CommentsList extends ArrayAdapter<Root> {
         // 日付をセット
         TextView date = (TextView)convertView.findViewById(R.id.date);
         date.setText(root.getClearDate());
+
+        // 画像をセット
+        ImageView userImage = (ImageView)convertView.findViewById(R.id.root_image);
+        System.out.println(userImage);
+        byte[] b = Base64.decode(root.getUserImage(), Base64.DEFAULT);
+        Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+        userImage.setImageBitmap(bmp);
+
 
         // 評価をセット
         LinearLayout mLinerLayout = (LinearLayout)convertView.findViewById(R.id.root_rate);

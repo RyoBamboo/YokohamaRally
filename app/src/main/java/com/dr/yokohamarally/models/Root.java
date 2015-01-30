@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 public class Root {
 
     private String title;   // タイトル
+    private String userImage;
     private String name;   //名前
     private String comments;   // コメント
     private String clearDate;   // 日付
@@ -32,6 +33,9 @@ public class Root {
         return this.checkedPoint;
     }
 
+    public String getUserImage() {
+        return this.userImage;
+    }
 
 
     public String getComments() {
@@ -68,6 +72,10 @@ public class Root {
 
     public void setClearRoot(String clearRoot) {
         this.clearRoot = clearRoot;
+    }
+
+    public void setUseImage(String userImage) {
+        this.userImage = userImage;
     }
 
     public void setImageUrl(String imageUrl) {
