@@ -20,12 +20,15 @@
     <application
         android:name=".YokohamarallyApp"
         android:allowBackup="true"
+
         android:configChanges="orientation|screenSize"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
+
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden|adjustResize" >
             <intent-filter>
@@ -39,22 +42,28 @@
 
         <activity
             android:name=".activities.CameraActivity"
+            android:screenOrientation="portrait"
             android:label="Yokohamarally" />
         <activity
             android:name=".activities.SubActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".activities.TrimingActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".activities.MapActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".activities.TryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <!-- <activity android:label="@string/app_name" android:name=".TabTest"></activity> -->
         <activity
             android:name=".activities.RootSummaryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_root_summary_activiey" >
         </activity>
 
@@ -67,26 +76,33 @@
 
         <activity
             android:name=".activities.LoginByEmail"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login_by_email" >
         </activity>
         <activity
             android:name=".activities.LoginActiviry"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login_activiry" >
         </activity>
         <activity
             android:name=".activities.RegisterByEmail"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_register_by_email" >
         </activity>
         <activity
             android:name=".activities.MyPageActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_my_page" >
         </activity>
         <activity
         android:name=".activities.SettingActivity"
+            android:screenOrientation="portrait"
         android:label="@string/title_activity_setting" >
     </activity>
         <activity
             android:name=".activities.InputMapActivity"
+            android:screenOrientation="portrait"
+
             android:label="@string/title_activity_setting" >
         </activity>
 
