@@ -49,6 +49,7 @@ public class CameraActivity extends Activity implements OnClickListener {
     private Bitmap imageBitmap;
     private int reachingNumber;
     private String[] checkedPointImages = new String[10];
+    private String imageSavePlace;
 
     @Override
     public void onRestart(){
@@ -118,6 +119,8 @@ public class CameraActivity extends Activity implements OnClickListener {
                     BitmapFactory.decodeStream(inputStream, null, imageOptions);
                     inputStream.close();
 
+
+
                     // もし読み込む画像が大きかったら縮小して読み込む
                     inputStream = contentResolver.openInputStream(mImageUri);
                     if (imageOptions.outWidth > 2048 && imageOptions.outHeight > 2048) {
@@ -130,8 +133,6 @@ public class CameraActivity extends Activity implements OnClickListener {
                     inputStream.close();
                 } catch (Exception e) {}
 
-                Log.d("yokoda",imageBitmap.getWidth()+"");
-                Log.d("tateda",imageBitmap.getHeight()+"");
                 // 回転マトリックス作成（90度回転）
                 Matrix mat = new Matrix();
                 if(imageBitmap.getWidth() > imageBitmap.getHeight()) mat.postRotate(90);
@@ -158,6 +159,7 @@ public class CameraActivity extends Activity implements OnClickListener {
 
                 Intent intent = new Intent(CameraActivity.this, TryActivity.class);
                 startActivity(intent);
+
 
             }else{
                 Toast.makeText(this, "画像の取得に失敗しました。", Toast.LENGTH_SHORT).show();
@@ -229,8 +231,9 @@ public class CameraActivity extends Activity implements OnClickListener {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String title = dateFormat.format(today);
         String dirPath = getDirPath();
-        String fileName = "samplecameraintent_" + title + ".jpg";
+        String fileName = "yokohamaRally_" + title + ".jpg";
         String path = dirPath + "/" + fileName;
+        imageSavePlace = path;
         File file = new File(path);
         ContentValues values = new ContentValues();
         values.put(Images.Media.TITLE, title);
