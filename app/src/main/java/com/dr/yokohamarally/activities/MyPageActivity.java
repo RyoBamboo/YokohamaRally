@@ -139,7 +139,7 @@ public class MyPageActivity extends ActionBarActivity  {
         /*-------------------------
          * サイドバーのリスト作成
          *-----------------------*/
-        String[] members = { "トップぺージ",  "設定", "マイラリー投稿","ログアウト" };
+        String[] members = { "トップぺージ",  "設定", "マイラリー投稿","挑戦中ページ","ログアウト" };
 
         ListView lv = (ListView) findViewById(R.id.sidebar_listView);
 
@@ -160,16 +160,18 @@ public class MyPageActivity extends ActionBarActivity  {
                 }else if("設定".equals(item)){
                     Intent intent = new Intent(MyPageActivity.this, SettingActivity.class);
                     startActivity(intent);
-                }else if("マイラリー投稿".equals(item)){
+                }else if("挑戦中ページ".equals(item)){
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                    sp.edit().remove("pointLatitude").commit();
-                    sp.edit().remove("pointLongitude").commit();
-                    sp.edit().remove("samarry_image").commit();
-                    sp.edit().remove("rarry_name").commit();
-                    sp.edit().remove("pointAdress").commit();
-                    sp.edit().remove("rarry_sammary").commit();
-                    sp.edit().remove("formPoint").commit();
+                    int tryId = sp.getInt("rootId", 0);
+                    if(tryId != 0 ){
+                        Intent intent = new Intent(MyPageActivity.this, TryActivity.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "現在挑戦していません", Toast.LENGTH_SHORT).show();
+                    }
+                }else if("マイラリー投稿".equals(item)){
                     Intent intent = new Intent(MyPageActivity.this, FormActivity.class);
+                    intent.putExtra("remove",1 );
                     startActivity(intent);
                 }else if("ログアウト".equals(item)){
                     Logout();

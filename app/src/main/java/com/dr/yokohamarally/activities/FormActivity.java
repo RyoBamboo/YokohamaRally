@@ -5,20 +5,28 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.SpannableStringBuilder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
@@ -41,7 +49,7 @@ import java.util.Map;
 /**
  * Created by Masashi on 2015/01/30.
  */
-public class FormActivity extends Activity{
+public class FormActivity extends ActionBarActivity {
 
     private EditText[] pointTitle = new EditText[10];
     private  String[] pointString = new String[10];
@@ -51,12 +59,160 @@ public class FormActivity extends Activity{
     private String bmpString;
     private SharedPreferences sp;
     private String pointStr;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private int count;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_main);
+
+        Intent intent = getIntent();
+        int remove = intent.getIntExtra("remove" ,0);
+        if(remove == 1){
+            sp.edit().remove("pointLatitude").commit();
+            sp.edit().remove("pointLongitude").commit();
+            sp.edit().remove("samarry_image").commit();
+            sp.edit().remove("rarry_name").commit();
+            sp.edit().remove("pointAdress").commit();
+            sp.edit().remove("rarry_sammary").commit();
+            sp.edit().remove("formPoint").commit();
+        }
+
+
+
+        //サイドバー指定
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //アクションバーカスタム
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //リスナー登録
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        /*-------------------------
+         * サイドバーのリスト作成
+         *-----------------------*/
+        String[] members = { "トップページ", "マイぺージ", "挑戦中ページ", "設定","ログアウト" };
+
+        ListView lv = (ListView) findViewById(R.id.sidebar_listView);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1, members);
+
+        lv.setAdapter(adapter);
+
+        //リスト項目がクリックされた時の処理
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                String item = (String) listView.getItemAtPosition(position);
+                if("マイぺージ".equals(item)){
+                    new AlertDialog.Builder(FormActivity.this)
+                            .setTitle("確認")
+                            .setMessage("現在の内容を破棄してマイページへいきますか？")
+                            .setPositiveButton(
+                                    "はい",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // ログアウトしてログインページへ
+                                            Intent intent = new Intent(FormActivity.this, MyPageActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                            .setNegativeButton(
+                                    "いいえ",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                            .show();
+
+                }else if("トップページ".equals(item)){
+                    new AlertDialog.Builder(FormActivity.this)
+                            .setTitle("確認")
+                            .setMessage("現在の内容を破棄してトップページへ戻りますか？")
+                            .setPositiveButton(
+                                    "はい",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // ログアウトしてログインページへ
+                                            Intent intent = new Intent(FormActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                            .setNegativeButton(
+                                    "いいえ",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                            .show();
+                }else if("挑戦中ページ".equals(item)){
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    int tryId = sp.getInt("rootId", 0);
+                    if(tryId != 0 ){
+                        new AlertDialog.Builder(FormActivity.this)
+                                .setTitle("確認")
+                                .setMessage("現在の内容を破棄してトップページへ戻りますか？")
+                                .setPositiveButton(
+                                        "はい",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // ログアウトしてログインページへ
+                                                Intent intent = new Intent(FormActivity.this, TryActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                .setNegativeButton(
+                                        "いいえ",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                .show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "現在挑戦していません", Toast.LENGTH_SHORT).show();
+                    }
+                }else if("設定".equals(item)){
+                    new AlertDialog.Builder(FormActivity.this)
+                            .setTitle("確認")
+                            .setMessage("現在の内容を破棄して設定ページへいきますか？")
+                            .setPositiveButton(
+                                    "はい",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // ログアウトしてログインページへ
+                                            Intent intent = new Intent(FormActivity.this, SettingActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                            .setNegativeButton(
+                                    "いいえ",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                            .show();
+                }else if("ログアウト".equals(item)){
+                    Logout();
+                }
+            }
+        });
 
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -83,7 +239,7 @@ public class FormActivity extends Activity{
         final String[] pointStringCopy = getArrayFromSharedPreference("formPoint");
         final String[] pointAdressCopy = getArrayFromSharedPreference("pointAdress");
 
-        Intent intent = getIntent();
+        intent = getIntent();
         int number = intent.getIntExtra("pointId" ,0);
         Log.d("number", number + "");
         count = number;
@@ -221,6 +377,27 @@ public class FormActivity extends Activity{
             }
         });
 
+    }
+
+    //アクションバーメニューセレクト
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+
+    }
+
+    //アイコンアニメーション
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     public void purasuForm(int i){
@@ -493,6 +670,33 @@ public class FormActivity extends Activity{
                             public void onClick(DialogInterface dialog, int which) {
                                 // ログアウトしてログインページへ
                                 Intent intent = new Intent(FormActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                .show();
+    }
+
+
+    public void Logout() {
+        new AlertDialog.Builder(FormActivity.this)
+                .setTitle("ログアウトしますか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // ログアウトしてログインページへ
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                                sp.edit().putBoolean("isLogin", false).commit();
+                                Intent intent = new Intent(FormActivity.this, LoginActiviry.class);
                                 startActivity(intent);
                             }
                         })
