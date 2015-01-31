@@ -109,7 +109,7 @@ public class TryActivity extends Activity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isCompleted = sp.getBoolean("isCompleted", false);
         if (isCompleted == true) {
-            DialogFragment newFragment = new CommentDialogFragment(mQueue);
+            DialogFragment newFragment = new CommentDialogFragment();
             newFragment.show(getFragmentManager(), "test");
 
             String compIds = sp.getString("_completedRoots", "");
@@ -389,12 +389,14 @@ public class TryActivity extends Activity {
        private String comment;
        private static RequestQueue queue;
 
-       public CommentDialogFragment(RequestQueue queue) {
-           this.queue = queue;
+       public CommentDialogFragment() {
        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            queue = Volley.newRequestQueue(getActivity());
+
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
