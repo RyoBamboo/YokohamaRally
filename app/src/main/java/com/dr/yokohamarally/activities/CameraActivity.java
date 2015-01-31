@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -31,8 +33,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.core.EFlag;
+import com.dr.yokohamarally.core.MultiPartStack;
+import com.dr.yokohamarally.core.MultipartRequest;
 import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.TryInformation;
 
@@ -40,6 +49,7 @@ public class CameraActivity extends Activity implements OnClickListener {
 
     public static EFlag mflag;
 
+    private RequestQueue mQueue;
 
     private static final int IMAGE_CAPTURE = 101;
     private static int GETTRIM = 10;
@@ -81,6 +91,7 @@ public class CameraActivity extends Activity implements OnClickListener {
         }
 
 
+
         mImageUri = getPhotoUri();
         intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -97,6 +108,44 @@ public class CameraActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
     }
 
+    public void doUpload(){
+
+
+        String url = "http://yokohamarally.prodrb.com/api/upload_image.php";
+        Map<String,String> stringMap = new HashMap<String, String>();
+        Map<String,File> fileMap = new HashMap<String, File>();
+        stringMap.put("text", "hogege"); //textも送るとき利用
+        fileMap.put("img", new File(imageSavePlace));
+        System.out.println(imageSavePlace);
+        MultipartRequest multipartRequest = new MultipartRequest(
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Upload成功
+                        System.out.println("res=========" + response);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //Upload失敗
+                        System.out.println("error~~~~~~" + error);
+
+                    }
+                },
+                stringMap,
+                fileMap);
+        int custom_timeout_ms = 50000;
+        DefaultRetryPolicy policy = new DefaultRetryPolicy(custom_timeout_ms,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        multipartRequest.setRetryPolicy(policy);
+        mQueue.add(multipartRequest);
+        mQueue.start();
+    }
+
     /**
      * カメラから戻ってきた時の処理
      */
@@ -105,6 +154,12 @@ public class CameraActivity extends Activity implements OnClickListener {
         if (requestCode == IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
                 setImageView();
+
+                /*------------------------------
+                 * 画像アップロード処理
+                 *----------------------------*/
+
+
 
 
                 try {
@@ -156,6 +211,10 @@ public class CameraActivity extends Activity implements OnClickListener {
                 String bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
                 checkedPointImages[reachingNumber] = bitmapStr;
                 saveArrayToSharedPreference(checkedPointImages, "checkedPointImages");
+
+                mQueue = Volley.newRequestQueue(this, new MultiPartStack());
+                doUpload();
+
 
                 Intent intent = new Intent(CameraActivity.this, TryActivity.class);
                 startActivity(intent);
