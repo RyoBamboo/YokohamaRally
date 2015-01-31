@@ -60,6 +60,7 @@ public class MultipartRequest extends Request<String> {
 
 
     @Override
+
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
         return Response.success("Uploaded", getCacheEntry());
 
