@@ -40,6 +40,7 @@ public class GpsService extends Service implements LocationListener {
     private double[] dLatitude;
     private int pointNum;
     private int[] count;
+    public static Location locate;
 
     @Override
     public void onCreate() {
@@ -86,6 +87,8 @@ public class GpsService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
+        locate = location;
 
         for(int i=0 ; i < pointNum ; i++) {
             System.out.println(i  +" " +( location.getLatitude() - dLatitude[i]));

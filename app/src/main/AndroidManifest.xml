@@ -76,12 +76,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-<<<<<<< HEAD
             android:value="AIzaSyCmDp2skzjh74_MT_2o1fOENl54lac-hpk" />
-=======
-            android:value="AIzaSyC7QXrAUqS9JRS2B4Lq8wDhLKsCac1IGos" />
-        <!--android:value="AIzaSyDLebrzUhh2CMUruUXdk_M2VA2nIdlxYqEuuuu" />-->
->>>>>>> origin/master
 
         <activity
             android:name=".activities.LoginByEmail"
