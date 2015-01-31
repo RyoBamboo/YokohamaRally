@@ -84,10 +84,12 @@ public class NewRootFragment extends Fragment{
                         int rate = json_root.getInt("rate");
                         int completedCount = json_root.getInt("completed_count");
                         int number = i;
+                        String name = json_root.getString("user_name");
                         String number_title = String.valueOf(number + 1) + ". " + title;
                         String imageUrl = json_root.getString("image_url");
                         Root root = new Root();
                         root.setId(id);
+                        root.setName(name);
                         root.setCompletedCount(completedCount);
                         root.setTitle(number_title);
                         root.setImageUrl(imageUrl);

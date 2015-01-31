@@ -20,6 +20,8 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.models.Root;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class RootAdapter extends ArrayAdapter<Root> {
@@ -55,6 +57,8 @@ public class RootAdapter extends ArrayAdapter<Root> {
         TextView title = (TextView)convertView.findViewById(R.id.title);
         title.setText(root.getTitle());
 
+        TextView name = (TextView)convertView.findViewById(R.id.name);
+        name.setText(root.getName());
 
 
         // 評価をセット
