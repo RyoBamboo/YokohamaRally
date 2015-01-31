@@ -1,18 +1,28 @@
 package com.dr.yokohamarally.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.InputFilter;
 import android.util.Base64;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -42,6 +52,7 @@ public class SettingActivity extends ActionBarActivity {
     private Bitmap bmp;
     private String bmpString;
     private InputFilter[] filter = {new EmailFilter()};
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @InjectView(R.id.name)
     EditText nameEditText;
@@ -62,6 +73,61 @@ public class SettingActivity extends ActionBarActivity {
 
         ButterKnife.inject(this);
         emailEditText.setFilters(filter);
+
+
+        //サイドバー指定
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //アクションバーカスタム
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //リスナー登録
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        /*-------------------------
+         * サイドバーのリスト作成
+         *-----------------------*/
+        String[] members = { "トップページ", "マイぺージ",  "マイラリー投稿","挑戦中ページ","ログアウト" };
+
+        ListView lv = (ListView) findViewById(R.id.sidebar_listView);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1, members);
+
+        lv.setAdapter(adapter);
+
+        //リスト項目がクリックされた時の処理
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                String item = (String) listView.getItemAtPosition(position);
+                if("マイぺージ".equals(item)){
+                    Intent intent = new Intent(SettingActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+
+                }else if("トップページ".equals(item)){
+                    Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }else if("挑戦中ページ".equals(item)){
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    int tryId = sp.getInt("rootId", 0);
+                    if(tryId != 0 ){
+                        Intent intent = new Intent(SettingActivity.this, TryActivity.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "現在挑戦していません", Toast.LENGTH_SHORT).show();
+                    }
+                }else if("マイラリー投稿".equals(item)){
+                    Intent intent = new Intent(SettingActivity.this, FormActivity.class);
+                    intent.putExtra("remove",1 );
+                    startActivity(intent);
+                }else if("ログアウト".equals(item)){
+                    Logout();
+                }
+            }
+        });
 
         setup();
     }
@@ -170,6 +236,27 @@ public class SettingActivity extends ActionBarActivity {
 
     }
 
+    //アクションバーメニューセレクト
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+
+    }
+
+    //アイコンアニメーション
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
     @OnClick(R.id.cancel)
     protected void cancel() {
         Intent intent = new Intent(SettingActivity.this, MainActivity.class);
@@ -211,6 +298,32 @@ public class SettingActivity extends ActionBarActivity {
             BitmapHolder._holdedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             bmpString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         }
+    }
+
+    public void Logout() {
+        new AlertDialog.Builder(SettingActivity.this)
+                .setTitle("ログアウトしますか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // ログアウトしてログインページへ
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                                sp.edit().putBoolean("isLogin", false).commit();
+                                Intent intent = new Intent(SettingActivity.this, LoginActiviry.class);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                .show();
     }
 
 }

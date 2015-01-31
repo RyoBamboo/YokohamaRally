@@ -351,7 +351,7 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         // インスタンス作成
         waitDialog = new ProgressDialog(this);
         // タイトル設定
-        waitDialog.setTitle("タイトル表示部分");
+        waitDialog.setTitle("読み込み中です");
         // メッセージ設定
         waitDialog.setMessage("now loading...");
         // スタイル設定 スピナー

@@ -84,6 +84,11 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             Intent intent = new Intent(MainActivity.this, LoginActiviry.class);
             startActivity(intent);
         }
+        int tryId = sp.getInt("rootId", 0);
+        if (tryId != 0) {
+            Intent intent = new Intent(MainActivity.this,TryActivity.class);
+            startActivity(intent);
+        }
 
         /*-------------------------
          * FragmentTabHostによる実装
@@ -131,7 +136,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
         /*-------------------------
          * サイドバーのリスト作成
          *-----------------------*/
-        String[] members = { "マイぺージ",  "設定", "マイラリー投稿","ログアウト" };
+        String[] members = { "マイぺージ",  "設定", "マイラリー投稿","挑戦中ページ","ログアウト" };
 
         ListView lv = (ListView) findViewById(R.id.sidebar_listView);
 
@@ -153,9 +158,19 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
                 }else if("設定".equals(item)){
                     Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                     startActivity(intent);
+                }else if("挑戦中ページ".equals(item)){
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    int tryId = sp.getInt("rootId", 0);
+                    if(tryId != 0 ){
+                        Intent intent = new Intent(MainActivity.this, TryActivity.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "現在挑戦していません", Toast.LENGTH_SHORT).show();
+                    }
                 }else if("マイラリー投稿".equals(item)){
-                Intent intent = new Intent(MainActivity.this, FormActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, FormActivity.class);
+                    intent.putExtra("remove",1 );
+                    startActivity(intent);
                  }else if("ログアウト".equals(item)){
                     Logout();
                 }
