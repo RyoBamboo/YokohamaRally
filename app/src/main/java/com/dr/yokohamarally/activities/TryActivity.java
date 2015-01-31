@@ -46,6 +46,7 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.TryAdapter;
 import com.dr.yokohamarally.core.EFlag;
+import com.dr.yokohamarally.fragments.BitmapHolder;
 import com.dr.yokohamarally.fragments.GpsService;
 import com.dr.yokohamarally.fragments.ImagePopup;
 import com.dr.yokohamarally.fragments.MapPopup;
@@ -57,6 +58,7 @@ import android.content.DialogInterface;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +108,7 @@ public class TryActivity extends Activity {
         }
 
         // ダイアログを表示する
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isCompleted = sp.getBoolean("isCompleted", false);
         if (isCompleted == true) {
             DialogFragment newFragment = new CommentDialogFragment();
@@ -120,13 +122,48 @@ public class TryActivity extends Activity {
             }
             
             sp.edit().putString("_completedRoots", compIds).commit();
-
             sp.edit().remove("isCompleted").commit();
             sp.edit().remove("rootId").commit();
 
+            /*----------------------------------
+             * 最後に取った画像をアップロードする処理
+             *----------------------------------*/
+            RequestQueue myQueue = Volley.newRequestQueue(this);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            BitmapHolder._holdedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            final String bmpString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+
+            String url = "http://yokohamarally.prodrb.com/api/update_last_image.php?";
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            // 挑戦中のroot_idを０にしてtopへ
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println(error);
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    params.put("user_id", sp.getString("id", ""));
+                    params.put("lastImageStr", bmpString);
+
+                    return params;
+                }
+            };
+
+            myQueue.add(postRequest);
+            myQueue.start();
+
             /*
-
-
             sp.edit().putString("_completedRoots", compIds).commit();
 
             sp.edit().remove("rootId").commit();
