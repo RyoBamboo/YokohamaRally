@@ -108,7 +108,7 @@
 
         <activity
             android:name=".activities.FormActivity"
-            android:label="@string/title_activity_setting" >
+            android:label="@string/title_activity_form" >
         </activity>
     </application>
 

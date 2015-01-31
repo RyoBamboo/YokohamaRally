@@ -201,10 +201,12 @@ public class MyPageActivity extends ActionBarActivity  {
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
 
         try {
-            Thread.sleep(420);
+            Thread.sleep(1420);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
         // http通信
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
 

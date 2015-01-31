@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -296,4 +297,16 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 //        }
 //        return super.dispatchTouchEvent(event);
 //    }
+
+    @Override
+    public boolean onKeyDown(int keyCode , KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+
+            Toast.makeText(this, "トップページでの戻るボタンは無効です", Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+
+        return false;
+    }
 }
