@@ -12,118 +12,91 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
 import android.content.DialogInterface;
-import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.dr.yokohamarally.MyData;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.adapters.MyPageAdapter;
 import com.dr.yokohamarally.core.RequestManager;
-import com.dr.yokohamarally.core.VolleyApi;
-import com.dr.yokohamarally.fragments.AllRootFragment;
-import com.dr.yokohamarally.fragments.GpsService;
-import com.dr.yokohamarally.fragments.TryInformation;
 import com.dr.yokohamarally.models.Root;
-import com.dr.yokohamarally.adapters.RootAdapter;
-import com.navdrawer.SimpleSideDrawer;
 
-import junit.framework.TestCase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import butterknife.OnItemClick;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 public class MyPageActivity extends ActionBarActivity  {
 
-    private RequestQueue myQueue;
-
-    private ArrayList<Root> roots;
-    private ArrayList<Root> registRoots;
-    private RootAdapter adapter;
-    private ListView rootListView;
-
-    private MyData myData;
-
-    private SimpleSideDrawer mNav;
-    private float lastTouchX;
-    private float currentX;
-
-    private TabHost.TabSpec tabSpec1, tabSpec2, tabSpec3;
 
     private ActionBarDrawerToggle mDrawerToggle;
-    private MyPageAdapter mRootAdapter;
-    private MyPageAdapter registRootAdapter;
 
-    private ListView mAllRootListView;
-    private String mEmail;
-    private String clearRoot;
-    private String clearDate;
-    private int totalClearRoot;
+    private String userId;
 
-    private ListView registAllRootListView;
+    private MyPageAdapter compRootAdapter;
+    private MyPageAdapter postRootAdapter;
 
+    private ArrayList<Root> compRootList;
+    private ArrayList<Root> postRootList;
+
+    private SharedPreferences sp;
+
+    @InjectView(R.id.comp_list)
+    ListView compListView;
+
+    @InjectView(R.id.post_list)
+    ListView postListView;
+
+    @InjectView(R.id.comp_count)
+    TextView compTextView;
+
+    @InjectView(R.id.post_count)
+    TextView postTextView;
+
+    @InjectView(R.id.my_name)
+    TextView nameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
 
-        totalClearRoot++;
+        ButterKnife.inject(this);
 
-        // リストビューを使用する準備
-        roots = new ArrayList<Root>();
-        mRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, roots);
-        mAllRootListView = (ListView)findViewById(R.id.my_list);
-        mAllRootListView.setAdapter(mRootAdapter);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        userId = sp.getString("id", "");
 
-        // 投稿したルートビュー
-        registRoots = new ArrayList<Root>();
-        registRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, registRoots);
-        registAllRootListView = (ListView)findViewById(R.id.myregist_list);
-        registAllRootListView.setAdapter(registRootAdapter);
+        compRootList = new ArrayList<Root>();
+        postRootList = new ArrayList<Root>();
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mEmail = sp.getString("email", "");
-        Log.d("email!", mEmail);
+        compRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, compRootList);
+        postRootAdapter = new MyPageAdapter(MyPageActivity.this, 0, postRootList);
 
+        compListView.setAdapter(compRootAdapter);
+        postListView.setAdapter(postRootAdapter);
 
 
         //サイドバー指定
@@ -187,32 +160,9 @@ public class MyPageActivity extends ActionBarActivity  {
         Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
         profileImageView.setImageBitmap(bmp);
 
-
-        String url = "http://yokohamarally.prodrb.com/api/get_clear_info.php?email=";
-        String params = String.valueOf(mEmail);
-        StringBuffer buf = new StringBuffer();
-        buf.append(url);
-        buf.append(params);
-        String uri = buf.toString();
-        Log.d("a",uri);
-
-
-
-        RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
-
-        try {
-            Thread.sleep(1420);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
         // http通信
-        RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET, VolleyApi.GET_ALL_ROOT_URL, null, responseListener(), errorListener()), this);
-
-
-
-
+        String url = "http://yokohamarally.prodrb.com/api/get_mypage_info.php?user_id=" + userId;
+        RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET, url, null, responseListener(), errorListener()), this);
     }
 
     //アクションバーメニューセレクト
@@ -266,118 +216,72 @@ public class MyPageActivity extends ActionBarActivity  {
                         })
                 .show();
     }
-    private Response.Listener<JSONObject> getEmailResponseListener() {
-        return new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
 
-                ArrayList<Root> _roots = new ArrayList<Root>();
-                try {
-                        JSONArray json_roots = response.getJSONArray("info");
-
-                        JSONObject json_user = json_roots.getJSONObject(0);
-                        Log.d("json",""+json_user);
-                        clearRoot = json_user.getString("clear");
-                        clearDate = json_user.getString("clearDate");
-                        String myRootCount = json_user.getString("myRootCount");
-                        String name = json_user.getString("name");
-                        TextView myRoot = (TextView)findViewById(R.id.myroot);
-                        myRoot.setText(myRootCount);
-                        TextView myName = (TextView)findViewById(R.id.my_name);
-                        myName.setText(name);
-                }catch (Exception e) {
-                    System.out.println(e);
-                }
-
-            }
-        };
-    }
-
-
-
+    // 通信処理
     private Response.Listener<JSONObject> responseListener() {
         return new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                ArrayList<Root> _roots = new ArrayList<Root>();
-                ArrayList<Root> __roots = new ArrayList<Root>();
+                ArrayList<Root> _compRootList = new ArrayList<Root>();
+                ArrayList<Root> _postRootList = new ArrayList<Root>();
 
                 try {
-                    JSONArray json_roots = response.getJSONArray("roots");
-                    System.out.println(response);
+                    JSONArray jsonCompRoots = response.getJSONArray("completed_roots");
+                    JSONArray jsonPostRoots = response.getJSONArray("posted_roots");
+
+                    String[] compDate = response.getString("clear_date").split(",");
+                    nameTextView.setText(response.getString("name"));
+
+                    int compCount = jsonCompRoots.length(); // クリアした数をセット
+                    int postCount = jsonPostRoots.length(); // クリアした数をセット
+
+                    compTextView.setText(String.valueOf(compCount));
+                    postTextView.setText(String.valueOf(postCount));
 
 
-                    String[] clearRoots = clearRoot.split(",", 0);
-                    String[] clearDates = clearDate.split(",", 0);
+                    // クリアしたルートの取得
+                    for (int i = 0; i < compCount; i++) {
+                        Root root = new Root();
+                        JSONObject jsonCompRoot = jsonCompRoots.getJSONObject(i);
 
-                    // 投稿したリストビューの表示
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                    for (int i = 0; i < json_roots.length(); i++) {
-                        JSONObject json_root = json_roots.getJSONObject(i);
+                        root.setTitle(jsonCompRoot.getString("title"));
+                        root.setRate(jsonCompRoot.getInt("rate"));
+                        root.setCompletedCount(jsonCompRoot.getInt("completed_count"));
+                        root.setImageUrl(jsonCompRoot.getString("image_url"));
+                        root.setAcceptFrag(jsonCompRoot.getInt("accept_flag"));
+                        root.setClearDate(compDate[i]);
 
-                        if (json_root.getString("user_id").equals(sp.getString("id", ""))) {
-
-                            String title = json_root.getString("title");
-                            int id = Integer.parseInt(json_root.getString("id"));
-                            int rate = json_root.getInt("rate");
-                            int number = i;
-                            int completedCount = json_root.getInt("completed_count");
-                            String number_title = String.valueOf(number + 1) + ". " + title;
-                            String imageUrl = json_root.getString("image_url");
-                            Root root2 = new Root();
-                            root2.setCompletedCount(completedCount);
-                            root2.setId(id);
-                            root2.setTitle(number_title);
-                            root2.setImageUrl(imageUrl);
-                            root2.setRate(rate);
-
-                            __roots.add(root2);
-                        }
-                    }
-                    registRootAdapter.addAll(__roots);
-                    setListViewHeightBasedOnChildren(registAllRootListView);
-
-
-
-                    // クリアしていたらlistViewに追加
-                    for(int j = 0; j < clearRoots.length ; j ++ ){
-
-                            JSONObject json_root = json_roots.getJSONObject(Integer.parseInt(clearRoots[j])-1);
-                            System.out.println(json_root);
-
-                            String title = json_root.getString("title");
-                            int rate = json_root.getInt("rate");
-                            int number = Integer.parseInt(clearRoots[j])-1;
-                            int acceptFrag = json_root.getInt("accept_flag");
-                            String number_title = String.valueOf(number + 1) + ". " + title;
-                            String imageUrl = json_root.getString("image_url");
-                            Root root = new Root();
-                            root.setClearDate(clearDates[j]);
-                            root.setTitle(number_title);
-                            root.setImageUrl(imageUrl);
-                            root.setRate(rate);
-                            root.setAcceptFrag(acceptFrag);
-
-                            _roots.add(root);
-
+                        _compRootList.add(root);
                     }
 
-                    totalClearRoot= clearRoots.length;
-                    // adapterに反映、追加
-                    mRootAdapter.addAll(_roots);
-                    setListViewHeightBasedOnChildren(mAllRootListView);
+                    // クリアしたルートの取得
+                    for (int i = 0; i < postCount; i++) {
+                        Root root = new Root();
+                        JSONObject jsonPostRoot = jsonPostRoots.getJSONObject(i);
+
+                        root.setTitle(jsonPostRoot.getString("title"));
+                        root.setRate(jsonPostRoot.getInt("rate"));
+                        root.setCompletedCount(jsonPostRoot.getInt("completed_count"));
+                        root.setImageUrl(jsonPostRoot.getString("image_url"));
+                        root.setAcceptFrag(jsonPostRoot.getInt("accept_flag"));
+
+                        _postRootList.add(root);
+                    }
+
+                    compRootAdapter.addAll(_compRootList);
+                    postRootAdapter.addAll(_postRootList);
+
+                    setListViewHeightBasedOnChildren(compListView);
+                    setListViewHeightBasedOnChildren(postListView);
+
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-
-                TextView countClear = (TextView)findViewById(R.id.clear_count);
-                countClear.setText(""+totalClearRoot);
             }
         };
-
-
     }
+
+
 
     private Response.ErrorListener errorListener() {
         return new Response.ErrorListener() {
