@@ -26,7 +26,7 @@
             android:padding="10dp"
             android:text="Title"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             />
 
         <!-- メッセージ -->

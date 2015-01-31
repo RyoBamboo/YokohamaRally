@@ -85,12 +85,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
             Intent intent = new Intent(MainActivity.this, LoginActiviry.class);
             startActivity(intent);
         }
-        int tryId = sp.getInt("rootId", 0);
-        if (tryId != 0) {
-            Intent intent = new Intent(MainActivity.this,TryActivity.class);
-            startActivity(intent);
-        }
-
+      
         /*-------------------------
          * FragmentTabHostによる実装
          *-----------------------*/

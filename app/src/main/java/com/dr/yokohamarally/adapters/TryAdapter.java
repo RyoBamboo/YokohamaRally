@@ -42,7 +42,9 @@ import com.dr.yokohamarally.models.Root;
 
 import java.util.ArrayList;
 
-public class TryAdapter extends ArrayAdapter<Root> {
+public class TryAdapter extends ArrayAdapter<Root>  {
+
+    private LocationManager mLocal;
 
     // ビューを動的に書き換えるインフレイター
     private ProgressDialog progressDialog;
@@ -171,13 +173,14 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
 
 
-                        //GPSが有効だった場合
 
                         // ロケーションマネージャの取得
                         LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
                         // 最適な位置情報プロバイダの選択
+                        Criteria criteria = new Criteria();
+                        criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
                         // Criteriaを変更することで，各種設定変更可能
-                        String bs = lm.getBestProvider(new Criteria(), true);
+                        String bs = lm.getBestProvider(criteria, true);
 
                         Location locate = lm.getLastKnownLocation(bs);
 
@@ -208,13 +211,14 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
                         System.out.println(locate);
                             //到着判定
-                            if (Math.abs(latitude - dLatitude[id]) < 0.007 && Math.abs(longitude - dLongitude[id]) < 0.007) {
+                            if (Math.abs(latitude - dLatitude[id]) < 0.0046 && Math.abs(longitude - dLongitude[id]) < 0.01138) {
 
                                 Log.d("1",""+( dLatitude[id]));
                                 Log.d("2",""+( latitude));
                                 // 到達をtrueにする
                                 checkedPoints[id] = "true";
                                 saveArrayToSharedPreference(checkedPoints, "checkedPoints");
+
 
                                 // 全てのルートをクリアしたかチェック
                                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -234,8 +238,10 @@ public class TryAdapter extends ArrayAdapter<Root> {
                             } else {
                                 Log.d("1",""+( dLatitude[id]));
                                 Log.d("2",""+( latitude));
+                                Log.d("3",""+( dLongitude[id]));
+                                Log.d("4",""+( longitude));
 
-                                Toast.makeText(getContext(), "まだ到着していません", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "まだ到着していません ", Toast.LENGTH_SHORT).show();
                             }
 
 
