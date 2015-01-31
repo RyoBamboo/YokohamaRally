@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.fragments.BitmapHolder;
@@ -84,5 +86,17 @@ public class TrimingActivity extends Activity {
 
         super.onWindowFocusChanged(hasFocus);
         _tview.sizeSet((int)(_bmOriginal.getWidth()*_scale),(int)(_bmOriginal.getHeight()*_scale));
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode , KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+
+            Toast.makeText(this, "この画面では戻るボタンは無効です", Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -143,6 +144,16 @@ public class FormActivity extends Activity{
                     Toast.makeText(getApplicationContext(), "ポイントの最大数は５です", Toast.LENGTH_SHORT).show();
 
                 }
+
+            }
+        });
+
+        final Button cansel_button = (Button)findViewById(R.id.cancel);
+        cansel_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            destroy();
 
             }
         });
@@ -457,6 +468,43 @@ public class FormActivity extends Activity{
                         })
                 .show();
 
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode , KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            destroy();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void destroy(){
+        new AlertDialog.Builder(FormActivity.this)
+                .setTitle("確認")
+                .setMessage("現在の内容を破棄してトップページへ戻りますか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // ログアウトしてログインページへ
+                                Intent intent = new Intent(FormActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                .show();
     }
 
 }

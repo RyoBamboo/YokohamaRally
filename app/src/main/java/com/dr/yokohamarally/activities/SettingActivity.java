@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.filters.EmailFilter;
 import com.dr.yokohamarally.fragments.BitmapHolder;
+import com.dr.yokohamarally.fragments.GpsService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -119,6 +120,7 @@ public class SettingActivity extends ActionBarActivity {
                             if (checkBox.isChecked()) {
                                 sp.edit().putString("notice_flag", "1").commit();
                             } else {
+                                stopService(new Intent(getBaseContext(), GpsService.class));
                                 sp.edit().putString("notice_flag", "0").commit();
                             }
 

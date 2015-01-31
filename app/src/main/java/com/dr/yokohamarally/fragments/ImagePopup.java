@@ -37,7 +37,19 @@ public class ImagePopup extends DialogFragment {
     private String mTitle;
     private String mSummary;
 
+//    public  ImagePopup(){
+//
+//    }
     public ImagePopup(String url, int id ,String title,String summary){
+
+//        Bundle bundle = new Bundle();
+//        bundle.putString("mUrl",url);
+//        bundle.putInt("mid",id);
+//        bundle.putString("mTitle",title);
+//        bundle.putString("mSummary",summary);
+//
+//        setArguments(bundle);
+
         mUrl = url;
         mid  = id;
         mTitle = title;
