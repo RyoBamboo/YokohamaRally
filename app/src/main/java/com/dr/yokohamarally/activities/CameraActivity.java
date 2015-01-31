@@ -61,7 +61,7 @@ public class CameraActivity extends Activity implements OnClickListener {
     private String[] checkedPointImages = new String[10];
     private String imageSavePlace;
     private int rootId;
-    private int mId;
+    private String mId;
 
     @Override
     public void onRestart(){
@@ -81,7 +81,7 @@ public class CameraActivity extends Activity implements OnClickListener {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         rootId =  sp.getInt("rootId", 0);
-        mId =  sp.getInt("id", 0);
+        mId =  sp.getString("id", "");
 
         // アクティビティ削除フラグ
         mflag = new EFlag();
