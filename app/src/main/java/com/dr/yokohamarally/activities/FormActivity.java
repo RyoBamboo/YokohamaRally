@@ -70,6 +70,7 @@ public class FormActivity extends ActionBarActivity {
         Intent intent = getIntent();
         int remove = intent.getIntExtra("remove" ,0);
         if(remove == 1){
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
             sp.edit().remove("pointLatitude").commit();
             sp.edit().remove("pointLongitude").commit();
             sp.edit().remove("samarry_image").commit();
@@ -81,138 +82,7 @@ public class FormActivity extends ActionBarActivity {
 
 
 
-        //サイドバー指定
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //アクションバーカスタム
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        //リスナー登録
-        drawerLayout.setDrawerListener(mDrawerToggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        /*-------------------------
-         * サイドバーのリスト作成
-         *-----------------------*/
-        String[] members = { "トップページ", "マイぺージ", "挑戦中ページ", "設定","ログアウト" };
-
-        ListView lv = (ListView) findViewById(R.id.sidebar_listView);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_expandable_list_item_1, members);
-
-        lv.setAdapter(adapter);
-
-        //リスト項目がクリックされた時の処理
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListView listView = (ListView) parent;
-                String item = (String) listView.getItemAtPosition(position);
-                if("マイぺージ".equals(item)){
-                    new AlertDialog.Builder(FormActivity.this)
-                            .setTitle("確認")
-                            .setMessage("現在の内容を破棄してマイページへいきますか？")
-                            .setPositiveButton(
-                                    "はい",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // ログアウトしてログインページへ
-                                            Intent intent = new Intent(FormActivity.this, MyPageActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    })
-                            .setNegativeButton(
-                                    "いいえ",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                            .show();
-
-                }else if("トップページ".equals(item)){
-                    new AlertDialog.Builder(FormActivity.this)
-                            .setTitle("確認")
-                            .setMessage("現在の内容を破棄してトップページへ戻りますか？")
-                            .setPositiveButton(
-                                    "はい",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // ログアウトしてログインページへ
-                                            Intent intent = new Intent(FormActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    })
-                            .setNegativeButton(
-                                    "いいえ",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                            .show();
-                }else if("挑戦中ページ".equals(item)){
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                    int tryId = sp.getInt("rootId", 0);
-                    if(tryId != 0 ){
-                        new AlertDialog.Builder(FormActivity.this)
-                                .setTitle("確認")
-                                .setMessage("現在の内容を破棄してトップページへ戻りますか？")
-                                .setPositiveButton(
-                                        "はい",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                // ログアウトしてログインページへ
-                                                Intent intent = new Intent(FormActivity.this, TryActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        })
-                                .setNegativeButton(
-                                        "いいえ",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-                                            }
-                                        })
-                                .show();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "現在挑戦していません", Toast.LENGTH_SHORT).show();
-                    }
-                }else if("設定".equals(item)){
-                    new AlertDialog.Builder(FormActivity.this)
-                            .setTitle("確認")
-                            .setMessage("現在の内容を破棄して設定ページへいきますか？")
-                            .setPositiveButton(
-                                    "はい",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // ログアウトしてログインページへ
-                                            Intent intent = new Intent(FormActivity.this, SettingActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    })
-                            .setNegativeButton(
-                                    "いいえ",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                            .show();
-                }else if("ログアウト".equals(item)){
-                    Logout();
-                }
-            }
-        });
 
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -379,26 +249,6 @@ public class FormActivity extends ActionBarActivity {
 
     }
 
-    //アクションバーメニューセレクト
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-
-    }
-
-    //アイコンアニメーション
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 
     public void purasuForm(int i){
 
