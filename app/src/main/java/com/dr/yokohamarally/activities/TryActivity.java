@@ -127,16 +127,20 @@ public class TryActivity extends ActionBarActivity {
             } else {
                 compIds =  compIds + "-" + String.valueOf(sp.getInt("rootId", 0));
             }
-            
+
             sp.edit().putString("_completedRoots", compIds).commit();
+            /*
             sp.edit().remove("isCompleted").commit();
             sp.edit().remove("rootId").commit();
+            */
 
             /*----------------------------------
              * 最後に取った画像をアップロードする処理
              *----------------------------------*/
             RequestQueue myQueue = Volley.newRequestQueue(this);
 
+
+            /*
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BitmapHolder._holdedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             final String bmpString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
@@ -169,6 +173,7 @@ public class TryActivity extends ActionBarActivity {
 
             myQueue.add(postRequest);
             myQueue.start();
+            */
 
 
             /*
@@ -477,6 +482,87 @@ public class TryActivity extends ActionBarActivity {
         return null;
     }
 
+    public static class PleaseDialogFragment extends DialogFragment {
+
+        private String comment;
+        private static RequestQueue queue;
+
+        public PleaseDialogFragment() {
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            queue = Volley.newRequestQueue(getActivity());
+
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View content = inflater.inflate(R.layout.comment_dialog, null);
+
+            EditText editText = (EditText)content.findViewById(R.id.comment);
+
+            builder.setView(content);
+
+            builder.setMessage("写真を送りますか？")
+                    .setPositiveButton("決定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+                            int root_id = sp.getInt("rootId", 0);
+
+                            RatingBar ratingBar = (RatingBar) content.findViewById(R.id.rate);
+                            float rate = ratingBar.getRating();
+
+                            EditText editText = (EditText)content.findViewById(R.id.comment);
+
+                            final String rootStr = String.valueOf(root_id);
+                            final String rateStr = String.valueOf(rate);
+                            final String userStr = sp.getString("id", "");
+                            final String comment = editText.getText().toString();
+                            System.out.println(comment);
+
+                            // コメント投稿処理 同時にuserテーブルも更新
+                            String url = "http://yokohamarally.prodrb.com/api/update_please.php?";
+                            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String s) {
+                                            // 挑戦中のroot_idを０にしてtopへ
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            System.out.println(error);
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> params = new HashMap<String, String>();
+
+                                    params.put("user_id", userStr);
+                                    return params;
+                                }
+                            };
+
+                            queue.add(postRequest);
+                            queue.start();
+                        }
+                    })
+                    .setNegativeButton("閉じる", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+
+    }
+
 
    public static class CommentDialogFragment extends DialogFragment {
 
@@ -527,6 +613,9 @@ public class TryActivity extends ActionBarActivity {
                                         @Override
                                         public void onResponse(String s) {
                                             // 挑戦中のroot_idを０にしてtopへ
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            intent.putExtra("comp", true);
+                                            startActivity(intent);
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -565,7 +654,9 @@ public class TryActivity extends ActionBarActivity {
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String s) {
-                                            System.out.println(s);
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            intent.putExtra("comp", true);
+                                            startActivity(intent);
                                         }
                                     },
                                     new Response.ErrorListener() {
