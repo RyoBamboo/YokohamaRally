@@ -275,8 +275,9 @@ public class TryActivity extends Activity {
                                 String[] pointlongitude = getArrayFromSharedPreference("tryLongitude");
 
 
-                                // ダイアログを表示する
-                                DialogFragment newFragment = new MapPopup(pointtitle[position],Double.parseDouble(pointlatitude[position]),Double.parseDouble(pointlongitude[position]));
+
+                                DialogFragment newFragment = MapPopup.newInstance(pointtitle[position],Double.parseDouble(pointlatitude[position]),Double.parseDouble(pointlongitude[position]));
+                                newFragment.setCancelable(false);
                                 newFragment.show(getFragmentManager(), "test1");
 
 
