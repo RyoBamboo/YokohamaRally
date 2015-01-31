@@ -274,39 +274,9 @@ public class MapActivity extends Activity {
          */
         private void render(Marker marker, View view) {
 
-            int i = Integer.parseInt(marker.getSnippet());
 
-            final String url = "http://yokohamarally.prodrb.com/img/" + pointImageUrls[i];
-            System.out.println("i=="+i + "    " + url);
             TextView title = (TextView) view.findViewById(R.id.info_title);
             title.setText(marker.getTitle());
-            final ImageView badge = (ImageView)view.findViewById(R.id.info_image);
-
-                ImageRequest request = new ImageRequest(
-                        url,
-                        new Response.Listener<Bitmap>() {
-                            @Override
-                            public void onResponse(Bitmap response) {
-                                badge.setImageBitmap(response);
-
-                            }
-                        },
-                        // 最大の幅、指定無しは0
-                        0,
-                        0,
-                        Bitmap.Config.ARGB_8888,
-                        new Response.ErrorListener() {
-                            @Override
-
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        }
-                );
-
-                myQueue.add(request);
-                myQueue.start();
-
         }
     }
 

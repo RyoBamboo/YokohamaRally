@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
@@ -18,13 +19,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -63,7 +69,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TryActivity extends Activity {
+public class TryActivity extends ActionBarActivity {
 
     private RequestQueue mQueue;
 
@@ -92,6 +98,7 @@ public class TryActivity extends Activity {
     private int totalChecked;
 
     public static EFlag mFlag;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onResume() {
@@ -163,6 +170,7 @@ public class TryActivity extends Activity {
             myQueue.add(postRequest);
             myQueue.start();
 
+
             /*
             sp.edit().putString("_completedRoots", compIds).commit();
 
@@ -210,6 +218,55 @@ public class TryActivity extends Activity {
             for (int i = 0; i < checkedPointsCopy.length; i++)
                 checkedPoints[i] = checkedPointsCopy[i];
         }
+
+        //サイドバー指定
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //アクションバーカスタム
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //リスナー登録
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        /*-------------------------
+         * サイドバーのリスト作成
+         *-----------------------*/
+        String[] members = { "トップページ", "マイぺージ",  "マイラリー投稿","挑戦中ページ","ログアウト" };
+
+        ListView lv = (ListView) findViewById(R.id.sidebar_listView);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1, members);
+
+        lv.setAdapter(adapter);
+
+        //リスト項目がクリックされた時の処理
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                String item = (String) listView.getItemAtPosition(position);
+                if("マイぺージ".equals(item)){
+                    Intent intent = new Intent(TryActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+
+                }else if("トップページ".equals(item)){
+                    Intent intent = new Intent(TryActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }else if("設定".equals(item)){
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        Intent intent = new Intent(TryActivity.this, SettingActivity.class);
+                        startActivity(intent);
+                }else if("マイラリー投稿".equals(item)){
+                    Intent intent = new Intent(TryActivity.this, FormActivity.class);
+                    intent.putExtra("remove",1 );
+                    startActivity(intent);
+                }else if("ログアウト".equals(item)){
+                    Logout();
+                }
+            }
+        });
 
 
 
@@ -538,6 +595,51 @@ public class TryActivity extends Activity {
 
    }
 
+    public void Logout() {
+        new AlertDialog.Builder(TryActivity.this)
+                .setTitle("ログアウトしますか？")
+                .setPositiveButton(
+                        "はい",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // ログアウトしてログインページへ
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                                sp.edit().putBoolean("isLogin", false).commit();
+                                Intent intent = new Intent(TryActivity.this, LoginActiviry.class);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton(
+                        "いいえ",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
+                            }
+                        })
+                .show();
+    }
+
+    //アクションバーメニューセレクト
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+
+    }
+
+    //アイコンアニメーション
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
 
 }
