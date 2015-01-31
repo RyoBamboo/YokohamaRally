@@ -31,43 +31,62 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
 
+            <Button
+                android:id="@+id/picture"
+                android:text="プロフィール画像選択"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/picture"
-            android:text="プロフィール画像選択"
+
+
+        <TextView
+            android:text="アカウント名"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/name"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="メールアドレス"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/email"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <CheckBox
             android:id="@+id/notice_flag"
             android:text="チェックポイントに到着したら通知する"
             android:checked="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-        <Button
-            android:id="@+id/submit"
-            android:text="設定を保存"
+            android:layout_marginBottom="55dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/cancel"
             android:text="キャンセル"
+            android:textColor="#ffffff"
+            android:background="@drawable/round_corner_cancel_button"
+            android:layout_marginBottom="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/submit"
+            android:text="設定を保存"
+            android:textColor="#ffffff"
+            android:background="@drawable/round_corner_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
     </RelativeLayout>
 
