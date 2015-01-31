@@ -22,76 +22,16 @@ public class YokohamarallyApp extends Application{
     private static Context sContext;
 
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // VolleyのRequestQueueとImageLoaderを初期化する
-        sRequestQueue = Volley.newRequestQueue(getApplicationContext());
-        sImageLoader  = new ImageLoader(sRequestQueue, new ImageLruCache());
-
-        // アプリケーションコンテクストを格納する
-        sContext = getApplicationContext();
-    }
-
-    /**
-     * VolleyのRequestQueue を取得する
-     */
-    public static RequestQueue getsRequestQueue() {
-        if (sRequestQueue == null) {
-            sRequestQueue = Volley.newRequestQueue(getAppContext());
-        }
-        return sRequestQueue;
-    }
-
-    /**
-     * VolleyのImageLoader を取得する
-     */
-    public static ImageLoader getsImageLoader() {
-        if (sImageLoader == null) {
-            sImageLoader = new ImageLoader(sRequestQueue, new ImageLruCache());
-        }
-        return sImageLoader;
-    }
-
-    /**
-     * アプリケーションコンテクストを取得する
-     */
-    public static Context getAppContext() {
-        return sContext;
-    }
-
-    /**
-     * 画像のキャッシュを行う LruCache
-     * ※ 参考: http://qiita.com/gari_jp/items/829a54bfa937f4733e29
-     */
-    public static class ImageLruCache implements ImageLoader.ImageCache {
-
-        private LruCache<String, Bitmap> mMemoryCache;
-
-        public ImageLruCache() {
-            int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-            int cacheSize = maxMemory / 8;
-
-            mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-                @Override
-                protected int sizeOf(String key, Bitmap bitmap) {
-                    return bitmap.getByteCount() / 1024;
-                }
-            };
-        }
 
         @Override
-        public Bitmap getBitmap(String url) {
-            return mMemoryCache.get(url);
+        public void onCreate() {
+            super.onCreate();
+            init();
         }
 
-        @Override
-        public void putBitmap(String url, Bitmap bitmap) {
-            mMemoryCache.put(url, bitmap);
-        }
+    private void init() {
+        // Volleyの初期化
+        RequestManager.init(this);
     }
-
-
-
 }
+
