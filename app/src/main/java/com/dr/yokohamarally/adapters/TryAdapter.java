@@ -208,7 +208,7 @@ public class TryAdapter extends ArrayAdapter<Root> {
 
                         System.out.println(locate);
                             //到着判定
-                            if (Math.abs(latitude - dLatitude[id]) < 0.0058 && Math.abs(longitude - dLongitude[id]) < 0.0058) {
+                            if (Math.abs(latitude - dLatitude[id]) < 0.007 && Math.abs(longitude - dLongitude[id]) < 0.007) {
 
                                 Log.d("1",""+( dLatitude[id]));
                                 Log.d("2",""+( latitude));

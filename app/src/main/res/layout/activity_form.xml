@@ -17,8 +17,7 @@
         <TextView
             android:id="@+id/point_line"
             android:textSize="16dp"
-            android:paddingTop="21dp"
-            android:paddingLeft="12dp"
+            android:paddingTop="2dp"
             android:textColor="#222222"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -27,7 +26,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_corner_list"
+        android:background="@drawable/round_corner"
         android:padding="20dp"
 
         >
@@ -35,6 +34,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             >
 
             <TextView
@@ -43,17 +43,25 @@
                 android:text="ポイント名"
                 />
 
-
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:padding="10dp"
+                android:background="@drawable/round_corner_list"
+                >
 
 
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_corner_list"
                 android:hint="(例)横浜駅"
-                android:padding="10dp"
                 />
+
+
+                </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -78,11 +86,14 @@
                 android:id="@+id/form_point_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""/>
+                android:text=""
+                android:layout_gravity="center_horizontal"
+                android:padding="3dp"/>
                 </LinearLayout>
         </LinearLayout>
 
-        </LinearLayout>
+
+    </LinearLayout>
 
 
 

@@ -23,6 +23,7 @@
     <string name="title_activity_register_by_email">RegisterByEmail</string>
     <string name="title_activity_my_page">マイページ</string>
     <string name="title_activity_setting">設定</string>
+    <string name="title_activity_form">投稿ページ</string>
 
     <!-- tag -->
     <string name="listItemTag">1</string>

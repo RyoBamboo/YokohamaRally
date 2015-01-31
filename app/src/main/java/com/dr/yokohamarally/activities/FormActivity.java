@@ -482,6 +482,9 @@ public class FormActivity extends ActionBarActivity {
                                 myQueue.add(postRequest);
                                 myQueue.start();
 
+                                Toast.makeText(getApplicationContext(), "投稿しました。\n申請が許可されるまでお待ちください", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(FormActivity.this, MainActivity.class);
+                                startActivity(intent);
 
                             }
                         })
