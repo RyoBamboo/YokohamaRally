@@ -3,6 +3,8 @@ package com.dr.yokohamarally.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -309,8 +311,8 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
             @Override
             public void onClick(View v) {
 
-                // ダイアログを表示する
-                DialogFragment newFragment = new ImagePopup(url,rootId,title,summary);
+                DialogFragment newFragment = ImagePopup.newInstance(url,rootId ,title ,summary);
+                newFragment.setCancelable(false);
                 newFragment.show(getFragmentManager(), "test1");
 
             }
@@ -414,7 +416,7 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
             // 挑戦するルートを変更するときはダイアログを出す
             CommonDialogFragment alertDialogFragment = CommonDialogFragment.newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますがOK????");
             alertDialogFragment.setDialogListener(this);
-            alertDialogFragment.show(getFragmentManager(), "tes");
+            alertDialogFragment.show(getFragmentManager(), "test");
 
         } else {
             // そうでなければTryアクティビティへ

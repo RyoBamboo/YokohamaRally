@@ -49,15 +49,28 @@ public class MapPopup extends DialogFragment {
     private String mtitle;
 
 
-    public MapPopup( String title ,double latitude,double longitude){
-        mtitle  = title;
-        mlatitude = latitude;
-        mlongitude = longitude;
+    public static MapPopup newInstance( String title ,double latitude,double longitude){
+
+
+        MapPopup instance = new MapPopup();
+        Bundle bundle = new Bundle();
+        bundle.putString("title" , title);
+        bundle.putDouble("latitude" , latitude);
+        bundle.putDouble("longitude" , longitude);
+
+        instance.setArguments(bundle);
+
+        return instance;
+
     }
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        mtitle = getArguments().getString("title");
+        mlongitude = getArguments().getDouble("longitude");
+        mlatitude = getArguments().getDouble("latitude");
 
 
         dialog = new Dialog(getActivity());

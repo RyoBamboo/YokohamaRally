@@ -40,25 +40,31 @@ public class ImagePopup extends DialogFragment {
 //    public  ImagePopup(){
 //
 //    }
-    public ImagePopup(String url, int id ,String title,String summary){
+    public static ImagePopup newInstance(String url,int id ,String title ,String summary){
 
-//        Bundle bundle = new Bundle();
-//        bundle.putString("mUrl",url);
-//        bundle.putInt("mid",id);
-//        bundle.putString("mTitle",title);
-//        bundle.putString("mSummary",summary);
-//
-//        setArguments(bundle);
+        ImagePopup instance = new ImagePopup();
+        Bundle bundle = new Bundle();
+        bundle.putString("mUrl",url);
+        bundle.putInt("mid",id);
+        bundle.putString("mTitle",title);
+        bundle.putString("mSummary",summary);
+        instance.setArguments(bundle);
 
-        mUrl = url;
-        mid  = id;
-        mTitle = title;
-        mSummary = summary;
+        return instance;
+
+
     }
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        mUrl = getArguments().getString("mUrl");
+        mid = getArguments().getInt("mid");
+        mTitle = getArguments().getString("mTitle");
+        mSummary = getArguments().getString("mSummary");
+
+
         final Dialog dialog = new Dialog(getActivity());
 
         String url = "http://yokohamarally.prodrb.com/api/get_root_by_id.php?id=";
