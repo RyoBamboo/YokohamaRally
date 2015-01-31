@@ -60,6 +60,8 @@ public class CameraActivity extends Activity implements OnClickListener {
     private int reachingNumber;
     private String[] checkedPointImages = new String[10];
     private String imageSavePlace;
+    private int rootId;
+    private int mId;
 
     @Override
     public void onRestart(){
@@ -75,6 +77,11 @@ public class CameraActivity extends Activity implements OnClickListener {
 
         Intent intent = getIntent();
         reachingNumber = intent.getIntExtra("reachingNumber", 0);
+
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        rootId =  sp.getInt("rootId", 0);
+        mId =  sp.getInt("id", 0);
 
         // アクティビティ削除フラグ
         mflag = new EFlag();
@@ -290,7 +297,7 @@ public class CameraActivity extends Activity implements OnClickListener {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String title = dateFormat.format(today);
         String dirPath = getDirPath();
-        String fileName = "yokohamaRally_" + title + ".jpg";
+        String fileName = mId + "-" + rootId+"-"+reachingNumber+ "-"+"yokohamaRally_" + title + ".jpg";
         String path = dirPath + "/" + fileName;
         imageSavePlace = path;
         File file = new File(path);
