@@ -417,7 +417,7 @@ public class RootSummaryActivity extends FragmentActivity implements DialogListe
         int beforeRootId = sp.getInt("rootId", 0);
         if (beforeRootId != 0 && beforeRootId != rootId) {
             // 挑戦するルートを変更するときはダイアログを出す
-            CommonDialogFragment alertDialogFragment = CommonDialogFragment.newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますがOK????");
+            CommonDialogFragment alertDialogFragment = CommonDialogFragment.newInstance("新しいルートに挑戦", "現在の挑戦中のデータが消えますが大丈夫ですか？");
             alertDialogFragment.setDialogListener(this);
             alertDialogFragment.show(getFragmentManager(), "test");
 
