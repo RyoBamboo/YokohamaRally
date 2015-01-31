@@ -25,7 +25,7 @@
 
         <Button
             android:id="@+id/picture"
-            android:text="撮影"
+            android:text="プロフィール画像選択"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         
@@ -46,14 +46,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/cancel"
-            android:text="キャンセル"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/submit"
             android:text="設定を保存"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:text="キャンセル"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

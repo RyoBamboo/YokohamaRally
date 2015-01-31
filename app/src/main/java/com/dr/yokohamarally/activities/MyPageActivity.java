@@ -139,7 +139,7 @@ public class MyPageActivity extends ActionBarActivity  {
         /*-------------------------
          * サイドバーのリスト作成
          *-----------------------*/
-        String[] members = { "マイぺージ",  "設定", "その他","ログアウト" };
+        String[] members = { "トップぺージ",  "設定", "マイラリー投稿","ログアウト" };
 
         ListView lv = (ListView) findViewById(R.id.sidebar_listView);
 
@@ -154,13 +154,21 @@ public class MyPageActivity extends ActionBarActivity  {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listView = (ListView) parent;
                 String item = (String) listView.getItemAtPosition(position);
-                if("トップページ".equals(item)){
+                if("トップぺージ".equals(item)){
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
                 }else if("設定".equals(item)){
                     Intent intent = new Intent(MyPageActivity.this, SettingActivity.class);
                     startActivity(intent);
                 }else if("マイラリー投稿".equals(item)){
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    sp.edit().remove("pointLatitude").commit();
+                    sp.edit().remove("pointLongitude").commit();
+                    sp.edit().remove("samarry_image").commit();
+                    sp.edit().remove("rarry_name").commit();
+                    sp.edit().remove("pointAdress").commit();
+                    sp.edit().remove("rarry_sammary").commit();
+                    sp.edit().remove("formPoint").commit();
                     Intent intent = new Intent(MyPageActivity.this, FormActivity.class);
                     startActivity(intent);
                 }else if("ログアウト".equals(item)){
@@ -191,7 +199,7 @@ public class MyPageActivity extends ActionBarActivity  {
         RequestManager.addRequest(new JsonObjectRequest(Request.Method.GET,uri, null, getEmailResponseListener(), errorListener()), this);
 
         try {
-            Thread.sleep(360);
+            Thread.sleep(420);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -206,16 +214,10 @@ public class MyPageActivity extends ActionBarActivity  {
     //アクションバーメニューセレクト
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                //openSearch();
-                return true;
-            default:
-                return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-        }
-
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
     }
+
 
     //アイコンアニメーション
     @Override
@@ -232,24 +234,7 @@ public class MyPageActivity extends ActionBarActivity  {
 
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
 
-        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                return true;  // アクションビューを折りたたむ為にtrueを返す
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;  // アクションビューを広げる為にtrueを返す
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
 
 
     public void Logout() {

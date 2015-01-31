@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -272,6 +273,8 @@ public class CameraActivity extends Activity implements OnClickListener {
 
         return null;
     }
+
+
 
 
 }
