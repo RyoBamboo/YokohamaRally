@@ -58,7 +58,12 @@ public class MyPageAdapter extends ArrayAdapter<Root> {
 
         // 日付をセット
         TextView date = (TextView)convertView.findViewById(R.id.date);
-        date.setText("達成日  " + root.getClearDate());
+        String clearDate = root.getClearDate();
+        if (clearDate.equals("") || clearDate == null) {
+
+        } else {
+            date.setText("達成日  " + root.getClearDate());
+        }
 
 
         // 申請中のラベルセット
