@@ -210,7 +210,7 @@ public class FormActivity extends ActionBarActivity {
                     SpannableStringBuilder sb3 = (SpannableStringBuilder)pointTitle[i].getText();
                     pointString[i] = sb3.toString();
                     System.out.println(i+1 + " "+pointString[i] );
-                    if("未登録".equals(pointAdress[i]) ||"".equals(pointAdress[i]) || pointAdress[i]==null){
+                    if("未登録".equals(pointAdress[i]) ||"".equals(pointAdress[i]) || "null".equals(pointAdress[i]) ||pointAdress[i]==null){
                         oneDo("の場所をしてしてください",i+1);
                         return;
                     }
@@ -260,7 +260,9 @@ public class FormActivity extends ActionBarActivity {
         pointTitle[i] = (EditText)view.findViewById(R.id.name);
         pointTitle[i].setText(pointString[i]);
         TextView adress = (TextView)view.findViewById(R.id.form_point_text);
-        if(pointAdress !=null)adress.setText(pointAdress[i]);
+        if(pointAdress !=null){
+            adress.setText(pointAdress[i]);
+        }
         Button point_button = (Button)view.findViewById(R.id.form_point);
         point_button.setId(i);
         point_button.setOnClickListener(new View.OnClickListener() {
