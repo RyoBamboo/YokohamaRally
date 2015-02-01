@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,8 +16,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Base64;
@@ -40,6 +43,7 @@ import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.activities.CameraActivity;
 import com.dr.yokohamarally.models.Root;
 
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 
 public class TryAdapter extends ArrayAdapter<Root>  {
@@ -82,6 +86,8 @@ public class TryAdapter extends ArrayAdapter<Root>  {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         pointNum = sp.getInt("checkpointNum", 0);
+
+        mLocal = (LocationManager)getContext().getSystemService(Service.LOCATION_SERVICE);
 
 
 
@@ -186,32 +192,39 @@ public class TryAdapter extends ArrayAdapter<Root>  {
 
                         locate = null;
 
+                        int i =0;
 
-                        while(locate == null) {
+                        while(locate == null && i < 300) {
 
-                            if (locate == null) {
-                                // 現在地が取得できなかった場合，GPSで取得してみる
-                                locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            }
-                            if (locate == null) {
-                                // 現在地が取得できなかった場合，無線測位で取得してみる
-                                locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            }
+//                            if (locate == null) {
+//                                // 現在地が取得できなかった場合，GPSで取得してみる
+//                                locate = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                            }
+//                            if (locate == null) {
+//                                // 現在地が取得できなかった場合，無線測位で取得してみる
+//                                locate = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//                            }
+
+                            locate = requestLocation();
+
+                            i ++;
                             if (locate != null) { // 現在地情報取得成功
                                 // 緯度の取得
                                 latitude = (locate.getLatitude());
                                 // 経度の取得
                                 longitude = (locate.getLongitude());
                             }
-                            if (locate == null) {
-                                Log.d("MYTAG", "no!");
 
-                            }
                         }
+
+                        Log.d("1",""+( dLatitude[id]));
+                        Log.d("2",""+( latitude));
+                        Log.d("3",""+( dLongitude[id]));
+                        Log.d("4",""+( longitude));
 
                         System.out.println(locate);
                             //到着判定
-                            if (Math.abs(latitude - dLatitude[id]) < 0.0046 && Math.abs(longitude - dLongitude[id]) < 0.01138) {
+                            if (Math.abs(latitude - dLatitude[id]) < 0.0032 && Math.abs(longitude - dLongitude[id]) < 0.0032) {
 
                                 Log.d("1",""+( dLatitude[id]));
                                 Log.d("2",""+( latitude));
@@ -241,7 +254,12 @@ public class TryAdapter extends ArrayAdapter<Root>  {
                                 Log.d("3",""+( dLongitude[id]));
                                 Log.d("4",""+( longitude));
 
-                                Toast.makeText(getContext(), "まだ到着していません ", Toast.LENGTH_SHORT).show();
+                                if(i ==300){
+                                    Toast.makeText(getContext(), "現在地を取得できませんでした。\nしばらくしてもう一度試してください", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), "まだ到着していません ", Toast.LENGTH_SHORT).show();
+                                }
+
                             }
 
 
@@ -353,6 +371,40 @@ public class TryAdapter extends ArrayAdapter<Root>  {
 
         return false;
     }
+
+
+    private Location requestLocation(){
+
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        mLocal.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                0,
+                0,
+                locationListener);
+        Location location = mLocal.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        return location;
+    }
+
 
 
 

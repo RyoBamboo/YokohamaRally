@@ -96,6 +96,7 @@ public class TryActivity extends ActionBarActivity {
     private Bitmap bmp;
     private int totalPoints;
     private int totalChecked;
+    private int isMove;
 
     public static EFlag mFlag;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -128,6 +129,8 @@ public class TryActivity extends ActionBarActivity {
                 compIds =  compIds + "-" + String.valueOf(sp.getInt("rootId", 0));
             }
 
+            PleaseDialogFragment nFragment = new PleaseDialogFragment();
+            nFragment.show(getFragmentManager(), "test");
             sp.edit().putString("_completedRoots", compIds).commit();
             /*
             sp.edit().remove("isCompleted").commit();
@@ -180,8 +183,6 @@ public class TryActivity extends ActionBarActivity {
             sp.edit().putString("_completedRoots", compIds).commit();
 
             sp.edit().remove("rootId").commit();
-            Intent intents = new Intent(TryActivity.this, MainActivity.class);
-            startActivity(intents);
             */
         }
     }
@@ -192,6 +193,7 @@ public class TryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_try);
 
+        BitmapHolder.isMove = 0;
 
 
         roots = new ArrayList<Root>();
@@ -499,7 +501,7 @@ public class TryActivity extends ActionBarActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
             LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View content = inflater.inflate(R.layout.comment_dialog, null);
+            final View content = inflater.inflate(R.layout.please_dialog, null);
 
             EditText editText = (EditText)content.findViewById(R.id.comment);
 
@@ -512,17 +514,7 @@ public class TryActivity extends ActionBarActivity {
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                             int root_id = sp.getInt("rootId", 0);
-
-                            RatingBar ratingBar = (RatingBar) content.findViewById(R.id.rate);
-                            float rate = ratingBar.getRating();
-
-                            EditText editText = (EditText)content.findViewById(R.id.comment);
-
-                            final String rootStr = String.valueOf(root_id);
-                            final String rateStr = String.valueOf(rate);
                             final String userStr = sp.getString("id", "");
-                            final String comment = editText.getText().toString();
-                            System.out.println(comment);
 
                             // コメント投稿処理 同時にuserテーブルも更新
                             String url = "http://yokohamarally.prodrb.com/api/update_please.php?";
@@ -613,9 +605,7 @@ public class TryActivity extends ActionBarActivity {
                                         @Override
                                         public void onResponse(String s) {
                                             // 挑戦中のroot_idを０にしてtopへ
-                                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                                            intent.putExtra("comp", true);
-                                            startActivity(intent);
+                                            BitmapHolder.isMove = 1;
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -654,9 +644,6 @@ public class TryActivity extends ActionBarActivity {
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String s) {
-                                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                                            intent.putExtra("comp", true);
-                                            startActivity(intent);
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -678,6 +665,10 @@ public class TryActivity extends ActionBarActivity {
 
                             queue.add(postRequest);
                             queue.start();
+
+                            Intent intent  = new Intent(getActivity().getBaseContext(), MainActivity.class);
+                            intent.putExtra("isComp", true);
+                            startActivity(intent);
                         }
                     });
             // Create the AlertDialog object and return it

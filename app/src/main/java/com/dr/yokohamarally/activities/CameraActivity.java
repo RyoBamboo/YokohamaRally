@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -96,6 +97,16 @@ public class CameraActivity extends Activity implements OnClickListener {
             for (int i = 0; i < checkedPointImagesCopy.length; i++)
                 checkedPointImages[i] = checkedPointImagesCopy[i];
         }
+
+
+        Bitmap noBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.noimage);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        noBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        String bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+        checkedPointImages[reachingNumber] = bitmapStr;
+        saveArrayToSharedPreference(checkedPointImages, "checkedPointImages");
+
 
 
 

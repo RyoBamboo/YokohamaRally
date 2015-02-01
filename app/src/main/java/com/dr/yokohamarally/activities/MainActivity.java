@@ -69,6 +69,16 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
     private FragmentTabHost tabHost;
     private int currentTab;
 
+    @Override
+    protected void onResume() {
+        boolean isComp = getIntent().getBooleanExtra("isComp", false);
+        if (isComp == true) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            sp.edit().remove("isCompleted").commit();
+            sp.edit().remove("rootId").commit();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
