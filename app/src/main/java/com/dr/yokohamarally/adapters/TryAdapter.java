@@ -243,6 +243,8 @@ public class TryAdapter extends ArrayAdapter<Root>  {
                                     System.out.println("No completed");
                                 }
 
+                                Toast.makeText(getContext(), "ポイントに到着しました！\n記念撮影しましょう。", Toast.LENGTH_SHORT).show();
+
                                 Intent intent = new Intent(getContext(), CameraActivity.class);
                                 intent.putExtra("reachingNumber", id);
                                 getContext().startActivity(intent);
