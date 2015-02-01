@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity implements FragmentTabHost.O
 
     @Override
     protected void onResume() {
+        super.onResume();
         boolean isComp = getIntent().getBooleanExtra("isComp", false);
         if (isComp == true) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
