@@ -88,6 +88,8 @@ public class LoginByEmail extends ActionBarActivity {
 
                             Intent intent =  new Intent(LoginByEmail.this, MainActivity.class);
                             startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "メールアドレス、またはパスワードが間違っています", Toast.LENGTH_LONG).show();
                         }
                     }
                 },
