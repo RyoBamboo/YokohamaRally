@@ -2,10 +2,13 @@ package com.dr.yokohamarally.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Base64;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.dr.yokohamarally.R;
 import com.dr.yokohamarally.filters.EmailFilter;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +33,8 @@ public class RegisterByEmail extends ActionBarActivity {
 
     private RequestQueue myQueue;
     private String name;
+    private String email;
+    private  String bitmapStr;
 
     private InputFilter[] emailFilter = { new EmailFilter() };
 
@@ -46,6 +52,11 @@ public class RegisterByEmail extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_by_email);
         ButterKnife.inject(this);
+
+        Bitmap noBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        noBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
         // フィルターのセット
         emailEditText.setFilters(emailFilter);
@@ -84,8 +95,13 @@ public class RegisterByEmail extends ActionBarActivity {
                             // ログイン成功したらユーザ情報をsharedPrefereceに保存
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-                            sp.edit().putString("username", name).commit();
+                            sp.edit().putString("name", name).commit();
+                            sp.edit().putString("email", email).commit();
                             sp.edit().putBoolean("isLogin", true).commit();
+
+
+
+                            sp.edit().putString("profile_image", bitmapStr).commit();
 
                             Intent intent = new Intent(RegisterByEmail.this, MainActivity.class);
                             startActivity(intent);
@@ -106,7 +122,7 @@ public class RegisterByEmail extends ActionBarActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 // POSTするパラメーター
                 EditText emailEditText = (EditText)findViewById(R.id.email);
-                String email = emailEditText.getText().toString();
+                email = emailEditText.getText().toString();
                 EditText passEditText = (EditText)findViewById(R.id.password);
                 String pass = passEditText.getText().toString();
                 EditText nameEditText = (EditText)findViewById(R.id.name);
